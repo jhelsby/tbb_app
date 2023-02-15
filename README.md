@@ -16,7 +16,7 @@ I used Expo Go to build this app.
 
 * You can also run it in your browser using Snack without installing anything, if you copy the files over appropriately.
 
-See [here](https://reactnative.dev/docs/environment-setup) for further details on all three methods.
+* See [here](https://reactnative.dev/docs/environment-setup) for further details on all three methods.
 
 To get going with Expo Go, first install it and create an Expo account, as detailed 
 [here](https://docs.expo.dev/get-started/installation/).
