@@ -55,3 +55,5 @@ see [here](https://docs.expo.dev/workflow/ios-simulator/).
 see [here](https://docs.expo.dev/workflow/android-studio-emulator/).
 
 * You can run the app in your web browser with Expo CLI: see [here](https://docs.expo.dev/workflow/web/).
+
+Please note that this only builds a developer version of the app. Building a binary that can be uploaded to the Apple App Store or the Google Play Store is more complicated: see [here](https://docs.expo.dev/build/setup/). 
