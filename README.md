@@ -1,8 +1,12 @@
 # tbb_app
 
-Mobile app for Team Biodevices Without Borders. Coded in React Native. Currently just a
-frontend that doesn't do anything. Full functionality can only be implemented once 
-the hardware has been built.
+Mobile app for Team Biodevices Without Borders. Coded in React Native.
+
+A wireframe mockup of the app can be viewed [here](https://app.moqups.com/FeX2TdYCYVktey58lKNGH06VkC4JquUX/view/page/a880590a1). 
+
+The app is currently just a frontend that doesn't do anything on the backend - 
+full functionality can only be implemented once the hardware has been built.
+There is plenty of useful work that can be done until then, however.
 
 ## Get Started
 
