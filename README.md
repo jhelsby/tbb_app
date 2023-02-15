@@ -18,6 +18,8 @@ I used Expo Go to build this app.
 
 * See [here](https://reactnative.dev/docs/environment-setup) for further details on all three methods.
 
+### Installation and Setup
+
 To get going with Expo Go, first install it and create an Expo account, as detailed 
 [here](https://docs.expo.dev/get-started/installation/).
 
@@ -30,7 +32,11 @@ npx expo install expo-sharing                 # app is currently using.
 ```
 
 Place this repository's files in the newly created YourProjectName directory, replacing any files 
-containing duplicates as prompted. Then run:
+containing duplicates as prompted. 
+
+### Build
+
+Once everything is installed and all the files are in place, run the following:
 
 ```bash
 cd YourProjectName
@@ -49,3 +55,7 @@ see [here](https://docs.expo.dev/workflow/ios-simulator/).
 see [here](https://docs.expo.dev/workflow/android-studio-emulator/).
 
 * You can run the app in your web browser with Expo CLI: see [here](https://docs.expo.dev/workflow/web/).
+
+### Note
+
+Once you've built the project once, you 
