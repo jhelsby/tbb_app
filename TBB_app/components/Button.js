@@ -1,6 +1,7 @@
 import {Alert, StyleSheet, View, Text, Pressable} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 //import Share from 'react-native-share';
+// import * as Sharing from 'expo-sharing'; <- may need to use this to compile with Expo.
 
 let isConnected = false;
 export default function Button({ label,  // Text on button
