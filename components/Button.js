@@ -1,39 +1,78 @@
 import {Alert, StyleSheet, View, Text, Pressable} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
-import * as Sharing from 'expo-sharing';
+//import Share from 'react-native-share';
+// import * as Sharing from 'expo-sharing'; <- may need to use this to compile with Expo.
 
-export default function Button({ label, theme, page, close=false, url }) {
+let isConnected = false;
+export default function Button({ label,  // Text on button
+                                 theme,  // "connect" to connect the device, "disconnect" to disconnect,
+                                         // "export" to share a url, "back" for a back button,
+                                         // "blue", "green", "red", "grey", "purple"
+                                         // for coloured navigation buttons.
+
+                                 page,   // the page the button should navigate you to
+
+                                 close=false,
+                                 // if true, formats the button to have a smaller bottom margin
+
+                                 file_to_share }) {
 
     const navigation = useNavigation();
 
-    if (theme === "disconnect") {
+    if (theme === "connect") {
         return (
-
             <View
-                style={[styles.disconnectContainer]}
+                style={[close ? styles.closeButtonContainer : styles.bigButtonContainer ]}
             >
                 <Pressable
-                    style={[styles.disconnectButton, {backgroundColor: "#f44336"}]}
-                    onPress={() => {
-                        Alert.alert('Warning', 'Are you sure you want to disconnect this device?',
-                            [
-                                {
-                                    text: 'Disconnect',
-                                    onPress: () => {navigation.navigate(page)}
-                                },
-                                {
-                                    text: 'Cancel',
-                                    onPress: () => console.log('Cancel Pressed'),
-                                    style: 'cancel',
-                                },
-                            ]);
+                    style={[styles.bigButton, {backgroundColor: "#0073e5"}]}
+                    onPress={ () => {
+                        navigation.navigate(page);
+                        isConnected = true
                     }}
                 >
-                    <Text style={[styles.disconnectLabel, {color: "#ffffff"}]}>{label}</Text>
+                    <Text style={[styles.bigButtonLabel, {color: "#ffffff"}]}>{label}</Text>
                 </Pressable>
             </View>
+        )
+    }
 
-        );
+    if (theme === "disconnect") {
+
+        if (isConnected) {
+            return (
+
+                <View
+                    style={[styles.disconnectContainer]}
+                >
+                    <Pressable
+                        style={[styles.disconnectButton, {backgroundColor: "#f44336"}]}
+                        onPress={() => {
+                            Alert.alert('Warning', 'Are you sure you want to disconnect this device?',
+                                [
+                                    {
+                                        text: 'Disconnect',
+                                        onPress: () => {
+                                            navigation.navigate(page);
+                                            isConnected = false;
+                                        }
+                                    },
+                                    {
+                                        text: 'Cancel',
+                                        onPress: () => console.log('Cancel Pressed'),
+                                        style: 'cancel',
+                                    },
+                                ]);
+                        }}
+                    >
+                        <Text style={[styles.disconnectLabel, {color: "#ffffff"}]}>{label}</Text>
+                    </Pressable>
+                </View>
+
+            );
+        } else {
+            return (null)
+        }
     }
 
     if (theme === "export") {
@@ -43,15 +82,37 @@ export default function Button({ label, theme, page, close=false, url }) {
             >
                 <Pressable
                     style={[styles.bigButton, {backgroundColor: "#6400ce"}]}
-                    onPress={ () => Sharing.shareAsync(url) }
-                        >
+                    onPress={ () => Alert.alert('Sharing function not yet implemented.')
+                        // Share.open({ url: {file_to_share},})
+                        // .then((res) => {
+                        //     console.log(res);
+                        // })
+                        // .catch((err) => {
+                        //     err && console.log(err);
+                        }
+                >
                     <Text style={[styles.bigButtonLabel, {color: "#ffffff"}]}>{label}</Text>
                 </Pressable>
             </View>
         );
     }
 
-    let the_colour
+    if (theme === "back") {
+        return (
+            <View
+                style={[close ? styles.closeButtonContainer : styles.bigButtonContainer ]}
+            >
+                <Pressable
+                    style={[styles.bigButton, {backgroundColor: "#0073e5"}]}
+                    onPress={ () => { navigation.goBack() } }
+                >
+                    <Text style={[styles.bigButtonLabel, {color: "#ffffff"}]}>{label}</Text>
+                </Pressable>
+            </View>
+        )
+    }
+
+    let the_colour;
 
     if (theme === "blue")   { the_colour = "#0073e5" }
     if (theme === "green")  { the_colour = "#6cd43e" }
@@ -71,10 +132,6 @@ export default function Button({ label, theme, page, close=false, url }) {
             </Pressable>
         </View>
     );
-
-
-
-
 
 }
 const styles = StyleSheet.create({

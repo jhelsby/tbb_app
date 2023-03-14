@@ -11,8 +11,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Logo = require('./assets/images/logo.png');
 const exampleReading = require('./assets/images/example_reading.png');
 const exampleTable = require('./assets/images/example_table.png');
-
-
 function HomeScreen( { navigation } ) {
     return (
         <View style={styles.container}>
@@ -23,8 +21,8 @@ function HomeScreen( { navigation } ) {
                 <Text style={styles.captionText}>No device connected.</Text>
             </View>
             <View>
-                <Button theme="blue"        label="Connect via Bluetooth"   page="Connected"        />
-                <Button theme="purple"      label="View previous readings"  page="Readings" />
+                <Button theme="connect"     label="Connect via Bluetooth"   page="Connected"        />
+                <Button theme="purple"      label="View previous readings"  page="Readings"         />
                 <Button theme="grey"        label="Help"                    page="Help"             />
             </View>
             <StatusBar style="auto" />
@@ -56,7 +54,7 @@ function ReadingInProgressScreen( { navigation } ) {
     return (
         <View style={styles.container}>
             <Button theme="disconnect" label="Disconnect" page="Home" />
-            <View>
+            <View style={styles.topText}>
                 <Text style={styles.topText}>Reading in progress.</Text>
             </View>
             <View style={styles.exampleImageContainer}>
@@ -102,8 +100,8 @@ function ViewLastReadingScreen( { navigation } ) {
                 <ImageViewer ImageSource={exampleReading} ImageType={"exampleImage"} />
             </View>
             <View style={styles.footerContainer}>
-                <Button theme="purple"   label="Export reading"   page="ReadingComplete" />
-                <Button theme="blue"   label="Back"               page="ReadingComplete" />
+                <Button theme="purple"   label="Export reading"   page="ReadingComplete"  close={true} />
+                <Button theme="back"     label="Back"/>
             </View>
             <StatusBar style="auto" />
         </View>
@@ -122,8 +120,8 @@ function ReadingsScreen( { navigation } ) {
             </View>
             <View style={styles.footerContainer}>
                 <Button theme="export"  label="Export all readings" page="ReadingComplete" close={true}
-                url='./assets/images/example_table.png'/>
-                <Button theme="blue"    label="Back"                page="ReadingComplete" />
+                file_to_share='./assets/images/example_table.png'/>
+                <Button theme="back"     label="Back"/>
             </View>
             <StatusBar style="auto" />
         </View>
@@ -152,7 +150,7 @@ function App() {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Home" screenOptions={{   headerShown: false}}>
+            <Stack.Navigator initialRouteName="Home" screenOptions={{   headerShown: false, gestureEnabled: false}}>
 
                 <Stack.Screen name="Home"               component={HomeScreen}    />
                 <Stack.Screen name="Connected"          component={ConnectedScreen}  />
