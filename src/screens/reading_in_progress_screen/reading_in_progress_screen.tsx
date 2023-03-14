@@ -10,15 +10,15 @@ const exampleReading = require("../../assets/images/example_reading.png");
 export default function ReadingInProgressScreen() {
   return (
     <View style={styles.container}>
-      <Button theme='disconnect' label='Disconnect' page='Home' />
+      <Button theme='disconnect' label='Disconnect' page='Home' close={false} file_to_share='' />
       <View style={styles.topText}>
         <Text style={styles.topText}>Reading in progress.</Text>
       </View>
       <View style={styles.exampleImageContainer}>
-        <ImageViewer ImageSource={exampleReading} ImageType={"exampleImage"} />
+        <ImageViewer ImageSource={exampleReading} ImageCategory={"exampleImage"} />
       </View>
       <View style={styles.footerContainer}>
-        <Button theme='red' label='Finish reading and save' page='ReadingComplete' />
+        <Button theme='red' label='Finish reading and save' page='ReadingComplete' close={false} file_to_share='' />
       </View>
       <StatusBar style='auto' />
     </View>

@@ -11,9 +11,9 @@ import ReadingScreen from "./src/screens/reading_screen/reading_screen";
 import ViewLastReadingScreen from "./src/screens/view_last_reading_screen/view_last_reading_screen";
 
 
-const Stack = createNativeStackNavigator();
+const Stack : any = createNativeStackNavigator();
 
-export default function App() {
+export default function App() : JSX.Element {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false, gestureEnabled: false }} >

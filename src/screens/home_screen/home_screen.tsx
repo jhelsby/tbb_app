@@ -10,15 +10,15 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <ImageViewer ImageSource={Logo} ImageType={"logo"} />
+        <ImageViewer ImageSource={Logo} ImageCategory={"logo"} />
       </View>
       <View>
         <Text style={styles.captionText}>No device connected.</Text>
       </View>
       <View>
-        <Button theme='connect' label='Connect via Bluetooth' page='Connected' />
-        <Button theme='purple' label='View previous readings' page='Readings' />
-        <Button theme='grey' label='Help' page='Help' />
+        <Button theme='connect' label='Connect via Bluetooth' page='Connected' close={false} file_to_share='' />
+        <Button theme='purple' label='View previous readings' page='Reading' close={false} file_to_share='' />
+        <Button theme='grey' label='Help' page='Help' close={false} file_to_share='' />
       </View>
       <StatusBar style='auto' />
     </View>

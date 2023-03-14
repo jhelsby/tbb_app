@@ -1,9 +1,16 @@
 import { Alert, StyleSheet, View, Text, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../screens/rootScreensPrams";
 //import Share from 'react-native-share';
 // import * as Sharing from 'expo-sharing'; <- may need to use this to compile with Expo.
 
 let isConnected = false;
+
+type buttonNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Home"
+>;
 
 /**
  *
@@ -18,25 +25,25 @@ let isConnected = false;
  *
  * @returns
  */
-export default function Button({ label, theme, page, close = false, file_to_share }) {
-  const navigation = useNavigation();
+export default function Button(props : { label : string, theme : string, page : keyof RootStackParamList, close : boolean, file_to_share : string }) {
+  const navigation = useNavigation<buttonNavigationProp>();
 
-  if (theme === "connect") {
+  if (props.theme === "connect") {
     return (
-      <View style={[close ? styles.closeButtonContainer : styles.bigButtonContainer]}>
+      <View style={[props.close ? styles.closeButtonContainer : styles.bigButtonContainer]}>
         <Pressable
           style={[styles.bigButton, { backgroundColor: "#0073e5" }]}
           onPress={() => {
-            navigation.navigate(page);
+            navigation.navigate(props.page);
             isConnected = true;
           }}>
-          <Text style={[styles.bigButtonLabel, { color: "#ffffff" }]}>{label}</Text>
+          <Text style={[styles.bigButtonLabel, { color: "#ffffff" }]}>{props.label}</Text>
         </Pressable>
       </View>
     );
   }
 
-  if (theme === "disconnect") {
+  if (props.theme === "disconnect") {
     if (isConnected) {
       return (
         <View style={[styles.disconnectContainer]}>
@@ -47,7 +54,7 @@ export default function Button({ label, theme, page, close = false, file_to_shar
                 {
                   text: "Disconnect",
                   onPress: () => {
-                    navigation.navigate(page);
+                    navigation.navigate(props.page);
                     isConnected = false;
                   },
                 },
@@ -58,7 +65,7 @@ export default function Button({ label, theme, page, close = false, file_to_shar
                 },
               ]);
             }}>
-            <Text style={[styles.disconnectLabel, { color: "#ffffff" }]}>{label}</Text>
+            <Text style={[styles.disconnectLabel, { color: "#ffffff" }]}>{props.label}</Text>
           </Pressable>
         </View>
       );
@@ -67,9 +74,9 @@ export default function Button({ label, theme, page, close = false, file_to_shar
     }
   }
 
-  if (theme === "export") {
+  if (props.theme === "export") {
     return (
-      <View style={[close ? styles.closeButtonContainer : styles.bigButtonContainer]}>
+      <View style={[props.close ? styles.closeButtonContainer : styles.bigButtonContainer]}>
         <Pressable
           style={[styles.bigButton, { backgroundColor: "#6400ce" }]}
           onPress={
@@ -81,21 +88,21 @@ export default function Button({ label, theme, page, close = false, file_to_shar
             // .catch((err) => {
             //     err && console.log(err);
           }>
-          <Text style={[styles.bigButtonLabel, { color: "#ffffff" }]}>{label}</Text>
+          <Text style={[styles.bigButtonLabel, { color: "#ffffff" }]}>{props.label}</Text>
         </Pressable>
       </View>
     );
   }
 
-  if (theme === "back") {
+  if (props.theme === "back") {
     return (
-      <View style={[close ? styles.closeButtonContainer : styles.bigButtonContainer]}>
+      <View style={[props.close ? styles.closeButtonContainer : styles.bigButtonContainer]}>
         <Pressable
           style={[styles.bigButton, { backgroundColor: "#0073e5" }]}
           onPress={() => {
             navigation.goBack();
           }}>
-          <Text style={[styles.bigButtonLabel, { color: "#ffffff" }]}>{label}</Text>
+          <Text style={[styles.bigButtonLabel, { color: "#ffffff" }]}>{props.label}</Text>
         </Pressable>
       </View>
     );
@@ -103,30 +110,30 @@ export default function Button({ label, theme, page, close = false, file_to_shar
 
   let the_colour;
 
-  if (theme === "blue") {
+  if (props.theme === "blue") {
     the_colour = "#0073e5";
   }
-  if (theme === "green") {
+  if (props.theme === "green") {
     the_colour = "#6cd43e";
   }
-  if (theme === "red") {
+  if (props.theme === "red") {
     the_colour = "#f44336";
   }
-  if (theme === "grey") {
+  if (props.theme === "grey") {
     the_colour = "#3e3e3e";
   }
-  if (theme === "purple") {
+  if (props.theme === "purple") {
     the_colour = "#6400ce";
   }
 
   return (
-    <View style={[close ? styles.closeButtonContainer : styles.bigButtonContainer]}>
+    <View style={[props.close ? styles.closeButtonContainer : styles.bigButtonContainer]}>
       <Pressable
         style={[styles.bigButton, { backgroundColor: the_colour }]}
         onPress={() => {
-          navigation.navigate(page);
+          navigation.navigate(props.page);
         }}>
-        <Text style={[styles.bigButtonLabel, { color: "#ffffff" }]}>{label}</Text>
+        <Text style={[styles.bigButtonLabel, { color: "#ffffff" }]}>{props.label}</Text>
       </Pressable>
     </View>
   );
