@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-import { styles } from "./home_styles";
+import { styles } from "./news_styles";
 
-export default function HomeScreen() : JSX.Element {
+export default function NewsScreen() : JSX.Element {
   return (
     <View style={styles.container}>
-      <Text>Home Screen</Text>
+      <Text>News Screen</Text>
     </View>
   );
 }

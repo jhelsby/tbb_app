@@ -1,9 +1,11 @@
 export type RootStackParamList = {
   Home: undefined;
-  Connected: undefined;
+  Account: undefined;
   Help: undefined;
-  ReadingComplete: undefined;
-  ReadingInProgress: undefined;
-  Reading: undefined;
-  ViewLastReading: undefined;
+  Readings: undefined;
+  ViewReadings: undefined;
+  News: undefined;
+  ViewNews: undefined;
+  Report: undefined;
+  Map: undefined;
 };
