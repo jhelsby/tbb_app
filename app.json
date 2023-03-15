@@ -4,9 +4,11 @@
     "slug": "BWB-App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "packagerOpts": {
+      "config": "metro.config.js",
+      "sourceExts": ["js", "jsx", "svg", "ts", "tsx"]
+    },
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     }
