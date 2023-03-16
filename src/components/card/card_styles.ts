@@ -35,6 +35,10 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  img: {
+    width: '100%',
+    height: '100%',
+  },
   content: {
     flex: 1,
     padding: 15,

@@ -1,15 +1,15 @@
 
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Image } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faNewspaper } from '@fortawesome/free-solid-svg-icons';
 
 import { styles } from './card_styles';
-import { Image } from 'react-native-svg';
 
 type TCardProps = {
   navigation : any,
-  highLight : boolean,
+  isIcon: boolean,
+  highLight : boolean | null,
   title : string,
   subtitle1 : string,
   subtitle2 : string,
@@ -27,7 +27,12 @@ export default function Card(props : TCardProps) : JSX.Element {
 
   return (
     <Pressable style={styles.container} onPress={handlePress}>
-      <View style={[styles.highlight, props.highLight ? styles.highlightGood : styles.highlightBad]}>
+      <View style={
+        props.isIcon ? styles.imgContainer :
+        [styles.highlight, props.highLight ? styles.highlightGood : styles.highlightBad]}>
+        {
+          props.isIcon ? <FontAwesomeIcon icon={faNewspaper} size={70} color={"#999"} /> : <View></View>
+        }
       </View>
       <View style={styles.content}>
         <Text style={styles.title}>{props.title}</Text>

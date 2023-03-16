@@ -21,7 +21,8 @@ export default function ReadingsScreen(props : { navigation : any }) : JSX.Eleme
             return (
               <Card
                 key={index}
-                navigation={props.navigation} 
+                isIcon={false}
+                navigation={props.navigation}
                 highLight={card.highlight}
                 title={card.title}
                 subtitle1={card.location}
