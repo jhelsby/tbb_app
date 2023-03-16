@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Pressable } from "react-native";
 
 import { styles } from "./home_styles";
+import { styles as globalStyles } from "../../../App_styles";
 
 import HomeSvg from "../../assets/svgs/home.svg";
 
@@ -30,7 +31,7 @@ export default function HomeScreen(props: { navigation: any }) : JSX.Element {
   };
 
   return (
-    <View style={styles.pageContainer}>
+    <View style={[globalStyles.page ,styles.pageContainer]}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Biodevices</Text>
         <Text style={styles.headerPlain}>Without</Text> 
