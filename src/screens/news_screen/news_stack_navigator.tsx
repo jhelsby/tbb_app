@@ -8,9 +8,9 @@ const Stack = createNativeStackNavigator();
 
 export default function NewsStackNavigator() : JSX.Element {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator  screenOptions={{ headerShown: false }}>
       <Stack.Screen name="News" component={NewsScreen} />
-      <Stack.Screen name="View News" component={ViewNewsScreen} />
+      <Stack.Screen name="ViewNews" component={ViewNewsScreen} />
     </Stack.Navigator>
   );
 }

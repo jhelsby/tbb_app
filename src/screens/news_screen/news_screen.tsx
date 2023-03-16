@@ -1,14 +1,39 @@
 import React from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, ScrollView } from "react-native";
 
 import { styles } from "./news_styles";
-import { styles as globalStyles } from "../../../App_styles";
+
+import Card from "../../components/card/card";
+
+import newsData from "./news_data.temp.json";
 
 export default function NewsScreen(props : { navigation : any }) : JSX.Element {
+  const cards = newsData.cards;
   return (
-    <View style={[globalStyles.page, styles.container]}>
-      <Text>News Screen</Text>
-      <Button title="View News" onPress={() => props.navigation.navigate("View News")} />
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView}
+        contentContainerStyle={{
+          paddingBottom: 90,
+        }}>
+        <Text style={styles.title}>News</Text>
+        {
+          cards.map((card, index) => {
+            return (
+              <Card
+                key={index}
+                isIcon={true}
+                navigation={props.navigation}
+                highLight={null}
+                title={card.title}
+                subtitle1={card.author}
+                subtitle2={card.date} 
+                description={card.description} 
+                page="ViewNews"
+              />
+            );
+          })
+        }
+      </ScrollView>
     </View>
   );
 }
