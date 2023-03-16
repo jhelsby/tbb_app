@@ -24,9 +24,7 @@ type TTabScreen = {
 };
 
 export default function App(): JSX.Element {
-  const activeColor: string = "#D95448";
-  const inactiveColor: string = "#D9C9C7";
-  const iconActiveSize: number = 40;
+  const iconActiveSize: number = 45;
   const iconInactiveSize: number = 25;
 
   const tabScreens: TTabScreen[] = [
@@ -88,13 +86,15 @@ export default function App(): JSX.Element {
                         />
                       </Svg>
                     </View>
-                    <Text>
-                      <FontAwesomeIcon 
-                        icon={screen.icon}
-                        size={focused ? iconActiveSize : iconInactiveSize} 
-                        style={focused ? styles.iconActive : styles.iconInactive}
-                      />
-                    </Text>
+                    <View style={focused ? styles.svgContainer : {}}>
+                      <Text>
+                        <FontAwesomeIcon 
+                          icon={screen.icon}
+                          size={focused ? iconActiveSize : iconInactiveSize} 
+                          style={focused ? styles.iconActive : styles.iconInactive}
+                        />
+                      </Text>
+                    </View>
                   </View>
               }}
             />

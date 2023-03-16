@@ -30,9 +30,11 @@ export const styles = StyleSheet.create({
   circleContainer: {
     position: "absolute",
   },
+  svgContainer: {
+    paddingBottom: 10,
+  },
   iconActive: {
     color: "#d95448",
-    
   },
   iconInactive: {
     color: "#D9C9C7",
