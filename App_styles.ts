@@ -4,13 +4,16 @@ export const styles = StyleSheet.create({
   page: {
     backgroundColor: '#EBF1FF',
     paddingBottom: 80,
+    height: '100%',
+    width: '100%',
+    paddingHorizontal: '5%',
+    paddingTop: '5%',
   },
   tabBar: {
     position: "absolute",
     bottom: 20,
     left: 20,
     right: 20,
-    backgroundColor: "#ffffff",
     borderRadius: 30,
     height: 60,
     shadowColor: '#000',
