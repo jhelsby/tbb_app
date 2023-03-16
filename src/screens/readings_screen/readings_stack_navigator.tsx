@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator();
 
 export default function ReadingsStackNavigator() : JSX.Element {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Readings" component={ReadingsScreen} />
       <Stack.Screen name="ViewReadings" component={ViewReadingsScreen} />
     </Stack.Navigator>
