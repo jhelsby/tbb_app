@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, Pressable, ScrollView, Dimensions } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -6,10 +6,32 @@ import { BarChart, PieChart } from "react-native-chart-kit";
 
 import { styles } from "./view_readings_styles";
 import { styles as globalStyles } from "../../../App_styles";
+import { colorInterpolate, color4, color5 } from "../../scripts/colors";
+
+import tempData from "./data.temp.json";
+
+type TPieChartData = { name: string, value: number, color: string, legendFontColor: string, legendFontSize: number };
 
 export default function ViewReadingsScreen({ navigation } : { navigation: any }) : JSX.Element {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
+
+  const [pieChartData, setPieChartData] = React.useState([] as TPieChartData[]);
+
+  useEffect(() => {
+    let data : TPieChartData[] = [];
+    tempData.results.forEach((result: any, index: number) => {
+      const color: any = colorInterpolate(color4, color5, index/(tempData.results.length - 1));
+      data.push({
+        name: result.name,
+        value: result.value,
+        color: `hsl(${color.h}, ${color.s}%, ${color.l}%)`,
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 15,
+      });
+    });
+    setPieChartData(data);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -63,36 +85,7 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
         </View>
         <View style={[globalStyles.tile, styles.pieChartContainer]}>
           <PieChart
-            data={[
-              {
-                name: "Severe",
-                population: 30.32,
-                color: "#d95448",
-                legendFontColor: "#7F7F7F",
-                legendFontSize: 15,
-              },  
-              {
-                name: "Moderate",
-                population: 12.22,
-                color: "#f2b3b3",
-                legendFontColor: "#7F7F7F",
-                legendFontSize: 15,
-              },
-              {
-                name: "Mild",
-                population: 12.22,
-                color: "#f2b56b",
-                legendFontColor: "#7F7F7F",
-                legendFontSize: 15,
-              },
-              {
-                name: "Normal",
-                population: 12.22,
-                color: "#c2d2f2",
-                legendFontColor: "#7F7F7F",
-                legendFontSize: 15,
-              },
-            ]}
+            data={pieChartData}
             width={screenWidth * 0.9}
             height={screenHeight * 0.25}
             chartConfig={{
@@ -102,7 +95,7 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
               decimalPlaces: 2,
               color: (opacity = 1) => `#d95448`,
             }}
-            accessor="population"
+            accessor="value"
             backgroundColor="transparent"
             paddingLeft=""
             absolute

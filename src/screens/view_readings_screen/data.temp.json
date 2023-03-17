@@ -1,0 +1,22 @@
+{
+  "results": [
+    {
+      "name": "Lorem ipsum",
+      "value": 55,
+      "legendFontColor": "#7F7F7F",
+      "legendFontSize": 15
+    },
+    {
+      "name": "Lorem ipsum",
+      "value": 20,
+      "legendFontColor": "#7F7F7F",
+      "legendFontSize": 15
+    },
+    {
+      "name": "Lorem ipsum",
+      "value": 25,
+      "legendFontColor": "#7F7F7F",
+      "legendFontSize": 15
+    }
+  ]
+}

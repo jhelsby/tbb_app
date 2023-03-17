@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingTop: 30,
+    paddingTop: '5%',
   },
   header: {
     position: 'absolute',
@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     zIndex: 1,
     marginHorizontal: '5%',
     marginTop: 40,
-    paddingHorizontal: '5%',
+    paddingHorizontal: 10,
     paddingVertical: 10,
     backgroundColor: 'white',
   },
