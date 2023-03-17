@@ -2,33 +2,27 @@
   "results": [
     {
       "name": "Lorem ipsum",
-      "value": 55,
-      "legendFontColor": "#7F7F7F",
-      "legendFontSize": 15
+      "value": 55
     },
     {
       "name": "Lorem ipsum",
-      "value": 20,
-      "legendFontColor": "#7F7F7F",
-      "legendFontSize": 15
+      "value": 20
     },
     {
       "name": "Lorem ipsum",
-      "value": 25,
-      "legendFontColor": "#7F7F7F",
-      "legendFontSize": 15
+      "value": 25
     },
     {
       "name": "Lorem ipsum",
-      "value": 50,
-      "legendFontColor": "#7F7F7F",
-      "legendFontSize": 15
+      "value": 50
     },
     {
       "name": "Lorem ipsum",
-      "value": 95,
-      "legendFontColor": "#7F7F7F",
-      "legendFontSize": 15
+      "value": 95
+    },
+    {
+      "name": "Lorem ipsum",
+      "value": 75
     }
   ]
 }

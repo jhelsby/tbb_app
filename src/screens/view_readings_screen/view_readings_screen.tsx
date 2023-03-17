@@ -57,15 +57,21 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
         <View style={[globalStyles.tile, styles.barChartContainer]}>
           <BarChart
             data={{
-              labels: ["January", "February", "March", "April", "May", "June"],
+              labels: tempData.results.map((result: any) => result.name),
               datasets: [
                 {
-                  data: [20, 45, 28, 80, 100, 43],
+                  data: tempData.results.map((result: any) => result.value),
+                  colors: tempData.results.map((result: any, index: number) => {
+                    const color: any = colorInterpolate(color4, color1, index/(tempData.results.length - 1));
+                    return (opacity = 1) => `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
+                  })
                 },
               ],
             }}
             width={screenWidth * 0.8}
             height={350}
+            withCustomBarColorFromData={true}
+            flatColor={true}
             yAxisLabel=""
             yAxisSuffix=""
             verticalLabelRotation={90}
@@ -77,7 +83,7 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
               backgroundGradientTo: "#fff",
               barPercentage: 0.8,
               decimalPlaces: 4,
-              color: (opacity = 1) => `#d95448`,
+              color: (opacity = 1) => `#7F7F7F`,
               style: {
                 borderRadius: 16,
               },
