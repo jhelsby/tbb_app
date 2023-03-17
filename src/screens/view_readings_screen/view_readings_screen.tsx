@@ -6,7 +6,7 @@ import { BarChart, PieChart } from "react-native-chart-kit";
 
 import { styles } from "./view_readings_styles";
 import { styles as globalStyles } from "../../../App_styles";
-import { colorInterpolate, color4, color5 } from "../../scripts/colors";
+import { colorInterpolate, color1, color4 } from "../../scripts/colors";
 
 import tempData from "./data.temp.json";
 
@@ -21,7 +21,7 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
   useEffect(() => {
     let data : TPieChartData[] = [];
     tempData.results.forEach((result: any, index: number) => {
-      const color: any = colorInterpolate(color4, color5, index/(tempData.results.length - 1));
+      const color: any = colorInterpolate(color4, color1, index/(tempData.results.length - 1));
       data.push({
         name: result.name,
         value: result.value,
@@ -30,6 +30,7 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
         legendFontSize: 15,
       });
     });
+    console.log(data);
     setPieChartData(data);
   }, []);
 

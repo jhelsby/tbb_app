@@ -17,6 +17,18 @@
       "value": 25,
       "legendFontColor": "#7F7F7F",
       "legendFontSize": 15
+    },
+    {
+      "name": "Lorem ipsum",
+      "value": 50,
+      "legendFontColor": "#7F7F7F",
+      "legendFontSize": 15
+    },
+    {
+      "name": "Lorem ipsum",
+      "value": 95,
+      "legendFontColor": "#7F7F7F",
+      "legendFontSize": 15
     }
   ]
 }

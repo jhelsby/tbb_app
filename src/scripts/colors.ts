@@ -11,24 +11,30 @@ export const backgroundColor : THSL = { h: 0, s: 0, l: 100 };
 
 export const colorInterpolate = (color1: THSL, color2: THSL, factor: number) => {
   let result = <THSL>{};
-  const initMinHue : number = Math.min(color1.h, color2.h);
-  const initMaxHue : number = Math.max(color1.h, color2.h);
-  const hueSpan1 : number = initMaxHue - initMinHue;
-  const hueSpan2 : number = initMinHue + 360 - initMaxHue;
-  const minHue : number = hueSpan1 < hueSpan2 ? initMinHue : initMaxHue;
-  const maxHue : number = hueSpan1 < hueSpan2 ? initMaxHue : initMinHue;
-  const hueSpan : number = hueSpan1 < hueSpan2 ? hueSpan1 : hueSpan2;
-  result.h = (minHue + hueSpan * factor) % 360;
+  
+  // Find Smallest Hue Difference. Aka, which way around the color wheel is the shortest distance?
+  const hueDiff1 = Math.abs(color2.h - color1.h);
+  const hueDiff2 = color1.h < color2.h ? (color1.h + 360) - color2.h : (color2.h + 360) - color1.h;
 
-  const minSat : number = Math.min(color1.s, color2.s);
-  const maxSat : number = Math.max(color1.s, color2.s);
-  const satSpan : number = maxSat - minSat;
-  result.s = minSat + satSpan * factor;
+  let startColor: THSL;
+  let endColor: THSL;
 
-  const minLight : number = Math.min(color1.l, color2.l);
-  const maxLight : number = Math.max(color1.l, color2.l);
-  const lightSpan : number = maxLight - minLight;
-  result.l = minLight + lightSpan * factor;
+  // If standard way around the color wheel (the way that doesn't lap 360)
+  // is shorter, set the start color to the smallest hue, and the end color
+  // to the largest hue. Otherwise, set the start color to the largest hue,
+  // and the end color to the smallest hue.
+  if (hueDiff1 < hueDiff2) {
+    startColor = color1.h < color2.h ? color1 : color2;
+    endColor = color1.h < color2.h ? color2 : color1;
+    result.h = (startColor.h + (hueDiff1) * factor) % 360;
+  } else {
+    startColor = color1.h < color2.h ? color2 : color1;
+    endColor = color1.h < color2.h ? color1 : color2;
+    result.h = (startColor.h + (hueDiff2) * factor) % 360;
+  }
+
+  result.s = startColor.s + (endColor.s - startColor.s) * factor;
+  result.l = startColor.l + (endColor.l - startColor.l) * factor;
 
   return result;
 }
