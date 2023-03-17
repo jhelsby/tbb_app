@@ -42,16 +42,6 @@ export const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 15,
     backgroundColor: '#fff',
-    borderRadius: 30,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 10,
-      height: 10,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-
   },
   button: {
     height: '35%',

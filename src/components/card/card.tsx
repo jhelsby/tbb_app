@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronRight, faNewspaper } from '@fortawesome/free-solid-svg-icons';
 
 import { styles } from './card_styles';
+import { styles as globalStyles } from '../../../App_styles';
 
 type TCardProps = {
   navigation : any,
@@ -26,7 +27,7 @@ export default function Card(props : TCardProps) : JSX.Element {
   };
 
   return (
-    <Pressable style={styles.container} onPress={handlePress}>
+    <Pressable style={[globalStyles.tile, styles.container]} onPress={handlePress}>
       <View style={
         props.isIcon ? styles.imgContainer :
         [styles.highlight, props.highLight ? styles.highlightGood : styles.highlightBad]}>

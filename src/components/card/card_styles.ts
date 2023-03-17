@@ -3,20 +3,11 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    borderRadius: 30,
     paddingRight: 15,
     maxHeight: 200,
     flexDirection: 'row',
     justifyContent: 'space-between',
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 10,
-      height: 10,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
     marginBottom: 15,
     marginHorizontal: '5%',
   },

@@ -9,13 +9,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: '5%',
     paddingTop: '5%',
   },
-  tabBar: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    right: 20,
+  tile: {
     borderRadius: 30,
-    height: 60,
     shadowColor: '#000',
     shadowOffset: {
       width: 10,
@@ -24,6 +19,13 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  tabBar: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    right: 20,
+    height: 60,
     justifyContent: "flex-end",
   },
   iconContainer: {

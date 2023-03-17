@@ -62,7 +62,7 @@ export default function App(): JSX.Element {
         screenOptions={{
           headerShown: false,
           tabBarShowLabel: false,
-          tabBarStyle: { ...styles.tabBar },
+          tabBarStyle: { ...styles.tabBar, ...styles.tile },
           tabBarItemStyle: { 
             JustifyContent: "flex-end",
           },

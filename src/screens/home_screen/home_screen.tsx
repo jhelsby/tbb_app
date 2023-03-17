@@ -40,7 +40,7 @@ export default function HomeScreen(props: { navigation: any }) : JSX.Element {
       <View style={styles.svgContainer}>
         <HomeSvg height="100%" width="100%" style={styles.svg} />
       </View>
-      <View style={styles.buttonContainer}>
+      <View style={[globalStyles.tile, styles.buttonContainer]}>
         <Pressable
           style={[styles.button, takeReadingsPressed ? styles.active : styles.inactive]}
           onPressIn={handleTakeReadingsPressIn}
