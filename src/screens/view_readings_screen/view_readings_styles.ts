@@ -51,8 +51,13 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#d95448',
     shadowColor: '#000',
+  },
+  safe: {
+    color: '#6095ff'
+  },
+  notSafe: {
+    color: '#d95448'
   },
   barChartContainer: {
     width: '90%',

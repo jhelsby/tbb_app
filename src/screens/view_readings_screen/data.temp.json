@@ -1,4 +1,7 @@
 {
+  "isSafe": true,
+  "date": "2019-01-01",
+  "location": "Lorem ipsum",
   "results": [
     {
       "name": "Lorem ipsum",

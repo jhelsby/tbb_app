@@ -6,7 +6,7 @@ import { BarChart, PieChart } from "react-native-chart-kit";
 
 import { styles } from "./view_readings_styles";
 import { styles as globalStyles } from "../../../App_styles";
-import { colorInterpolate, color1, color4 } from "../../scripts/colors";
+import { colorInterpolate, color1, color3 } from "../../scripts/colors";
 
 import tempData from "./data.temp.json";
 
@@ -21,7 +21,7 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
   useEffect(() => {
     let data : TPieChartData[] = [];
     tempData.results.forEach((result: any, index: number) => {
-      const color: any = colorInterpolate(color4, color1, index/(tempData.results.length - 1));
+      const color: any = colorInterpolate(color3, color1, index/(tempData.results.length - 1));
       data.push({
         name: result.name,
         value: result.value,
@@ -50,9 +50,9 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
           <Text style={styles.title}>View Readings</Text>
         </View>
         <View style={[globalStyles.tile, styles.dataContainer]}>
-          <Text style={styles.dataTitle}>SAFE</Text>
-          <Text style={styles.data}>Date: 12/12/2020</Text>
-          <Text style={styles.data}>Location: 1234 Main St, City, State</Text>
+          <Text style={[styles.dataTitle, tempData.isSafe ? styles.safe : styles.notSafe]}>{tempData.isSafe ? "SAFE" : "NOT SAFE"}</Text>
+          <Text style={styles.data}>{tempData.date}</Text>
+          <Text style={styles.data}>{tempData.location}</Text>
         </View>
         <View style={[globalStyles.tile, styles.barChartContainer]}>
           <BarChart
@@ -62,7 +62,7 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
                 {
                   data: tempData.results.map((result: any) => result.value),
                   colors: tempData.results.map((result: any, index: number) => {
-                    const color: any = colorInterpolate(color4, color1, index/(tempData.results.length - 1));
+                    const color: any = colorInterpolate(color3, color1, index/(tempData.results.length - 1));
                     return (opacity = 1) => `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
                   })
                 },
