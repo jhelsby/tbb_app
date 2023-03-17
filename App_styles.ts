@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
     paddingBottom: 80,
     height: '100%',
     width: '100%',
-    paddingHorizontal: '5%',
     paddingTop: '5%',
   },
   tile: {

@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#EBF1FF',
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    paddingHorizontal: '5%',
   },
   header: {
     alignItems: 'flex-start',
