@@ -30,7 +30,6 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
         legendFontSize: 15,
       });
     });
-    console.log(data);
     setPieChartData(data);
   }, []);
 
