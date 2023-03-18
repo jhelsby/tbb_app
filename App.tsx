@@ -1,8 +1,6 @@
-import React, { useEffect, useRef } from "react";
-import { View, Text, Animated } from "react-native";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
 import MapStackNavigator from "./src/screens/map_screen/map_stack_navigator";
 import ReadingsStackNavigator from "./src/screens/readings_screen/readings_stack_navigator";
@@ -10,7 +8,9 @@ import HomeStackNavigator from "./src/screens/home_screen/home_stack_navigator";
 import NewsStackNavigator from "./src/screens/news_screen/news_stack_navigator";
 import AccountStackNavigator from "./src/screens/account_screen/account_stack_navigator";
 
-import TabBar from "./src/components/tab_bar/tab_bar";
+import TabBar from "./src/components/tab_icon/tab_icon";
+
+import { styles } from './App_styles'
 
 const Tab: any = createBottomTabNavigator();
 
@@ -47,19 +47,26 @@ export default function App(): JSX.Element {
 
   return (
     <NavigationContainer>
-      <Tab.Navigator initialRouteName='HomeNav' tabBar={(props: any) => <TabBar {...props} />}>
+      <Tab.Navigator
+        initialRouteName='HomeNav'
+        screenOptions={{
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarStyle: { ...styles.tabBar, ...styles.tile },
+          tabBarItemStyle: { 
+            JustifyContent: "flex-end",
+          },
+        }}>
         {
-          tabScreens.map((tabScreen: ITabScreen, index: number) => {
+          tabScreens.map((screen: ITabScreen, index: number) => {
             return (
-              <Tab.Screen
-                key={index}
-                name={tabScreen.name}
-                component={tabScreen.component}
+              <Tab.Screen key={index} name={screen.name} component={screen.component} options={{
+                  tabBarIcon: (props: any) => <TabBar index={index} length={tabScreens.length} {...props} />
+                }}
               />
             );
           })
         }
-        
       </Tab.Navigator>
     </NavigationContainer>
   );
