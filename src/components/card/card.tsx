@@ -10,6 +10,7 @@ import { styles as globalStyles } from '../../../App_styles';
 import { TCardProps } from '../../scripts/types';
 
 export default function Card(props : TCardProps) : React.ReactElement<TCardProps> {
+  const [pressed, setPressed] = React.useState(false);
 
   const handlePress = () : void => {
     if (props.page) {
@@ -18,7 +19,11 @@ export default function Card(props : TCardProps) : React.ReactElement<TCardProps
   };
 
   return (
-    <Pressable style={[globalStyles.tile, styles.container]} onPress={handlePress}>
+    <Pressable
+      style={[globalStyles.tile, styles.container, pressed ? styles.pressed : {}]}
+      onPress={handlePress}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}>
       <View style={
         props.isIcon ? styles.imgContainer :
         [styles.highlight, props.highLight ? styles.highlightGood : styles.highlightBad]}>

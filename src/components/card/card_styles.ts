@@ -11,6 +11,12 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     marginHorizontal: '5%',
   },
+  pressed: {
+    transform: [
+      { translateY: 5},
+      { scale: 0.95 }
+    ],
+  },
   highlight: {
     minWidth: 30,
   },
