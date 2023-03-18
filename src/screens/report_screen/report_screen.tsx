@@ -3,10 +3,14 @@ import { View, Text } from "react-native";
 
 import { styles } from "./report_styles";
 
-export default function ReportScreen() : JSX.Element {
+import { TDefaultProps } from "../../scripts/types";
+
+import TopNav from "../../components/top_nav/top_nav";
+
+export default function ReportScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   return (
     <View style={styles.container}>
-      <Text>Report Screen</Text>
+      <TopNav handlePress={() => navigation.goBack()} />
     </View>
   );
 }

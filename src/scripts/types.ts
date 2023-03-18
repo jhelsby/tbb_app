@@ -4,6 +4,10 @@ export type TRGB = { r: number, g: number, b: number };
 
 export type THex = string;
 
+export type TDefaultProps = {
+  navigation : any,
+};
+
 export type TCardProps = {
   navigation : any,
   isIcon: boolean,

@@ -3,10 +3,14 @@ import { View, Text } from "react-native";
 
 import { styles } from "./view_news_styles";
 
-export default function ViewNewsScreen() : JSX.Element {
+import { TDefaultProps } from "../../scripts/types";
+
+import TopNav from "../../components/top_nav/top_nav";
+
+export default function ViewNewsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   return (
     <View style={styles.container}>
-      <Text>View News Screen</Text>
+      <TopNav handlePress={() => navigation.goBack()} />
     </View>
   );
 }
