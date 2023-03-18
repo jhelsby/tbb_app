@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, Pressable, ScrollView, Dimensions } from "react-native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { View, Text, ScrollView, Dimensions } from "react-native";
 import { BarChart, PieChart } from "react-native-chart-kit";
 
 import { styles } from "./view_readings_styles";
@@ -9,6 +7,8 @@ import { styles as globalStyles } from "../../../App_styles";
 import { colorInterpolate, color1, color3 } from "../../scripts/colors";
 
 import tempData from "./data.temp.json";
+
+import TopNav from "../../components/top_nav/top_nav";
 
 type TPieChartData = { name: string, value: number, color: string, legendFontColor: string, legendFontSize: number };
 
@@ -35,12 +35,7 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
 
   return (
     <View style={styles.container}>
-      <View style={[globalStyles.tile, styles.header]}>
-        <Pressable style={styles.backButton} onPress={navigation.goBack}>
-          <FontAwesomeIcon icon={faArrowLeft} size={30} color="#fff" />
-          <Text style={styles.backButtonText}>Back</Text>
-        </Pressable>
-      </View>
+      <TopNav handlePress={() => navigation.goBack()} />
       <ScrollView style={styles.body}
         contentContainerStyle={{
           paddingBottom: 180,
