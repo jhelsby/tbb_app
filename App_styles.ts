@@ -28,38 +28,4 @@ export const styles = StyleSheet.create({
     justifyContent: "flex-end",
     zIndex: 2,
   },
-  iconContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: '100%',
-    height: '100%',
-  },
-  circleContainer: {
-    position: "absolute",
-    width: '100%',
-    top: -20,
-  },
-  circle: {
-    backgroundColor: "#fff",
-    borderRadius: 1000,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 10,
-      height: 10,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: -1,
-  },
-  circleActive: {
-    width: '100%',
-    height: 80,
-  },
-  circleInactive: {
-    width: 1,
-    height: 1,
-  },
-  svgContainer: {
-    paddingBottom: 10,
-  },
 });
