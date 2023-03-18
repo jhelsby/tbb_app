@@ -13,6 +13,10 @@ import AccountStackNavigator from "./src/screens/account_screen/account_stack_na
 
 import { faMap, faHome, faNewspaper, faUser, faChartLine } from "@fortawesome/free-solid-svg-icons";
 
+import { color1, color1Light, color3, color3Light, colorInterpolate } from "./src/scripts/colors";
+
+import { THSL } from "./src/scripts/types";
+
 import { styles } from "./App_styles";
 
 const Tab: any = createBottomTabNavigator();
@@ -68,6 +72,14 @@ export default function App(): JSX.Element {
           },
         }}>
         {tabScreens.map((screen: TTabScreen, index: number) => {
+          const activeColor: THSL = colorInterpolate(color1, color3, index / tabScreens.length);
+          const inactiveColor: THSL = colorInterpolate(color1Light, color3Light, index / tabScreens.length);
+          const iconActiveStyle: { color: string } = {
+            color: `hsl(${activeColor.h}, ${activeColor.s}%, ${activeColor.l}%)`
+          };
+          const iconInactiveStyle: { color: string } = {
+            color: `hsl(${inactiveColor.h}, ${inactiveColor.s}%, ${inactiveColor.l}%)`
+          };
           return (
             <Tab.Screen
               key={index}
@@ -91,7 +103,7 @@ export default function App(): JSX.Element {
                         <FontAwesomeIcon 
                           icon={screen.icon}
                           size={focused ? iconActiveSize : iconInactiveSize} 
-                          style={focused ? styles.iconActive : styles.iconInactive}
+                          style={focused ? iconActiveStyle : iconInactiveStyle}
                         />
                       </Text>
                     </View>

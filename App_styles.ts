@@ -37,10 +37,4 @@ export const styles = StyleSheet.create({
   svgContainer: {
     paddingBottom: 10,
   },
-  iconActive: {
-    color: "#d95448",
-  },
-  iconInactive: {
-    color: "#D9C9C7",
-  },
 });
