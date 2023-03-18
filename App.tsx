@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Svg, { Circle } from "react-native-svg";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
 import MapStackNavigator from "./src/screens/map_screen/map_stack_navigator";
@@ -75,7 +74,7 @@ export default function App(): JSX.Element {
           const activeColor: THSL = colorInterpolate(color1, color3, index / tabScreens.length);
           const inactiveColor: THSL = colorInterpolate(color1Light, color3Light, index / tabScreens.length);
           const iconActiveStyle: { color: string } = {
-            color: `hsl(${activeColor.h}, ${activeColor.s}%, ${activeColor.l}%)`
+            color: `hsl(${activeColor.h}, ${activeColor.s}%, ${activeColor.l}%)`,
           };
           const iconInactiveStyle: { color: string } = {
             color: `hsl(${inactiveColor.h}, ${inactiveColor.s}%, ${inactiveColor.l}%)`
@@ -89,14 +88,7 @@ export default function App(): JSX.Element {
                 tabBarIcon: ({ focused }: { focused: boolean }) => 
                   <View style={styles.iconContainer}>
                     <View style={styles.circleContainer}>
-                      <Svg height={90} width={90}>
-                        <Circle
-                          cx={45}
-                          cy={35}
-                          r={focused ? 35 : 10}
-                          fill='white'
-                        />
-                      </Svg>
+                      <View style={[styles.circle ,focused ? styles.circleActive : styles.circleInactive]} />
                     </View>
                     <View style={focused ? styles.svgContainer : {}}>
                       <Text>
