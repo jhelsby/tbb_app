@@ -10,7 +10,7 @@ import tempData from "./data.temp.json";
 
 import TopNav from "../../components/top_nav/top_nav";
 
-type TPieChartData = { name: string, value: number, color: string, legendFontColor: string, legendFontSize: number };
+import { TPieChartData } from "../../scripts/types";
 
 export default function ViewReadingsScreen({ navigation } : { navigation: any }) : JSX.Element {
   const screenWidth = Dimensions.get("window").width;

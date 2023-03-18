@@ -11,11 +11,9 @@ import { styles as globalStyles } from '../../../App_styles';
 
 import { color3, color3Light } from '../../scripts/colors'
 
-type TTopNavProps = {
-  handlePress: () => void;
-};
+import { TTopNavProps } from '../../scripts/types';
 
-export default function TopNav(props: TTopNavProps) : React.ReactNode {
+export default function TopNav(props: TTopNavProps) : React.ReactElement<TTopNavProps> {
   return (
     <View style={[globalStyles.tile, styles.header]}>
       <View style={styles.backButtonContainer}>

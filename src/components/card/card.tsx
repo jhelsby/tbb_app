@@ -7,16 +7,7 @@ import { faChevronRight, faNewspaper } from '@fortawesome/free-solid-svg-icons';
 import { styles } from './card_styles';
 import { styles as globalStyles } from '../../../App_styles';
 
-type TCardProps = {
-  navigation : any,
-  isIcon: boolean,
-  highLight : boolean | null,
-  title : string,
-  subtitle1 : string,
-  subtitle2 : string,
-  description : string,
-  page : string
-};
+import { TCardProps } from '../../scripts/types';
 
 export default function Card(props : TCardProps) : JSX.Element {
 
