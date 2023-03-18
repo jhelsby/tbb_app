@@ -1,6 +1,4 @@
-type THSL = { h: number, s: number, l: number };
-type TRGB = { r: number, g: number, b: number };
-type THex = string;
+import { THSL } from "./types";
 
 export const color1 : THSL = { h: 220, s: 100, l: 69}
 export const color2 : THSL = { h: 28, s: 64, l: 59 };

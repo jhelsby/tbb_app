@@ -14,15 +14,12 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: 'white',
   },
-  backButton: {
+  backButtonContainer: {
     flexDirection: 'row',
     width: '35%',
     height: '100%',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 30,
-    paddingHorizontal: 15,
-    backgroundColor: '#f2b3b3',
+    justifyContent: 'center',
   },
   backButtonText: {
     fontSize: 20,

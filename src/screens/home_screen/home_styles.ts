@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     width: '100%',
     color: '#f2b3b3',
   },
-  buttonContainer: {
+  buttonPanel: {
     alignItems: 'center',
     justifyContent: 'space-evenly',
     boxSizing: 'border-box',
@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: '#fff',
   },
-  button: {
+  buttonContainer: {
     height: '35%',
     width: '100%',
     alignItems: 'center',
@@ -59,7 +59,7 @@ export const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: 'bold',
   },
 });

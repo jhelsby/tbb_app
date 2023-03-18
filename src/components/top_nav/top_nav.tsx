@@ -1,23 +1,29 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
+import Button from '../button/button'
+
 import { styles } from './top_nav_styles';
 import { styles as globalStyles } from '../../../App_styles';
+
+import { color3, color3Light } from '../../scripts/colors'
 
 type TTopNavProps = {
   handlePress: () => void;
 };
 
-export default function TopNav(props: TTopNavProps) : React.ReactElement<TTopNavProps> {
+export default function TopNav(props: TTopNavProps) : React.ReactNode {
   return (
     <View style={[globalStyles.tile, styles.header]}>
-    <Pressable style={styles.backButton} onPress={props.handlePress}>
-      <FontAwesomeIcon icon={faArrowLeft} size={30} color="#fff" />
-      <Text style={styles.backButtonText}>Back</Text>
-    </Pressable>
-  </View>
+      <View style={styles.backButtonContainer}>
+        <Button onPress={props.handlePress} activeColor={color3} inactiveColor={color3Light}>
+          <FontAwesomeIcon icon={faArrowLeft} size={30} color="#fff" />
+          <Text style={styles.backButtonText}>Back</Text>
+        </Button>
+      </View>
+    </View>
   );
 }
