@@ -3,11 +3,13 @@ import { View, Text, Button, ScrollView } from "react-native";
 
 import { styles } from "./news_styles";
 
+import { TDefaultProps } from "../../scripts/types";
+
 import Card from "../../components/card/card";
 
 import newsData from "./news_data.temp.json";
 
-export default function NewsScreen(props : { navigation : any }) : JSX.Element {
+export default function NewsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   const cards = newsData.cards;
   return (
     <View style={styles.container}>
@@ -22,7 +24,7 @@ export default function NewsScreen(props : { navigation : any }) : JSX.Element {
               <Card
                 key={index}
                 isIcon={true}
-                navigation={props.navigation}
+                navigation={navigation}
                 highLight={null}
                 title={card.title}
                 subtitle1={card.author}

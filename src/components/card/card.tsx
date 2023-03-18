@@ -9,7 +9,7 @@ import { styles as globalStyles } from '../../../App_styles';
 
 import { TCardProps } from '../../scripts/types';
 
-export default function Card(props : TCardProps) : JSX.Element {
+export default function Card(props : TCardProps) : React.ReactElement<TCardProps> {
 
   const handlePress = () : void => {
     if (props.page) {

@@ -3,11 +3,13 @@ import { View, Text, Button, ScrollView } from "react-native";
 
 import { styles } from "./readings_styles";
 
+import { TDefaultProps } from "../../scripts/types";
+
 import Card from "../../components/card/card";
 
 import readingsData from "./readings_data.temp.json";
 
-export default function ReadingsScreen(props : { navigation : any }) : JSX.Element {
+export default function ReadingsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   const cards = readingsData.cards;
   return (
     <View style={styles.container}>
@@ -22,7 +24,7 @@ export default function ReadingsScreen(props : { navigation : any }) : JSX.Eleme
               <Card
                 key={index}
                 isIcon={false}
-                navigation={props.navigation}
+                navigation={navigation}
                 highLight={card.highlight}
                 title={card.title}
                 subtitle1={card.location}
