@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator();
 
 export default function AccountStackNavigator() : JSX.Element {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Account" component={AccountScreen} />
       <Stack.Screen name="Report" component={ReportScreen} />
     </Stack.Navigator>
