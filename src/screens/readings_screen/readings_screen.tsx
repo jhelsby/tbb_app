@@ -7,7 +7,7 @@ import { TDefaultProps } from "../../scripts/types";
 
 import Card from "../../components/card/card";
 
-import readingsData from "./readings_data.temp.json";
+import readingsData from "./data.temp.json";
 
 export default function ReadingsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   const cards = readingsData.cards;

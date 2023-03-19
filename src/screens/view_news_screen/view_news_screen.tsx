@@ -8,7 +8,7 @@ import { TDefaultProps, TNewsData } from "../../scripts/types";
 
 import TopNav from "../../components/top_nav/top_nav";
 
-import tempData from './news.temp.json';
+import tempData from './data.temp.json';
 
 export default function ViewNewsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   return (

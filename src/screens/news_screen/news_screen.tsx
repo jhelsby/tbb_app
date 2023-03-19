@@ -7,7 +7,7 @@ import { TDefaultProps } from "../../scripts/types";
 
 import Card from "../../components/card/card";
 
-import newsData from "./news_data.temp.json";
+import newsData from "./data.temp.json";
 
 export default function NewsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   const cards = newsData.cards;
