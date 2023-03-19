@@ -38,6 +38,19 @@ export const styles = StyleSheet.create({
     color: '#999',
     shadowColor: '#000',
   },
+  svgContainer: {
+    marginTop: 10,
+    marginHorizontal: '5%',
+    width: '90%',
+    height: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  svg: {
+    height: '100%',
+    width: '100%',
+    color: 'hsl(220, 100%, 69%)',
+  },
   content: {
     width: '100%',
     flex: 1,

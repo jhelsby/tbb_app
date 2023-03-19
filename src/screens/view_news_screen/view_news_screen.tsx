@@ -8,6 +8,8 @@ import { TDefaultProps, TNewsData } from "../../scripts/types";
 
 import TopNav from "../../components/top_nav/top_nav";
 
+import NewsSvg from "../../assets/svgs/news.svg";
+
 import tempData from './data.temp.json';
 
 export default function ViewNewsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
@@ -22,6 +24,9 @@ export default function ViewNewsScreen({ navigation } : TDefaultProps) : React.R
         <View style={[globalStyles.tile, styles.subtitleContainer]}>
           <Text style={styles.subtitle}>{tempData.author}</Text>
           <Text style={styles.subtitle}>{tempData.date}</Text>
+        </View>
+        <View style={styles.svgContainer}>
+          <NewsSvg height="100%" width="100%" style={styles.svg} />
         </View>
         <View style={styles.content}>
           {
