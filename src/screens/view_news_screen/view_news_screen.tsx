@@ -1,16 +1,47 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 
 import { styles } from "./view_news_styles";
+import { styles as globalStyles } from "../../../App_styles";
 
-import { TDefaultProps } from "../../scripts/types";
+import { TDefaultProps, TNewsData } from "../../scripts/types";
 
 import TopNav from "../../components/top_nav/top_nav";
+
+import tempData from './news.temp.json';
 
 export default function ViewNewsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   return (
     <View style={styles.container}>
       <TopNav handlePress={() => navigation.goBack()} />
+      <ScrollView style={styles.body} 
+        contentContainerStyle={{
+          paddingBottom: 200,
+        }}>
+        <Text style={styles.title}>{tempData.title}</Text>
+        <View style={[globalStyles.tile, styles.subtitleContainer]}>
+          <Text style={styles.subtitle}>{tempData.author}</Text>
+          <Text style={styles.subtitle}>{tempData.date}</Text>
+        </View>
+        <View style={styles.content}>
+          {
+            tempData.contents.map((paragraph, index) => {
+              return (
+                <View key={index} style={[globalStyles.tile, styles.paragraphsContainer]}>
+                  <Text style={styles.heading}>{paragraph.heading}</Text>
+                  {
+                    paragraph.paragraphs.map((paragraph, index) => {
+                      return (
+                        <Text key={index} style={styles.text}>{paragraph}</Text>
+                      );
+                    })
+                  }
+                </View>
+              );
+            })
+          }
+        </View>
+      </ScrollView>
     </View>
   );
 }

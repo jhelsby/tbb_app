@@ -28,4 +28,12 @@ export type TPieChartData = {
   value: number,
   color: string,
   legendFontColor: string,
-  legendFontSize: number};
+  legendFontSize: number
+};
+
+export type TNewsData = {
+  title: string,
+  author: string,
+  date: string,
+  contents: { heading: string, paragraphs: string[] }[],
+}
