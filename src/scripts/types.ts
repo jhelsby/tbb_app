@@ -37,3 +37,8 @@ export type TNewsData = {
   date: string,
   contents: { heading: string, paragraphs: string[] }[],
 }
+
+export type TTextInputStyle = {
+  borderColor: string,
+  borderWidth: number,
+}

@@ -66,6 +66,7 @@ export default function App(): JSX.Element {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: { ...styles.tabBar, ...styles.tile },
+          tabBarHideOnKeyboard: true,
           tabBarItemStyle: { 
             JustifyContent: "flex-end",
           },
