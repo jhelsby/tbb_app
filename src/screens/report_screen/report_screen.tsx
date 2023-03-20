@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -14,7 +14,9 @@ import { styles as globalStyles } from "../../../App_styles";
 
 import { TDefaultProps, TTextInputStyle } from "../../scripts/types";
 
-import { color3, color3Light } from "../../scripts/colors";
+import { hslToString } from "../../scripts/colors";
+
+import { ColorContext } from "../../context/color_context";
 
 import ReportSvg from "../../assets/svgs/report.svg";
 import Button from "../../components/button/button";
@@ -23,14 +25,16 @@ import TopNav from "../../components/top_nav/top_nav";
 export default function ReportScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   const [titleText, setTitleText] = React.useState<string>("");
   const [descriptionText, setDescriptionText] = React.useState<string>("");
+
+  const { color, colorLight } = useContext(ColorContext);
   
   const focusedStyle = {
-    borderColor: `hsl(${color3.h}, ${color3.s}%, ${color3.l}%)`,
+    borderColor: hslToString(color),
     borderWidth: 2,
   }
 
   const unfocusedStyle = {
-    borderColor: `hsl(${color3Light.h}, ${color3Light.s}%, ${color3Light.l}%)`,
+    borderColor: hslToString(colorLight),
     borderWidth: 1,
   }
 
@@ -73,7 +77,7 @@ export default function ReportScreen({ navigation } : TDefaultProps) : React.Rea
             <Text style={styles.label}>Title:</Text>
             <TextInput
               style={[styles.input, textInputStyles[0], styles.smallInput]}
-              cursorColor={`hsl(${color3.h}, ${color3.s}%, ${color3.l}%)`}
+              cursorColor={hslToString(color)}
               onFocus={() => handleFocus(0)}
               onChange={
                 (event) => setTitleText(event.nativeEvent.text)
@@ -84,7 +88,7 @@ export default function ReportScreen({ navigation } : TDefaultProps) : React.Rea
             <Text style={styles.label}>Description:</Text>
             <TextInput
               style={[styles.input, textInputStyles[1], styles.largeInput]}
-              cursorColor={`hsl(${color3.h}, ${color3.s}%, ${color3.l}%)`}
+              cursorColor={hslToString(color)}
               onFocus={() => handleFocus(1)}
               onChange={
                 (event) => setDescriptionText(event.nativeEvent.text)
@@ -94,7 +98,7 @@ export default function ReportScreen({ navigation } : TDefaultProps) : React.Rea
             />
           </View>
           <View style={styles.buttonContainer}>
-            <Button onPress={handleSubmit} activeColor={color3} inactiveColor={color3Light}>
+            <Button onPress={handleSubmit}>
               <Text style={styles.buttonText}>Submit</Text>
             </Button>
           </View>

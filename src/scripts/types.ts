@@ -8,6 +8,12 @@ export type TDefaultProps = {
   navigation : any,
 };
 
+export type TRootNav = {
+  name: string;
+  component: any;
+  icon: any;
+};
+
 export type TCardProps = {
   navigation : any,
   isIcon: boolean,

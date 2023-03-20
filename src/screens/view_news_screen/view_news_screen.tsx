@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, ScrollView } from "react-native";
 
 import { styles } from "./view_news_styles";
@@ -6,13 +6,16 @@ import { styles as globalStyles } from "../../../App_styles";
 
 import { TDefaultProps, TNewsData } from "../../scripts/types";
 
+import { ColorContext } from "../../context/color_context";
+import { hslToString } from "../../scripts/colors";
+
 import TopNav from "../../components/top_nav/top_nav";
-
 import NewsSvg from "../../assets/svgs/news.svg";
-
 import tempData from './data.temp.json';
 
 export default function ViewNewsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
+  const { color } = useContext(ColorContext);
+
   return (
     <View style={styles.container}>
       <TopNav handlePress={() => navigation.goBack()} />
@@ -26,7 +29,7 @@ export default function ViewNewsScreen({ navigation } : TDefaultProps) : React.R
           <Text style={styles.subtitle}>{tempData.date}</Text>
         </View>
         <View style={styles.svgContainer}>
-          <NewsSvg height="100%" width="100%" style={styles.svg} />
+          <NewsSvg height="100%" width="100%" color={hslToString(color)} style={styles.svg} />
         </View>
         <View style={styles.content}>
           {

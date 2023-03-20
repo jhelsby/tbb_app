@@ -32,7 +32,6 @@ export const styles = StyleSheet.create({
   svg: {
     height: '100%',
     width: '100%',
-    color: 'hsl(220, 100%, 69%)',
   },
   content: {
     width: '100%',

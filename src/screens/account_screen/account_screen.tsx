@@ -7,11 +7,13 @@ import { styles as globalStyles } from "../../../App_styles";
 import Button from '../../components/button/button';
 import AccountSvg from "../../assets/svgs/account.svg";
 
-import { color3, color3Light } from '../../scripts/colors';
+import { ColorContext } from '../../context/color_context';
+import { hslToString } from '../../scripts/colors';
 
 import { TDefaultProps } from "../../scripts/types";
 
 export default function AccountScreen(props : TDefaultProps) : React.ReactElement<TDefaultProps> {
+  const { color } = React.useContext(ColorContext);
 
   const handleDeletePress = () => {
     console.log("Delete Pressed");
@@ -23,7 +25,7 @@ export default function AccountScreen(props : TDefaultProps) : React.ReactElemen
         <Text style={styles.title}>Account</Text>
       </View>
       <View style={styles.svgContainer}>
-        <AccountSvg height="100%" width="100%" style={styles.svg} />
+        <AccountSvg height="100%" width="100%" color={hslToString(color)} style={styles.svg} />
       </View>
       <View style={[globalStyles.tile, styles.detailsContainer]}>
         <Text style={styles.detailsText}><Text style={{ fontWeight: 'bold' }}>Username: </Text>John Doe</Text>
@@ -31,18 +33,12 @@ export default function AccountScreen(props : TDefaultProps) : React.ReactElemen
       </View>
       <View style={[globalStyles.tile, styles.buttonPanel]}>
         <View style={styles.buttonContainer}>
-          <Button
-            onPress={handleDeletePress}
-            activeColor={color3}
-            inactiveColor={color3Light}>
+          <Button onPress={handleDeletePress}>
             <Text style={styles.buttonText}>Delete Data</Text>
           </Button>
         </View>
         <View style={styles.buttonContainer}>
-          <Button
-            onPress={() => props.navigation.navigate("Report")}
-            activeColor={color3}
-            inactiveColor={color3Light}>
+          <Button onPress={() => props.navigation.navigate("Report")} >
             <Text style={styles.buttonText}>Report</Text>
           </Button>
         </View>

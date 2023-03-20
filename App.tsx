@@ -12,102 +12,126 @@ import AccountStackNavigator from "./src/screens/account_screen/account_stack_na
 
 import { faMap, faHome, faNewspaper, faUser, faChartLine } from "@fortawesome/free-solid-svg-icons";
 
-import { color1, color1Light, color3, color3Light, colorInterpolate } from "./src/scripts/colors";
+import {
+  color1,
+  color1Light,
+  color3,
+  color3Light,
+  backgroundColor,
+  textColor,
+  colorInterpolate
+} from "./src/scripts/colors";
 
-import { THSL } from "./src/scripts/types";
+import { ContrastPolarityContext } from "./src/context/contrast_polarity_context";
+import { RootNavsContext } from "./src/context/root_nav_context";
+
+import { THSL, TRootNav } from "./src/scripts/types";
 
 import { styles } from "./App_styles";
 
+
+
+
 const Tab: any = createBottomTabNavigator();
 
-type TTabScreen = {
-  name: string;
-  component: any;
-  icon: any;
-};
+const rootNavs: TRootNav[] = [
+  {
+    name: "MapNav",
+    component: MapStackNavigator,
+    icon: faMap,
+  },
+  {
+    name: "ReadingsNav",
+    component: ReadingsStackNavigator,
+    icon: faChartLine,
+  },
+  {
+    name: "HomeNav",
+    component: HomeStackNavigator,
+    icon: faHome,
+  },
+  {
+    name: "NewsNav",
+    component: NewsStackNavigator,
+    icon: faNewspaper,
+  },
+  {
+    name: "AccountNav",
+    component: AccountStackNavigator,
+    icon: faUser,
+  },
+];
 
 export default function App(): JSX.Element {
   const iconActiveSize: number = 45;
   const iconInactiveSize: number = 25;
 
-  const tabScreens: TTabScreen[] = [
-    {
-      name: "MapNav",
-      component: MapStackNavigator,
-      icon: faMap,
-    },
-    {
-      name: "ReadingsNav",
-      component: ReadingsStackNavigator,
-      icon: faChartLine,
-    },
-    {
-      name: "HomeNav",
-      component: HomeStackNavigator,
-      icon: faHome,
-    },
-    {
-      name: "NewsNav",
-      component: NewsStackNavigator,
-      icon: faNewspaper,
-    },
-    {
-      name: "AccountNav",
-      component: AccountStackNavigator,
-      icon: faUser,
-    },
-  ];
+  const startColor: THSL = color1;
+  const startColorLight: THSL = color1Light;
+  const endColor: THSL = color3;
+  const endColorLight: THSL = color3Light;
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName='HomeNav'
-        screenOptions={{
-          headerShown: false,
-          tabBarShowLabel: false,
-          tabBarStyle: { ...styles.tabBar, ...styles.tile },
-          tabBarHideOnKeyboard: true,
-          tabBarItemStyle: { 
-            JustifyContent: "flex-end",
-            alignItems: "center",
-            height: '100%',
-          },
-        }}>
-        {tabScreens.map((screen: TTabScreen, index: number) => {
-          const activeColor: THSL = colorInterpolate(color1, color3, index / tabScreens.length);
-          const inactiveColor: THSL = colorInterpolate(color1Light, color3Light, index / tabScreens.length);
-          const iconActiveStyle: { color: string } = {
-            color: `hsl(${activeColor.h}, ${activeColor.s}%, ${activeColor.l}%)`,
-          };
-          const iconInactiveStyle: { color: string } = {
-            color: `hsl(${inactiveColor.h}, ${inactiveColor.s}%, ${inactiveColor.l}%)`
-          };
-          return (
-            <Tab.Screen
-              key={index}
-              name={screen.name}
-              component={screen.component}
-              options={{
-                tabBarIcon: ({ focused }: { focused: boolean }) => 
-                  <View style={[styles.iconContainer, Platform.OS === 'ios' ? { position: 'relative', top: 15 } : {}]}>
-                    <View style={styles.circleContainer}>
-                      <View style={[styles.circle ,focused ? styles.circleActive : styles.circleInactive]} />
-                    </View>
-                    <View style={focused ? styles.svgContainer : {}}>
-                      <Text>
-                        <FontAwesomeIcon 
-                          icon={screen.icon}
-                          size={focused ? iconActiveSize : iconInactiveSize} 
-                          style={focused ? iconActiveStyle : iconInactiveStyle}
-                        />
-                      </Text>
-                    </View>
-                  </View>
-              }}
-            />
-          );
-        })}
-      </Tab.Navigator>
-    </NavigationContainer>
+    <RootNavsContext.Provider value={rootNavs.map(nav => nav.name)}>
+      <ContrastPolarityContext.Provider value={{
+        startColor,
+        startColorLight,
+        endColor,
+        endColorLight,
+        backgroundColor,
+        textColor
+      }}>
+        <NavigationContainer>
+          <Tab.Navigator
+            initialRouteName='HomeNav'
+            screenOptions={{
+              headerShown: false,
+              tabBarShowLabel: false,
+              tabBarStyle: { ...styles.tabBar, ...styles.tile },
+              tabBarHideOnKeyboard: true,
+              tabBarItemStyle: { 
+                JustifyContent: "flex-end",
+                alignItems: "center",
+                height: '100%',
+              },
+            }}>
+            {rootNavs.map((screen: TRootNav, index: number) => {
+              const activeColor: THSL = colorInterpolate(color1, color3, index / rootNavs.length);
+              const inactiveColor: THSL = colorInterpolate(color1Light, color3Light, index / rootNavs.length);
+              const iconActiveStyle: { color: string } = {
+                color: `hsl(${activeColor.h}, ${activeColor.s}%, ${activeColor.l}%)`,
+              };
+              const iconInactiveStyle: { color: string } = {
+                color: `hsl(${inactiveColor.h}, ${inactiveColor.s}%, ${inactiveColor.l}%)`
+              };
+              return (
+                <Tab.Screen
+                  key={index}
+                  name={screen.name}
+                  component={screen.component}
+                  options={{
+                    tabBarIcon: ({ focused }: { focused: boolean }) => 
+                      <View style={[styles.iconContainer, Platform.OS === 'ios' ? { position: 'relative', top: 15 } : {}]}>
+                        <View style={styles.circleContainer}>
+                          <View style={[styles.circle ,focused ? styles.circleActive : styles.circleInactive]} />
+                        </View>
+                        <View style={focused ? styles.svgContainer : {}}>
+                          <Text>
+                            <FontAwesomeIcon 
+                              icon={screen.icon}
+                              size={focused ? iconActiveSize : iconInactiveSize} 
+                              style={focused ? iconActiveStyle : iconInactiveStyle}
+                            />
+                          </Text>
+                        </View>
+                      </View>
+                  }}
+                />
+              );
+            })}
+          </Tab.Navigator>
+        </NavigationContainer>
+      </ContrastPolarityContext.Provider>
+    </RootNavsContext.Provider>
   );
 }

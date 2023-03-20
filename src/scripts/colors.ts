@@ -7,6 +7,7 @@ export const color1Light : THSL = { h: 220, s: 67, l: 86 };
 export const color2Light : THSL = { h: 33, s: 84, l: 68 };
 export const color3Light : THSL = { h: 0, s: 71, l: 83 };
 export const backgroundColor : THSL = { h: 0, s: 0, l: 100 };
+export const textColor : THSL = { h: 0, s: 0, l: 0 };
 
 export const colorInterpolate = (startColor: THSL, endColor: THSL, factor: number) => {
   let result = <THSL>{};
@@ -40,4 +41,8 @@ export const colorInterpolate = (startColor: THSL, endColor: THSL, factor: numbe
   result.l = startColor.l + (endColor.l - startColor.l) * factor;
 
   return result;
+}
+
+export const hslToString = (hsl: THSL) : string => {
+  return `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
 }

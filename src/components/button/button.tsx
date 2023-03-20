@@ -3,19 +3,20 @@ import { Pressable } from "react-native";
 
 import { styles } from "./button_styles";
 import { IButtonProps } from "../../scripts/interfaces";
+import { hslToString } from "../../scripts/colors";
+import { ColorContext } from "../../context/color_context";
 
 export default function Button(props: PropsWithChildren<IButtonProps>) : React.ReactElement {
-  const [pressed, setPressed] = React.useState<boolean>(false);
+  const { color, colorLight } = React.useContext(ColorContext);
   
-  const activeColor = props.activeColor;
-  const inactiveColor = props.inactiveColor;
+  const [pressed, setPressed] = React.useState<boolean>(false);
 
   const activeStyle : { backgroundColor: string } = {
-    backgroundColor: `hsl(${activeColor.h}, ${activeColor.s}%, ${activeColor.l}%)`
+    backgroundColor: hslToString(color)
   }
 
   const inactiveStyle : { backgroundColor: string } = {
-    backgroundColor: `hsl(${inactiveColor.h}, ${inactiveColor.s}%, ${inactiveColor.l}%)`
+    backgroundColor: hslToString(colorLight)
   }
 
   return (

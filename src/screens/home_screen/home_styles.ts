@@ -16,7 +16,6 @@ export const styles = StyleSheet.create({
   headerText: {
     fontSize: 40,
     fontWeight: 'bold',
-    color: '#d95448',
     shadowColor: '#000',
   },
   headerPlain: {
@@ -33,7 +32,6 @@ export const styles = StyleSheet.create({
   svg: {
     height: '100%',
     width: '100%',
-    color: '#f2b3b3',
   },
   buttonPanel: {
     alignItems: 'center',
