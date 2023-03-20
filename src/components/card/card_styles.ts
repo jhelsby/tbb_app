@@ -49,6 +49,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
   },
   subtitle: {
     fontSize: 16,
@@ -58,6 +59,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: '#999',
     marginTop: 10,
+    height: 50
   },
   chevronContainer: {
     boxSizing: 'border-box',

@@ -18,7 +18,6 @@ export default function MapIcon(props: IMarkerProps) : React.ReactElement<IMarke
 
   const handlePress = () : void => {
     props.onActive(props.index);
-    console.log(`pressed ${props.latitude} ${props.longitude}`);
   };
 
   return (

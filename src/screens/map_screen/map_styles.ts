@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
@@ -10,4 +11,10 @@ export const styles = StyleSheet.create({
     borderColor: '',
     borderWidth: 2,
   },
+  cardContainer: {
+    position: 'absolute',
+    width: '80%',
+    right: 0,
+    overflow: 'hidden',
+  }
 });

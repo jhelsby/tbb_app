@@ -5,21 +5,46 @@ import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { styles } from "./map_styles";
 import { styles as globalStyles } from "../../../App_styles";
 
-import { TMarkerData } from "../../scripts/types";
+import { TDefaultProps, TMarkerData, TCardProps } from "../../scripts/types";
 
 import MapIcon from "../../components/map_icon/map_icon";
+import Card from "../../components/card/card";
 
 import tempData from "./data.temp.json";
 
-export default function MapScreen() : JSX.Element {
-
+export default function MapScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   const [activeMarkers, setActiveMarkers] = React.useState<boolean[]>(
     tempData.markers.map(() => false)
   );
 
+  const [activeCard, setActiveCard] = React.useState<boolean>(false);
+  const [cardData, setCardData] = React.useState<TCardProps>({
+    isIcon: false,
+    navigation: navigation,
+    highLight: false,
+    title: "",
+    subtitle1: "",
+    subtitle2: "",
+    description: "",
+    page: "ViewReadings"
+  });
+
   const handleMarkerPress = (index: number) => {
     const newActiveMarkers = activeMarkers.map((marker, i) => {
       if (i === index) {
+        const cardData: TCardProps = {
+          isIcon: false,
+          navigation: navigation,
+          highLight: tempData.markers[i].isSafe,
+          title: "Lorem ipsum",
+          subtitle1: `${tempData.markers[i].latitude}, ${tempData.markers[i].longitude}`,
+          subtitle2: `${tempData.markers[i].date}`,
+          description: "Laboris in et ullamco magna excepteur aliquip mollit occaecat aliqua anim exercitation.",
+          page: "ViewReadings"
+        }
+        console.log(cardData);
+        setActiveCard(!marker);
+        setCardData(cardData);
         return !marker;
       } else {
         return false;
@@ -66,6 +91,9 @@ export default function MapScreen() : JSX.Element {
             })
           }
       </MapView>
+      <View style={[styles.cardContainer, { bottom: activeCard ? 90 : -200 }]}>
+        <Card {...cardData} />
+      </View>
     </View>
   );
 }
