@@ -43,7 +43,7 @@ export type TTextInputStyle = {
   borderWidth: number,
 }
 
-export type TMarkerProps = {
+export type TMarkerData = {
   latitude: number,
   longitude: number,
   isSafe: boolean,
