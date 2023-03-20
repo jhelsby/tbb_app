@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -69,6 +69,8 @@ export default function App(): JSX.Element {
           tabBarHideOnKeyboard: true,
           tabBarItemStyle: { 
             JustifyContent: "flex-end",
+            alignItems: "center",
+            height: '100%',
           },
         }}>
         {tabScreens.map((screen: TTabScreen, index: number) => {
@@ -87,7 +89,7 @@ export default function App(): JSX.Element {
               component={screen.component}
               options={{
                 tabBarIcon: ({ focused }: { focused: boolean }) => 
-                  <View style={styles.iconContainer}>
+                  <View style={[styles.iconContainer, Platform.OS === 'ios' ? { position: 'relative', top: 15 } : {}]}>
                     <View style={styles.circleContainer}>
                       <View style={[styles.circle ,focused ? styles.circleActive : styles.circleInactive]} />
                     </View>

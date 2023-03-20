@@ -25,31 +25,22 @@ export const styles = StyleSheet.create({
     left: 20,
     right: 20,
     height: 60,
-    justifyContent: "flex-end",
     zIndex: 2,
   },
   iconContainer: {
     justifyContent: "center",
     alignItems: "center",
     width: '100%',
-    height: '100%',
+    height: 60,
   },
   circleContainer: {
     position: "absolute",
     width: '100%',
-    top: -20,
+    bottom: 0,
   },
   circle: {
     backgroundColor: "#fff",
     borderRadius: 1000,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 10,
-      height: 10,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: -1,
   },
   circleActive: {
     width: '100%',
