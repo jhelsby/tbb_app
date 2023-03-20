@@ -1,9 +1,8 @@
-import React from "react";
-import { View, Dimensions } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { View, Animated, Dimensions } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
 import { styles } from "./map_styles";
-import { styles as globalStyles } from "../../../App_styles";
 
 import { TDefaultProps, TMarkerData, TCardProps } from "../../scripts/types";
 
@@ -13,12 +12,12 @@ import Card from "../../components/card/card";
 import tempData from "./data.temp.json";
 
 export default function MapScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
-  const [activeMarkers, setActiveMarkers] = React.useState<boolean[]>(
+  const [activeMarkers, setActiveMarkers] = useState<boolean[]>(
     tempData.markers.map(() => false)
   );
 
-  const [activeCard, setActiveCard] = React.useState<boolean>(false);
-  const [cardData, setCardData] = React.useState<TCardProps>({
+  const [activeCard, setActiveCard] = useState<boolean>(false);
+  const [cardData, setCardData] = useState<TCardProps>({
     isIcon: false,
     navigation: navigation,
     highLight: false,
@@ -28,6 +27,17 @@ export default function MapScreen({ navigation } : TDefaultProps) : React.ReactE
     description: "",
     page: "ViewReadings"
   });
+
+  const screenWidth = Dimensions.get("window").width;
+  const cardAnimation = useRef(new Animated.Value(screenWidth)).current;
+
+  useEffect(() => {
+    Animated.timing(cardAnimation, {
+      toValue: activeCard ? 0 : screenWidth,
+      duration: 200,
+      useNativeDriver: true
+    }).start();
+  }, [activeCard]);
 
   const handleMarkerPress = (index: number) => {
     const newActiveMarkers = activeMarkers.map((marker, i) => {
@@ -42,7 +52,6 @@ export default function MapScreen({ navigation } : TDefaultProps) : React.ReactE
           description: "Laboris in et ullamco magna excepteur aliquip mollit occaecat aliqua anim exercitation.",
           page: "ViewReadings"
         }
-        console.log(cardData);
         setActiveCard(!marker);
         setCardData(cardData);
         return !marker;
@@ -53,15 +62,12 @@ export default function MapScreen({ navigation } : TDefaultProps) : React.ReactE
     setActiveMarkers(newActiveMarkers);
   };
 
-
-  const { width, height } = Dimensions.get("window");
-
   return (
-    <View style={[globalStyles.page, styles.container]}>
+    <View style={styles.container}>
       <MapView
         style={{
-          width: width,
-          height: height,
+          width: '100%',
+          height: '100%',
         }}
         provider={PROVIDER_GOOGLE}
         showsUserLocation
@@ -91,9 +97,16 @@ export default function MapScreen({ navigation } : TDefaultProps) : React.ReactE
             })
           }
       </MapView>
-      <View style={[styles.cardContainer, { bottom: activeCard ? 90 : -200 }]}>
+      <Animated.View style={[
+        styles.cardContainer,
+        { transform: [
+          {
+            translateX: cardAnimation
+          }
+        ]}
+      ]}>
         <Card {...cardData} />
-      </View>
+      </Animated.View>
     </View>
   );
 }

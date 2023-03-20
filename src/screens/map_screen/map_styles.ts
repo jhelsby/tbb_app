@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     width: '100%',
     height: '100%',
     borderColor: '',
@@ -15,6 +15,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     width: '80%',
     right: 0,
+    bottom: 90,
     overflow: 'hidden',
   }
 });
