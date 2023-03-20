@@ -42,3 +42,10 @@ export type TTextInputStyle = {
   borderColor: string,
   borderWidth: number,
 }
+
+export type TMarkerProps = {
+  latitude: number,
+  longitude: number,
+  isSafe: boolean,
+  date: string,
+}

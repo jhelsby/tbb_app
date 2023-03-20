@@ -7,7 +7,7 @@ const Stack = createNativeStackNavigator();
 
 export default function MapStackNavigator() : JSX.Element {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Map" component={MapScreen} />
     </Stack.Navigator>
   );
