@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   pageContainer: {
-    backgroundColor: '#EBF1FF',
     alignItems: 'center',
     justifyContent: 'space-evenly',
     paddingHorizontal: '5%',
@@ -21,7 +20,6 @@ export const styles = StyleSheet.create({
   headerPlain: {
     fontSize: 40,
     fontWeight: 'bold',
-    color: '#000',
   },
   svgContainer: {
     alignItems: 'center',

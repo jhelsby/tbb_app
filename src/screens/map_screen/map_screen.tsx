@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Animated, Dimensions } from "react-native";
+import { View, Animated, Dimensions, useColorScheme } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
 import { styles } from "./map_styles";
@@ -15,6 +15,8 @@ export default function MapScreen({ navigation } : TDefaultProps) : React.ReactE
   const [activeMarkers, setActiveMarkers] = useState<boolean[]>(
     tempData.markers.map(() => false)
   );
+
+  const isDarkMode = useColorScheme() === "dark";
 
   const [activeCard, setActiveCard] = useState<boolean>(false);
   const [cardData, setCardData] = useState<TCardProps>({
@@ -73,6 +75,7 @@ export default function MapScreen({ navigation } : TDefaultProps) : React.ReactE
         showsUserLocation
         zoomControlEnabled={false}
         toolbarEnabled={false}
+        userInterfaceStyle={isDarkMode ? "dark" : "light"}
         showsMyLocationButton={false}
         showsBuildings={false}
         showsTraffic={false}

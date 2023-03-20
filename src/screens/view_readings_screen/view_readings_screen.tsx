@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, ScrollView, Dimensions } from "react-native";
+import { View, Text, ScrollView, Dimensions, useColorScheme } from "react-native";
 import { BarChart, PieChart } from "react-native-chart-kit";
 
 import { styles } from "./view_readings_styles";
@@ -15,6 +15,8 @@ import { TPieChartData } from "../../scripts/types";
 export default function ViewReadingsScreen({ navigation } : { navigation: any }) : JSX.Element {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
+
+  const isDarkMode = useColorScheme() === "dark";
 
   const [pieChartData, setPieChartData] = React.useState([] as TPieChartData[]);
 
@@ -34,21 +36,21 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>
       <TopNav handlePress={() => navigation.goBack()} />
       <ScrollView style={styles.body}
         contentContainerStyle={{
           paddingBottom: 180,
         }}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>View Readings</Text>
+          <Text style={[styles.title, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>View Readings</Text>
         </View>
-        <View style={[globalStyles.tile, styles.dataContainer]}>
+        <View style={[globalStyles.tile, styles.dataContainer, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
           <Text style={[styles.dataTitle, tempData.isSafe ? styles.safe : styles.notSafe]}>{tempData.isSafe ? "SAFE" : "NOT SAFE"}</Text>
           <Text style={styles.data}>{tempData.date}</Text>
           <Text style={styles.data}>{tempData.location}</Text>
         </View>
-        <View style={[globalStyles.tile, styles.barChartContainer]}>
+        <View style={[globalStyles.tile, styles.barChartContainer, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
           <BarChart
             data={{
               labels: tempData.results.map((result: any) => result.name),
@@ -73,8 +75,8 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
             showValuesOnTopOfBars={true}
             chartConfig={{
               backgroundColor: "transparent",
-              backgroundGradientFrom: "#fff",
-              backgroundGradientTo: "#fff",
+              backgroundGradientFrom: isDarkMode ? "#2E2E2E" : "#fff",
+              backgroundGradientTo: isDarkMode ? "#2E2E2E" : "#fff",
               barPercentage: 0.8,
               decimalPlaces: 4,
               color: (opacity = 1) => `#7F7F7F`,
@@ -84,7 +86,7 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
             }}
           />
         </View>
-        <View style={[globalStyles.tile, styles.pieChartContainer]}>
+        <View style={[globalStyles.tile, styles.pieChartContainer, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
           <PieChart
             data={pieChartData}
             width={screenWidth * 0.9}

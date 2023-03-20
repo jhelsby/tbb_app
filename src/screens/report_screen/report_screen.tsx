@@ -6,7 +6,8 @@ import {
   TextInput,
   Platform,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  useColorScheme
 } from "react-native";
 
 import { styles } from "./report_styles";
@@ -25,6 +26,8 @@ import TopNav from "../../components/top_nav/top_nav";
 export default function ReportScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   const [titleText, setTitleText] = React.useState<string>("");
   const [descriptionText, setDescriptionText] = React.useState<string>("");
+
+  const isDarkMode = useColorScheme() === "dark";
 
   const { color, colorLight } = useContext(ColorContext);
   
@@ -65,18 +68,18 @@ export default function ReportScreen({ navigation } : TDefaultProps) : React.Rea
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>
       <TopNav handlePress={() => navigation.goBack()} />
       <View style={styles.body}>
-        <Text style={styles.title}>Report</Text>
-        <View style={[globalStyles.tile, styles.infoContainer]}>
-          <Text style={styles.infoText}>Culpa aliquip aliqua deserunt duis mollit.</Text>
+        <Text style={[styles.title, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Report</Text>
+        <View style={[globalStyles.tile, styles.infoContainer, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
+          <Text style={[styles.infoText, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Culpa aliquip aliqua deserunt duis mollit.</Text>
         </View>
-        <View style={[globalStyles.tile, styles.form]}>
+        <View style={[globalStyles.tile, styles.form, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.inputContainer}>
-            <Text style={styles.label}>Title:</Text>
+            <Text style={[styles.label, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Title:</Text>
             <TextInput
-              style={[styles.input, textInputStyles[0], styles.smallInput]}
+              style={[styles.input, textInputStyles[0], styles.smallInput, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}
               cursorColor={hslToString(color)}
               onFocus={() => handleFocus(0)}
               onChange={
@@ -85,9 +88,9 @@ export default function ReportScreen({ navigation } : TDefaultProps) : React.Rea
             />
           </KeyboardAvoidingView>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Description:</Text>
+            <Text style={[styles.label, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Description:</Text>
             <TextInput
-              style={[styles.input, textInputStyles[1], styles.largeInput]}
+              style={[styles.input, textInputStyles[1], styles.largeInput, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}
               cursorColor={hslToString(color)}
               onFocus={() => handleFocus(1)}
               onChange={

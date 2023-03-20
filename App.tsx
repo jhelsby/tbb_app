@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Platform } from "react-native";
+import { View, Text, Platform, useColorScheme } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -19,7 +19,8 @@ import {
   color3Light,
   backgroundColor,
   textColor,
-  colorInterpolate
+  colorInterpolate,
+  hslToString
 } from "./src/scripts/colors";
 
 import { ContrastPolarityContext } from "./src/context/contrast_polarity_context";
@@ -66,6 +67,9 @@ export default function App(): JSX.Element {
   const iconActiveSize: number = 45;
   const iconInactiveSize: number = 25;
 
+  const isDarkMode: boolean = useColorScheme() === "dark";
+  const containerStyle = isDarkMode ? styles.darkContainer : styles.lightContainer;
+
   const startColor: THSL = color1;
   const startColorLight: THSL = color1Light;
   const endColor: THSL = color3;
@@ -87,7 +91,7 @@ export default function App(): JSX.Element {
             screenOptions={{
               headerShown: false,
               tabBarShowLabel: false,
-              tabBarStyle: { ...styles.tabBar, ...styles.tile },
+              tabBarStyle: { ...styles.tabBar, ...styles.tile, ...containerStyle },
               tabBarHideOnKeyboard: true,
               tabBarItemStyle: { 
                 JustifyContent: "flex-end",
@@ -96,13 +100,13 @@ export default function App(): JSX.Element {
               },
             }}>
             {rootNavs.map((screen: TRootNav, index: number) => {
-              const activeColor: THSL = colorInterpolate(color1, color3, index / rootNavs.length);
-              const inactiveColor: THSL = colorInterpolate(color1Light, color3Light, index / rootNavs.length);
+              const activeColor: THSL = colorInterpolate(startColor, endColor, index / rootNavs.length);
+              const inactiveColor: THSL = colorInterpolate(startColorLight, endColorLight, index / rootNavs.length);
               const iconActiveStyle: { color: string } = {
-                color: `hsl(${activeColor.h}, ${activeColor.s}%, ${activeColor.l}%)`,
+                color: hslToString(activeColor),
               };
               const iconInactiveStyle: { color: string } = {
-                color: `hsl(${inactiveColor.h}, ${inactiveColor.s}%, ${inactiveColor.l}%)`
+                color: hslToString(inactiveColor),
               };
               return (
                 <Tab.Screen
@@ -113,7 +117,11 @@ export default function App(): JSX.Element {
                     tabBarIcon: ({ focused }: { focused: boolean }) => 
                       <View style={[styles.iconContainer, Platform.OS === 'ios' ? { position: 'relative', top: 15 } : {}]}>
                         <View style={styles.circleContainer}>
-                          <View style={[styles.circle ,focused ? styles.circleActive : styles.circleInactive]} />
+                          <View style={[
+                            styles.circle,
+                            focused ? styles.circleActive : styles.circleInactive,
+                            isDarkMode ? styles.darkContainer : styles.lightContainer
+                          ]} />
                         </View>
                         <View style={focused ? styles.svgContainer : {}}>
                           <Text>

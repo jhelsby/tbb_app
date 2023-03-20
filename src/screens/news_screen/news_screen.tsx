@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, Button, ScrollView } from "react-native";
+import { View, Text, ScrollView, useColorScheme } from "react-native";
 
 import { styles } from "./news_styles";
+import { styles as globalStyles } from "../../../App_styles";
 
 import { TDefaultProps } from "../../scripts/types";
 
@@ -11,13 +12,16 @@ import newsData from "./data.temp.json";
 
 export default function NewsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   const cards = newsData.cards;
+
+  const isDarkMode = useColorScheme() === 'dark';
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>
       <ScrollView style={styles.scrollView}
         contentContainerStyle={{
           paddingBottom: 90,
         }}>
-        <Text style={styles.title}>News</Text>
+        <Text style={[styles.title, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>News</Text>
         {
           cards.map((card, index) => {
             return (

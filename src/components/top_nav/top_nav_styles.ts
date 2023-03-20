@@ -12,7 +12,6 @@ export const styles = StyleSheet.create({
     marginTop: 50,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    backgroundColor: 'white',
   },
   backButtonContainer: {
     flexDirection: 'row',

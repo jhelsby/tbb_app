@@ -9,8 +9,12 @@
       "sourceExts": ["js", "jsx", "svg", "ts", "tsx"]
     },
     "assetBundlePatterns": ["**/*"],
+    "android": {
+      "userInterfaceStyle": "automatic"
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "userInterfaceStyle": "automatic"
     }
   }
 }

@@ -2,11 +2,16 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   page: {
-    backgroundColor: '#EBF1FF',
     paddingBottom: 80,
     height: '100%',
     width: '100%',
     paddingTop: '5%',
+  },
+  lightPage: {
+    backgroundColor: '#EBF1FF',
+  },
+  darkPage: {
+    backgroundColor: '#1E1E1E',
   },
   tile: {
     borderRadius: 30,
@@ -18,6 +23,18 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  lightContainer: {
+    backgroundColor: '#fff',
+  },
+  darkContainer: {
+    backgroundColor: '#2E2E2E',
+  },
+  lightText: {
+    color: '#000',
+  },
+  darkText: {
+    color: '#fff',
   },
   tabBar: {
     position: "absolute",
@@ -39,7 +56,6 @@ export const styles = StyleSheet.create({
     bottom: 0,
   },
   circle: {
-    backgroundColor: "#fff",
     borderRadius: 1000,
   },
   circleActive: {
