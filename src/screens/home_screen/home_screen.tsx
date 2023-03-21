@@ -25,7 +25,7 @@ export default function HomeScreen({ navigation } : TDefaultProps) : React.React
       <View style={[globalStyles.tile, styles.buttonPanel]}>
         <View style={styles.buttonContainer}>
           <Button
-            onPress={() => navigation.navigate("TakeReadings")}
+            onPress={() => navigation.navigate("Loading")}
             activeColor={color3}
             inactiveColor={color3Light}>
             <Text style={styles.buttonText}>Take Readings</Text>
