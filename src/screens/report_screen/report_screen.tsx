@@ -76,6 +76,7 @@ export default function ReportScreen({ navigation } : TDefaultProps) : React.Rea
     });
 
     setTextInputStyles(newFocusedStyles);
+    setKeyboardVisible(true);
   }
 
   const handleSubmit = () => {
@@ -103,7 +104,11 @@ export default function ReportScreen({ navigation } : TDefaultProps) : React.Rea
           >
             <Text style={[styles.infoText, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Culpa aliquip aliqua deserunt duis mollit.</Text>
           </View>
-          <View style={[globalStyles.tile, styles.form, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
+          <View style={[
+            globalStyles.tile,
+            styles.form, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer,
+            isKeyboardVisible ? {} : { flex: 1 }
+          ]}>
             <View style={styles.textContainer}>
               <Text style={[styles.label, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Title:</Text>
               <TextInput
@@ -121,13 +126,13 @@ export default function ReportScreen({ navigation } : TDefaultProps) : React.Rea
                 }
               />
             </View>
-            <View style={styles.multitextContainer}>
+            <View style={[styles.multitextContainer, isKeyboardVisible ? {} : { flex: 1}]}>
               <Text style={[styles.label, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Description:</Text>
               <TextInput
                 style={[
                   styles.input,
                   textInputStyles[1],
-                  styles.largeInput,
+                  isKeyboardVisible ? { height: 200 } : { flex: 1 },
                   isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer,
                   isDarkMode ? globalStyles.darkText : globalStyles.lightText
                 ]}

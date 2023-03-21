@@ -87,9 +87,6 @@ export const styles = StyleSheet.create({
   smallInput: {
     height: 40,
   },
-  largeInput: {
-    height: 200,
-  },
   buttonContainer: {
     marginTop: 20,
     height: 50,
