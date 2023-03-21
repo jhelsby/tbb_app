@@ -7,6 +7,11 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#EBF1FF',
   },
+  scrollView: {
+    width: '100%',
+    gap: 10,
+    paddingBottom: 200,
+  },
   body: {
     width: '100%',
     height: '100%',
@@ -45,16 +50,24 @@ export const styles = StyleSheet.create({
     width: '90%',
     marginHorizontal: '5%',
     marginTop: 10,
+    marginBottom: 110,
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-start',
     backgroundColor: '#fff',
     padding: 20,
+    overflow: 'hidden',
   },
-  inputContainer: {
+  textContainer: {
     marginTop: 5,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  multitextContainer: {
+    marginTop: 5,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   label: {
     fontSize: 18,
@@ -75,7 +88,7 @@ export const styles = StyleSheet.create({
     height: 40,
   },
   largeInput: {
-    height: 250,
+    height: 200,
   },
   buttonContainer: {
     marginTop: 20,

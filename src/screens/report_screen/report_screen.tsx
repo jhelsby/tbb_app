@@ -1,13 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   View,
   Text,
-  ScrollView,
   TextInput,
   Platform,
   KeyboardAvoidingView,
+  Keyboard,
   TouchableWithoutFeedback,
-  useColorScheme
+  useColorScheme,
 } from "react-native";
 
 import { styles } from "./report_styles";
@@ -28,9 +28,29 @@ export default function ReportScreen({ navigation } : TDefaultProps) : React.Rea
   const [descriptionText, setDescriptionText] = React.useState<string>("");
 
   const isDarkMode = useColorScheme() === "dark";
-
   const { color, colorLight } = useContext(ColorContext);
-  
+
+  const [isKeyboardVisible, setKeyboardVisible] = React.useState<boolean>(false);
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+
   const focusedStyle = {
     borderColor: hslToString(color),
     borderWidth: 2,
@@ -70,43 +90,64 @@ export default function ReportScreen({ navigation } : TDefaultProps) : React.Rea
   return (
     <View style={[styles.container, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>
       <TopNav handlePress={() => navigation.goBack()} />
-      <View style={styles.body}>
-        <Text style={[styles.title, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Report</Text>
-        <View style={[globalStyles.tile, styles.infoContainer, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
-          <Text style={[styles.infoText, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Culpa aliquip aliqua deserunt duis mollit.</Text>
-        </View>
-        <View style={[globalStyles.tile, styles.form, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.inputContainer}>
-            <Text style={[styles.label, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Title:</Text>
-            <TextInput
-              style={[styles.input, textInputStyles[0], styles.smallInput, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}
-              cursorColor={hslToString(color)}
-              onFocus={() => handleFocus(0)}
-              onChange={
-                (event) => setTitleText(event.nativeEvent.text)
-              }
-            />
-          </KeyboardAvoidingView>
-          <View style={styles.inputContainer}>
-            <Text style={[styles.label, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Description:</Text>
-            <TextInput
-              style={[styles.input, textInputStyles[1], styles.largeInput, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}
-              cursorColor={hslToString(color)}
-              onFocus={() => handleFocus(1)}
-              onChange={
-                (event) => setDescriptionText(event.nativeEvent.text)
-              }
-              multiline={true}
-              textAlignVertical="top"
-            />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.body}>
+          <Text style={[styles.title, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Report</Text>
+          <View
+            style={[
+              globalStyles.tile,
+              styles.infoContainer,
+              isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer,
+              { display: isKeyboardVisible ? "none" : "flex" }
+            ]}
+          >
+            <Text style={[styles.infoText, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Culpa aliquip aliqua deserunt duis mollit.</Text>
           </View>
-          <View style={styles.buttonContainer}>
-            <Button onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Submit</Text>
-            </Button>
+          <View style={[globalStyles.tile, styles.form, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
+            <View style={styles.textContainer}>
+              <Text style={[styles.label, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Title:</Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  textInputStyles[0],
+                  styles.smallInput,
+                  isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer,
+                  isDarkMode ? globalStyles.darkText : globalStyles.lightText
+                ]}
+                cursorColor={hslToString(color)}
+                onFocus={() => handleFocus(0)}
+                onChange={
+                  (event) => setTitleText(event.nativeEvent.text)
+                }
+              />
+            </View>
+            <View style={styles.multitextContainer}>
+              <Text style={[styles.label, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Description:</Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  textInputStyles[1],
+                  styles.largeInput,
+                  isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer,
+                  isDarkMode ? globalStyles.darkText : globalStyles.lightText
+                ]}
+                cursorColor={hslToString(color)}
+                onFocus={() => handleFocus(1)}
+                onChange={
+                  (event) => setDescriptionText(event.nativeEvent.text)
+                }
+                multiline={true}
+                textAlignVertical="top"
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleSubmit}>
+                <Text style={styles.buttonText}>Submit</Text>
+              </Button>
+            </View>
           </View>
-        </View>
-      </View>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     </View>
   );
 }

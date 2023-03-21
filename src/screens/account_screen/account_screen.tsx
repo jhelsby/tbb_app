@@ -36,12 +36,12 @@ export default function AccountScreen(props : TDefaultProps) : React.ReactElemen
       <View style={[globalStyles.tile, styles.buttonPanel, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
         <View style={styles.buttonContainer}>
           <Button onPress={handleDeletePress}>
-            <Text style={[styles.buttonText, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Delete Data</Text>
+            <Text style={[styles.buttonText]}>Delete Data</Text>
           </Button>
         </View>
         <View style={styles.buttonContainer}>
           <Button onPress={() => props.navigation.navigate("Report")} >
-            <Text style={[styles.buttonText, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Report</Text>
+            <Text style={[styles.buttonText]}>Report</Text>
           </Button>
         </View>
       </View>
