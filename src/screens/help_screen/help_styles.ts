@@ -24,7 +24,8 @@ export const styles = StyleSheet.create({
   },
   svgContainer: {
     marginTop: 10,
-    width: '100%',
+    marginHorizontal: '5%',
+    width: '90%',
     height: 300,
     alignItems: 'center',
     justifyContent: 'center',
