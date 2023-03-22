@@ -35,7 +35,7 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
 
   return (
     <View style={styles.container}>
-      <TopNav handlePress={() => navigation.goBack()} />
+      <TopNav handlePress={() => navigation.popToTop()} />
       <ScrollView style={styles.body}
         contentContainerStyle={{
           paddingBottom: 180,
