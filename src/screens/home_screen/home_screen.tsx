@@ -29,7 +29,7 @@ export default function HomeScreen({ navigation } : TDefaultProps) : React.React
       </View>
       <View style={[globalStyles.tile, styles.buttonPanel, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
         <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate("TakeReadings")}>
+          <Button onPress={() => navigation.navigate("Loading")}>
             <Text style={styles.buttonText}>Take Readings</Text>
           </Button>
         </View>

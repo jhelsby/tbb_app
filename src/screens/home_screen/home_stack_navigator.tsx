@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 import HomeScreen from "./home_screen";
 import HelpScreen from "../help_screen/help_screen";
 import ViewReadingsScreen from "../view_readings_screen/view_readings_screen";
+import LoadingScreen from "../loading_screen/loading_screen";
 
 import { THSL } from "../../scripts/types";
 
@@ -36,6 +37,7 @@ export default function HomeStackNavigator() : JSX.Element {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Help" component={HelpScreen} />
         <Stack.Screen name="TakeReadings" component={ViewReadingsScreen} />
+        <Stack.Screen name="Loading" component={LoadingScreen} />
       </Stack.Navigator>
     </ColorContext.Provider>
   );
