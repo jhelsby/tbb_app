@@ -25,14 +25,14 @@ export default function HomeScreen({ navigation } : TDefaultProps) : React.React
       <View style={[globalStyles.tile, styles.buttonPanel]}>
         <View style={styles.buttonContainer}>
           <Button
-            onPress={() => navigation.navigate("TakeReadings")}
+            onPress={() => navigation.navigate("TakeReadings", { validNavigation: true })}
             activeColor={color3}
             inactiveColor={color3Light}>
             <Text style={styles.buttonText}>Take Readings</Text>
           </Button>
         </View>
         <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate("Help")}
+          <Button onPress={() => navigation.navigate("Help", { validNavigation: true })}
             activeColor={color3}
             inactiveColor={color3Light}>
             <Text style={styles.buttonText}>Help</Text>

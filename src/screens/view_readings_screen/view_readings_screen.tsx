@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { View, Text, ScrollView, Dimensions } from "react-native";
 import { BarChart, PieChart } from "react-native-chart-kit";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { styles } from "./view_readings_styles";
 import { styles as globalStyles } from "../../../App_styles";
@@ -12,26 +13,35 @@ import TopNav from "../../components/top_nav/top_nav";
 
 import { TPieChartData } from "../../scripts/types";
 
-export default function ViewReadingsScreen({ navigation } : { navigation: any }) : JSX.Element {
+export default function ViewReadingsScreen({ navigation, route } : any) : JSX.Element {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
 
-  const [pieChartData, setPieChartData] = React.useState([] as TPieChartData[]);
+  const [temp, setTemp] = React.useState(false);
 
   useEffect(() => {
-    let data : TPieChartData[] = [];
-    tempData.results.forEach((result: any, index: number) => {
-      const color: any = colorInterpolate(color3, color1, index/(tempData.results.length - 1));
-      data.push({
-        name: result.name,
-        value: result.value,
-        color: `hsl(${color.h}, ${color.s}%, ${color.l}%)`,
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15,
-      });
-    });
-    setPieChartData(data);
+    setTemp(!temp);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!route.params.validNavigation) navigation.popToTop();
+      route.params.validNavigation = false;
+    }, [])
+  );
+
+  
+  let pieChartData : TPieChartData[] = [];
+  tempData.results.forEach((result: any, index: number) => {
+    const color: any = colorInterpolate(color3, color1, index/(tempData.results.length - 1));
+    pieChartData.push({
+      name: result.name,
+      value: result.value,
+      color: `hsl(${color.h}, ${color.s}%, ${color.l}%)`,
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 15,
+    });
+  });
 
   return (
     <View style={styles.container}>

@@ -24,13 +24,12 @@ export default function NewsScreen({ navigation } : TDefaultProps) : React.React
               <Card
                 key={index}
                 isIcon={true}
-                navigation={navigation}
+                onPress={() => navigation.navigate("ViewNews", { validNavigation: true })}
                 highLight={null}
                 title={card.title}
                 subtitle1={card.author}
                 subtitle2={card.date} 
                 description={card.description} 
-                page="ViewNews"
               />
             );
           })

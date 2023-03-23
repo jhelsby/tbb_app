@@ -10,7 +10,7 @@ export default function AccountScreen(props : TDefaultProps) : React.ReactElemen
   return (
     <View style={[globalStyles.page, styles.container]}>
       <Text>Account Screen</Text>
-      <Button title="Report" onPress={() => props.navigation.navigate("Report")} />
+      <Button title="Report" onPress={() => props.navigation.navigate("Report", { validNavigation: true })} />
     </View>
   );
 };

@@ -24,13 +24,12 @@ export default function ReadingsScreen({ navigation } : TDefaultProps) : React.R
               <Card
                 key={index}
                 isIcon={false}
-                navigation={navigation}
                 highLight={card.highlight}
                 title={card.title}
                 subtitle1={card.location}
                 subtitle2={card.date} 
-                description={card.description} 
-                page="ViewReadings"
+                description={card.description}
+                onPress={() => navigation.navigate("ViewReadings", { validNavigation: true })}
               />
             );
           })
