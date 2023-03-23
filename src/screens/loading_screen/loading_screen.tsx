@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Animated } from 'react-native';
+import { View, Animated, BackHandler } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faWater } from '@fortawesome/free-solid-svg-icons';
@@ -8,7 +8,6 @@ import { color1, color3, colorInterpolate } from '../../scripts/colors';
 import { THSL, TDefaultProps } from '../../scripts/types';
 
 import { styles } from './loading_screen_styles';
-import { config } from '@fortawesome/fontawesome-svg-core';
 
 export default function LoadingScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
   let colors: string[] = [];
@@ -24,92 +23,54 @@ export default function LoadingScreen({ navigation } : TDefaultProps) : React.Re
   const scaleValue5 = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(scaleValue1, {
-          toValue: 1.2,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(scaleValue1, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
 
-    setTimeout(() => {
+    const circleAnimation = (value: Animated.Value) : void => {
       Animated.loop(
         Animated.sequence([
-          Animated.timing(scaleValue2, {
+          Animated.timing(value, {
             toValue: 1.2,
             duration: 1000,
             useNativeDriver: true,
           }),
-          Animated.timing(scaleValue2, {
+          Animated.timing(value, {
             toValue: 1,
             duration: 1000,
             useNativeDriver: true,
           }),
         ])
       ).start();
+    };
+
+    circleAnimation(scaleValue1);
+
+    setTimeout(() => {
+      circleAnimation(scaleValue2);
     }, 200);
 
     setTimeout(() => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(scaleValue3, {
-            toValue: 1.2,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-          Animated.timing(scaleValue3, {
-            toValue: 1,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-        ])
-      ).start();
+      circleAnimation(scaleValue3);
     }, 400);
     
     setTimeout(() => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(scaleValue4, {
-            toValue: 1.2,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-          Animated.timing(scaleValue4, {
-            toValue: 1,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-        ])
-      ).start();
+      circleAnimation(scaleValue4);
     }, 600);
 
     setTimeout(() => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(scaleValue5, {
-            toValue: 1.2,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-          Animated.timing(scaleValue5, {
-            toValue: 1,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-        ])
-      ).start();
+      circleAnimation(scaleValue5);
     }, 800);
 
-    setTimeout(() => {
+    const loadingScreenTimer = setTimeout(() => {
       navigation.navigate('TakeReadings');
     }, 10000);
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      clearTimeout(loadingScreenTimer);
+      console.log('Back button pressed');
+      navigation.goBack();
+      return true;
+    });
+
+    return () => backHandler.remove();
   }, []);
 
 
