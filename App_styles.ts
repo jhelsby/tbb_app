@@ -20,12 +20,10 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   tabBar: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    right: 20,
-    height: 60,
-    justifyContent: "flex-end",
-    zIndex: 2,
+    height:70,
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    left: 16,
   },
 });
