@@ -25,6 +25,8 @@ interface ITabScreen {
 
 
 export default function App(): JSX.Element {
+
+
   const tabScreens: ITabScreen[] = [
     {
       name: "MapNav",
@@ -53,6 +55,15 @@ export default function App(): JSX.Element {
     },
   ];
 
+  const focusedScreens: boolean[] = tabScreens.map((screen: ITabScreen) => false);
+
+  const setFocusedScreen = (index: number) => {
+    // Sets all screens to false except the one at the index
+    focusedScreens.forEach((screen: boolean, i: number) => {
+      focusedScreens[i] = i === index;
+    });
+  };
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -70,12 +81,15 @@ export default function App(): JSX.Element {
                 name={screen.name}
                 component={screen.component}
                 options={({ navigation }: any) => ({
-                    tabBarButton: (props: any) => <TabButton
+                    tabBarButton: () => <TabButton
                       index={index}
                       length={tabScreens.length}
                       icon={screen.icon}
-                      onPress={() => navigation.navigate(screen.name)}
-                      {...props}
+                      focused={focusedScreens[index]}
+                      onPress={() => {
+                        setFocusedScreen(index);
+                        navigation.navigate(screen.name)
+                      }}
                     />
                   })
                 }

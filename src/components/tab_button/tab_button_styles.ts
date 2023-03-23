@@ -1,12 +1,17 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {
+  buttonContainer: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  button: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  btn: {
+  iconContainer: {
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -14,13 +19,19 @@ export const styles = StyleSheet.create({
     borderColor: '#fff',
     backgroundColor: '#fff',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  icon: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   circle: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'green',
-    borderRadius: 25,
+    borderRadius: 1000,
   },
 });

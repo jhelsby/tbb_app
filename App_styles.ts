@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   tabBar: {
-    height:70,
+    height: 60,
     position: 'absolute',
     bottom: 16,
     right: 16,
