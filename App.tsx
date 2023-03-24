@@ -1,6 +1,8 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import { RootTabParamList } from "./src/scripts/screen_params";
 
 import { faMap, faHome, faNewspaper, faUser, faChartLine, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
@@ -14,7 +16,6 @@ import TabButton from "./src/components/tab_button/tab_button";
 
 import { styles } from './App_styles'
 
-const Tab: any = createBottomTabNavigator();
 
 interface ITabScreen {
   name: string;
@@ -23,8 +24,9 @@ interface ITabScreen {
 };
 
 
+const Tab: any = createBottomTabNavigator<RootTabParamList>();
 
-export default function App(): JSX.Element {
+export default function App() {
 
 
   const tabScreens: ITabScreen[] = [

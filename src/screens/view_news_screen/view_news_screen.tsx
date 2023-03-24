@@ -1,14 +1,16 @@
-import React, { useCallback } from "react";
-import { View, Text } from "react-native";
+import React, { useCallback, ReactElement } from "react";
+import { View } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { NewsParamList } from "../../scripts/screen_params";
 
 import { styles } from "./view_news_styles";
 
-import { TDefaultProps } from "../../scripts/types";
-
 import TopNav from "../../components/top_nav/top_nav";
 
-export default function ViewNewsScreen({ navigation, route } : any) : React.ReactElement<TDefaultProps> {
+type Props = NativeStackScreenProps<NewsParamList, "ViewNewsScreen">;
+
+export default function ViewNewsScreen({ navigation, route } : any) : ReactElement<Props> {
 
   useFocusEffect(
     useCallback(() => {

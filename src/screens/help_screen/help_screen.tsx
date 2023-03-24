@@ -1,14 +1,16 @@
-import React, { useCallback } from "react";
-import { View, Text } from "react-native";
+import React, { useCallback, ReactElement } from "react";
+import { View } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { HomeParamList } from "../../scripts/screen_params";
 
 import { styles } from "./help_styles";
-
-import { TDefaultProps } from "../../scripts/types";
 
 import TopNav from "../../components/top_nav/top_nav";
 import { useFocusEffect } from "@react-navigation/native";
 
-export default function HelpScreen({ navigation, route }: any) : React.ReactElement<TDefaultProps> {
+type Props = NativeStackScreenProps<HomeParamList, "HelpScreen">;
+
+export default function HelpScreen({ navigation, route }: any) : ReactElement<Props> {
 
   useFocusEffect(
     useCallback(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, ReactElement } from "react";
 import { View, Text, ScrollView, Dimensions } from "react-native";
 import { BarChart, PieChart } from "react-native-chart-kit";
 import { useFocusEffect } from "@react-navigation/native";
@@ -13,7 +13,7 @@ import TopNav from "../../components/top_nav/top_nav";
 
 import { TPieChartData } from "../../scripts/types";
 
-export default function ViewReadingsScreen({ navigation, route } : any) : JSX.Element {
+export default function ViewReadingsScreen({ navigation, route } : any) : ReactElement<any> {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
 

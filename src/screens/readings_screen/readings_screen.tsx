@@ -1,15 +1,17 @@
-import React from "react";
-import { View, Text, Button, ScrollView } from "react-native";
+import React, { ReactElement } from "react";
+import { View, Text, ScrollView } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { ReadingsParamList } from "../../scripts/screen_params";
 
 import { styles } from "./readings_styles";
-
-import { TDefaultProps } from "../../scripts/types";
 
 import Card from "../../components/card/card";
 
 import readingsData from "./readings_data.temp.json";
 
-export default function ReadingsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
+type Props = NativeStackScreenProps<ReadingsParamList, "ReadingsScreen">;
+
+export default function ReadingsScreen({ navigation } : Props) : ReactElement<Props> {
   const cards = readingsData.cards;
   return (
     <View style={styles.container}>
@@ -29,7 +31,7 @@ export default function ReadingsScreen({ navigation } : TDefaultProps) : React.R
                 subtitle1={card.location}
                 subtitle2={card.date} 
                 description={card.description}
-                onPress={() => navigation.navigate("ViewReadings", { validNavigation: true })}
+                onPress={() => navigation.navigate("ViewReadingScreen", { validNavigation: true })}
               />
             );
           })

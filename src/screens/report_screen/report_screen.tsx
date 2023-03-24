@@ -1,14 +1,16 @@
-import React, { useCallback } from "react";
-import { View, Text } from "react-native";
+import React, { useCallback, ReactElement } from "react";
+import { View } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AccountParamList } from "../../scripts/screen_params";
 
 import { styles } from "./report_styles";
 
-import { TDefaultProps } from "../../scripts/types";
-
 import TopNav from "../../components/top_nav/top_nav";
 
-export default function ReportScreen({ navigation, route } : any) : React.ReactElement<TDefaultProps> {
+type Props = NativeStackScreenProps<AccountParamList, "ReportScreen">;
+
+export default function ReportScreen({ navigation, route } : any) : ReactElement<Props> {
 
 
   useFocusEffect(
