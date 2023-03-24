@@ -18,18 +18,21 @@ export default function HomeScreen({ navigation } : Props) : ReactElement<Props>
   const { color, colorLight } = useContext(ColorContext);
   
   const isDarkMode = useColorScheme() === "dark";
+  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
+  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
+  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   return (
-    <View style={[globalStyles.page, styles.pageContainer, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>
+    <View style={[globalStyles.page, styles.pageContainer, pageContrast]}>
       <View style={styles.header}>
         <Text style={[styles.headerText, { color: hslToString(color)}]}>Biodevices</Text>
-        <Text style={[styles.headerPlain, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Without</Text> 
+        <Text style={[styles.headerPlain, textContrast]}>Without</Text> 
         <Text style={[styles.headerText, { color: hslToString(color)}]}>Borders</Text>
       </View>
       <View style={styles.svgContainer}>
         <HomeSvg height="100%" width="100%" color={hslToString(colorLight)} style={styles.svg} />
       </View>
-      <View style={[globalStyles.tile, styles.buttonPanel, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
+      <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
         <View style={styles.buttonContainer}>
           <Button onPress={() => navigation.navigate("LoadingScreen", { validNavigation: true })}>
             <Text style={styles.buttonText}>Take Readings</Text>

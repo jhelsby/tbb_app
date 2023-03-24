@@ -16,14 +16,16 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
   const cards = readingsData.cards;
 
   const isDarkMode = useColorScheme() === 'dark';
+  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
+  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   return (
-    <View style={[styles.container, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>
+    <View style={[styles.container, pageContrast]}>
       <ScrollView style={styles.scrollView}
         contentContainerStyle={{
           paddingBottom: 90,
         }}>
-        <Text style={[styles.title, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Readings</Text>
+        <Text style={[styles.title, textContrast]}>Readings</Text>
         {
           cards.map((card, index) => {
             return (

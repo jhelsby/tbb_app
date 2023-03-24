@@ -11,6 +11,7 @@ import AccountSvg from "../../assets/svgs/account.svg";
 
 import { ColorContext } from '../../context/color_context';
 import { hslToString } from '../../scripts/colors';
+import { text } from '@fortawesome/fontawesome-svg-core';
 
 type Props = NativeStackScreenProps<AccountParamList, 'AccountScreen'>;
 
@@ -18,24 +19,27 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
   const { color } = React.useContext(ColorContext);
 
   const isDarkMode = useColorScheme() === "dark";
+  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
+  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
+  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   const handleDeletePress = () => {
     console.log("Delete Pressed");
   };
 
   return (
-    <View style={[globalStyles.page, styles.container, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>
+    <View style={[globalStyles.page, styles.container, pageContrast]}>
       <View style={styles.titleContainer}>
-        <Text style={[styles.title, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Account</Text>
+        <Text style={[styles.title, textContrast]}>Account</Text>
       </View>
       <View style={styles.svgContainer}>
         <AccountSvg height="100%" width="100%" color={hslToString(color)} style={styles.svg} />
       </View>
-      <View style={[globalStyles.tile, styles.detailsContainer, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
-        <Text style={[styles.detailsText, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}><Text style={{ fontWeight: 'bold' }}>Username: </Text>John Doe</Text>
-        <Text style={[styles.detailsText, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}><Text style={{ fontWeight: 'bold' }}>Location: </Text>London, UK</Text>
+      <View style={[globalStyles.tile, styles.detailsContainer, containerContrast]}>
+        <Text style={[styles.detailsText, textContrast]}><Text style={{ fontWeight: 'bold' }}>Username: </Text>John Doe</Text>
+        <Text style={[styles.detailsText, textContrast]}><Text style={{ fontWeight: 'bold' }}>Location: </Text>London, UK</Text>
       </View>
-      <View style={[globalStyles.tile, styles.buttonPanel, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
+      <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
         <View style={styles.buttonContainer}>
           <Button onPress={handleDeletePress}>
             <Text style={[styles.buttonText]}>Delete Data</Text>

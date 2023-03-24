@@ -30,16 +30,19 @@ export default function ViewNewsScreen({ navigation, route } : any) : ReactEleme
   const { color } = useContext(ColorContext);
 
   const isDarkMode = useColorScheme() === 'dark';
+  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
+  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
+  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   return (
-    <View style={[styles.container, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>
+    <View style={[styles.container, pageContrast]}>
       <TopNav handlePress={() => navigation.goBack()} />
       <ScrollView style={styles.body} 
         contentContainerStyle={{
           paddingBottom: 200,
         }}>
-        <Text style={[styles.title, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>{tempData.title}</Text>
-        <View style={[globalStyles.tile, styles.subtitleContainer, , isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
+        <Text style={[styles.title, textContrast]}>{tempData.title}</Text>
+        <View style={[globalStyles.tile, styles.subtitleContainer, containerContrast]}>
           <Text style={styles.subtitle}>{tempData.author}</Text>
           <Text style={styles.subtitle}>{tempData.date}</Text>
         </View>
@@ -50,12 +53,12 @@ export default function ViewNewsScreen({ navigation, route } : any) : ReactEleme
           {
             tempData.contents.map((paragraph, index) => {
               return (
-                <View key={index} style={[globalStyles.tile, styles.paragraphsContainer, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
-                  <Text style={[styles.heading, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>{paragraph.heading}</Text>
+                <View key={index} style={[globalStyles.tile, styles.paragraphsContainer, containerContrast]}>
+                  <Text style={[styles.heading, textContrast]}>{paragraph.heading}</Text>
                   {
                     paragraph.paragraphs.map((paragraph, index) => {
                       return (
-                        <Text key={index} style={[styles.text, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>{paragraph}</Text>
+                        <Text key={index} style={[styles.text, textContrast]}>{paragraph}</Text>
                       );
                     })
                   }

@@ -19,7 +19,7 @@
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.10",
     "expo": "~48.0.6",
-    "expo-modules-core": "~1.2.5",
+    "expo-modules-core": "~1.2.6",
     "expo-sharing": "~11.2.2",
     "expo-status-bar": "~1.4.4",
     "react": "18.2.0",

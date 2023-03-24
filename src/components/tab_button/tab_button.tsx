@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { View, TouchableOpacity, Animated } from "react-native";
+import { View, TouchableOpacity, Animated, useColorScheme } from "react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
@@ -8,6 +8,7 @@ import { color1, color1Light, color3, color3Light, colorInterpolate } from "../.
 import { THSL } from "../../scripts/types";
 
 import { styles } from "./tab_button_styles";
+import { styles as globalStyles } from "../../../App_styles";
 
 
 
@@ -19,6 +20,11 @@ export default function TabButton(props: any) {
     index,
     length,
   } = props;
+
+  const isDarkMode = useColorScheme() === 'dark';
+  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
+  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
+  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   const activeColor: THSL = colorInterpolate(color1, color3, index/(length - 1));
   const inactiveColor: THSL = colorInterpolate(color1Light, color3Light, index/(length - 1));
@@ -68,7 +74,11 @@ export default function TabButton(props: any) {
       style={styles.buttonContainer}>
       <Animated.View
         style={[styles.button, { transform: [{ scale: viewScale }, { translateY: viewTranslate }]}]}>
-        <View style={styles.iconContainer}>
+        <View style={[
+          styles.iconContainer,
+          containerContrast,
+          isDarkMode ? styles.borderDark : styles.borderLight,
+        ]}>
           <Animated.View
             style={[
               styles.circle,

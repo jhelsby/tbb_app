@@ -83,7 +83,7 @@ export default function App() {
   };
 
   const isDarkMode: boolean = useColorScheme() === "dark";
-  const containerStyle = isDarkMode ? styles.darkContainer : styles.lightContainer;
+  const containerContrast = isDarkMode ? styles.darkContainer : styles.lightContainer;
 
   const startColor: THSL = color1;
   const startColorLight: THSL = color1Light;
@@ -106,7 +106,11 @@ export default function App() {
             screenOptions={{
               headerShown: false,
               tabBarShowLabel: false,
-              tabBarStyle: { ...styles.tabBar, ...styles.tile }
+              tabBarStyle: {
+                ...styles.tabBar,
+                ...styles.tile,
+                ...containerContrast
+               }
             }}>
             {
               tabScreens.map((screen: ITabScreen, index: number) => {

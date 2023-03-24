@@ -16,14 +16,16 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
   const cards = newsData.cards;
 
   const isDarkMode = useColorScheme() === 'dark';
+  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
+  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   return (
-    <View style={[styles.container, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>
+    <View style={[styles.container, pageContrast]}>
       <ScrollView style={styles.scrollView}
         contentContainerStyle={{
           paddingBottom: 90,
         }}>
-        <Text style={[styles.title, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>News</Text>
+        <Text style={[styles.title, textContrast]}>News</Text>
         {
           cards.map((card, index) => {
             return (

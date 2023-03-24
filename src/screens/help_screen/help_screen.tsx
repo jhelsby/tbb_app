@@ -28,15 +28,18 @@ export default function HelpScreen({ navigation, route }: any) : ReactElement<Pr
   const { color } = useContext(ColorContext);
 
   const isDarkMode = useColorScheme() === 'dark';
+  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
+  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
+  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   return (
-    <View style={[styles.container, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>
+    <View style={[styles.container, pageContrast]}>
       <TopNav handlePress={() => navigation.goBack()} />
       <ScrollView style={styles.body} 
         contentContainerStyle={{
           paddingBottom: 200,
         }}>
-        <Text style={[styles.title, , isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>Help</Text>
+        <Text style={[styles.title, textContrast]}>Help</Text>
         <View style={styles.svgContainer}>
           <HelpSvg height="100%" width="100%" color={hslToString(color)} style={styles.svg} />
         </View>
@@ -44,12 +47,12 @@ export default function HelpScreen({ navigation, route }: any) : ReactElement<Pr
           {
             tempData.contents.map((paragraph, index) => {
               return (
-                <View key={index} style={[globalStyles.tile, styles.paragraphsContainer, , isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
-                  <Text style={[styles.heading, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>{paragraph.heading}</Text>
+                <View key={index} style={[globalStyles.tile, styles.paragraphsContainer, containerContrast]}>
+                  <Text style={[styles.heading, textContrast]}>{paragraph.heading}</Text>
                   {
                     paragraph.paragraphs.map((paragraph, index) => {
                       return (
-                        <Text key={index} style={[styles.text, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>{paragraph}</Text>
+                        <Text key={index} style={[styles.text, textContrast]}>{paragraph}</Text>
                       );
                     })
                   }

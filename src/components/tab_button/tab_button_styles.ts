@@ -16,8 +16,6 @@ export const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     borderWidth: 4,
-    borderColor: '#fff',
-    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -33,5 +31,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 1000,
+  },
+  borderLight: {
+    borderColor: '#fff'
+  },
+  borderDark: {
+    borderColor: '#2E2E2E'
   },
 });

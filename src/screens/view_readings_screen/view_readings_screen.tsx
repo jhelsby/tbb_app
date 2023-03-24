@@ -18,6 +18,9 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
   const screenHeight = Dimensions.get("window").height;
 
   const isDarkMode = useColorScheme() === "dark";
+  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
+  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
+  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   const [pieChartData, setPieChartData] = React.useState([] as TPieChartData[]);
 
@@ -44,21 +47,21 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
   );
 
   return (
-    <View style={[styles.container, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>
+    <View style={[styles.container, pageContrast]}>
       <TopNav handlePress={() => navigation.popToTop()} />
       <ScrollView style={styles.body}
         contentContainerStyle={{
           paddingBottom: 180,
         }}>
         <View style={styles.titleContainer}>
-          <Text style={[styles.title, isDarkMode ? globalStyles.darkText : globalStyles.lightText]}>View Readings</Text>
+          <Text style={[styles.title, textContrast]}>View Readings</Text>
         </View>
-        <View style={[globalStyles.tile, styles.dataContainer, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
+        <View style={[globalStyles.tile, styles.dataContainer, containerContrast]}>
           <Text style={[styles.dataTitle, tempData.isSafe ? styles.safe : styles.notSafe]}>{tempData.isSafe ? "SAFE" : "NOT SAFE"}</Text>
           <Text style={styles.data}>{tempData.date}</Text>
           <Text style={styles.data}>{tempData.location}</Text>
         </View>
-        <View style={[globalStyles.tile, styles.barChartContainer, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
+        <View style={[globalStyles.tile, styles.barChartContainer, containerContrast]}>
           <BarChart
             data={{
               labels: tempData.results.map((result: any) => result.name),
@@ -94,7 +97,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
             }}
           />
         </View>
-        <View style={[globalStyles.tile, styles.pieChartContainer, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
+        <View style={[globalStyles.tile, styles.pieChartContainer, containerContrast]}>
           <PieChart
             data={pieChartData}
             width={screenWidth * 0.9}
