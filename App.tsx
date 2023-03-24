@@ -73,7 +73,7 @@ export default function App() {
     },
   ];
 
-  const focusedScreens: boolean[] = tabScreens.map((screen: ITabScreen) => false);
+  const focusedScreens: boolean[] = tabScreens.map((screen: ITabScreen) => screen.name === "HomeNav");
 
   const setFocusedScreen = (index: number) => {
     // Sets all screens to false except the one at the index
