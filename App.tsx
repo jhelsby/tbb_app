@@ -1,8 +1,11 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { View, Text, Platform, useColorScheme } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+
+import { RootTabParamList } from "./src/scripts/screen_params";
+
+import { faMap, faHome, faNewspaper, faUser, faChartLine, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 import MapStackNavigator from "./src/screens/map_screen/map_stack_navigator";
 import ReadingsStackNavigator from "./src/screens/readings_screen/readings_stack_navigator";
@@ -10,7 +13,9 @@ import HomeStackNavigator from "./src/screens/home_screen/home_stack_navigator";
 import NewsStackNavigator from "./src/screens/news_screen/news_stack_navigator";
 import AccountStackNavigator from "./src/screens/account_screen/account_stack_navigator";
 
-import { faMap, faHome, faNewspaper, faUser, faChartLine } from "@fortawesome/free-solid-svg-icons";
+import TabButton from "./src/components/tab_button/tab_button";
+
+import { styles } from "./App_styles";
 
 import {
   color1,
@@ -26,46 +31,56 @@ import {
 import { ContrastPolarityContext } from "./src/context/contrast_polarity_context";
 import { RootNavsContext } from "./src/context/root_nav_context";
 
-import { THSL, TRootNav } from "./src/scripts/types";
+import { THSL } from "./src/scripts/types";
 
-import { styles } from "./App_styles";
+interface ITabScreen {
+  name: string;
+  icon: IconDefinition;
+  component: () => Element;
+};
 
 
+const Tab: any = createBottomTabNavigator<RootTabParamList>();
+
+export default function App() {
 
 
-const Tab: any = createBottomTabNavigator();
+  const tabScreens: ITabScreen[] = [
+    {
+      name: "MapNav",
+      icon: faMap,
+      component: MapStackNavigator,
+    },
+    {
+      name: "ReadingsNav",
+      icon: faChartLine,
+      component: ReadingsStackNavigator,
+    },
+    {
+      name: "HomeNav",
+      icon: faHome,
+      component: HomeStackNavigator,
+    },
+    {
+      name: "NewsNav",
+      icon: faNewspaper,
+      component: NewsStackNavigator,
+    },
+    {
+      name: "AccountNav",
+      icon: faUser,
+      component: AccountStackNavigator,
+    },
+  ];
 
-const rootNavs: TRootNav[] = [
-  {
-    name: "MapNav",
-    component: MapStackNavigator,
-    icon: faMap,
-  },
-  {
-    name: "ReadingsNav",
-    component: ReadingsStackNavigator,
-    icon: faChartLine,
-  },
-  {
-    name: "HomeNav",
-    component: HomeStackNavigator,
-    icon: faHome,
-  },
-  {
-    name: "NewsNav",
-    component: NewsStackNavigator,
-    icon: faNewspaper,
-  },
-  {
-    name: "AccountNav",
-    component: AccountStackNavigator,
-    icon: faUser,
-  },
-];
+  const focusedScreens: boolean[] = tabScreens.map((screen: ITabScreen) => false);
 
-export default function App(): JSX.Element {
-  const iconActiveSize: number = 45;
-  const iconInactiveSize: number = 25;
+  const setFocusedScreen = (index: number) => {
+    // Sets all screens to false except the one at the index
+    focusedScreens.forEach((screen: boolean, i: number) => {
+      focusedScreens[i] = i === index;
+    });
+  };
 
   const isDarkMode: boolean = useColorScheme() === "dark";
   const containerStyle = isDarkMode ? styles.darkContainer : styles.lightContainer;
@@ -76,7 +91,7 @@ export default function App(): JSX.Element {
   const endColorLight: THSL = color3Light;
 
   return (
-    <RootNavsContext.Provider value={rootNavs.map(nav => nav.name)}>
+    <RootNavsContext.Provider value={tabScreens.map(screen => screen.name)}>
       <ContrastPolarityContext.Provider value={{
         startColor,
         startColorLight,
@@ -91,52 +106,32 @@ export default function App(): JSX.Element {
             screenOptions={{
               headerShown: false,
               tabBarShowLabel: false,
-              tabBarStyle: { ...styles.tabBar, ...styles.tile, ...containerStyle },
-              tabBarHideOnKeyboard: true,
-              tabBarItemStyle: { 
-                JustifyContent: "flex-end",
-                alignItems: "center",
-                height: '100%',
-              },
+              tabBarStyle: { ...styles.tabBar, ...styles.tile }
             }}>
-            {rootNavs.map((screen: TRootNav, index: number) => {
-              const activeColor: THSL = colorInterpolate(startColor, endColor, index / rootNavs.length);
-              const inactiveColor: THSL = colorInterpolate(startColorLight, endColorLight, index / rootNavs.length);
-              const iconActiveStyle: { color: string } = {
-                color: hslToString(activeColor),
-              };
-              const iconInactiveStyle: { color: string } = {
-                color: hslToString(inactiveColor),
-              };
-              return (
-                <Tab.Screen
-                  key={index}
-                  name={screen.name}
-                  component={screen.component}
-                  options={{
-                    tabBarIcon: ({ focused }: { focused: boolean }) => 
-                      <View style={[styles.iconContainer, Platform.OS === 'ios' ? { position: 'relative', top: 15 } : {}]}>
-                        <View style={styles.circleContainer}>
-                          <View style={[
-                            styles.circle,
-                            focused ? styles.circleActive : styles.circleInactive,
-                            isDarkMode ? styles.darkContainer : styles.lightContainer
-                          ]} />
-                        </View>
-                        <View style={focused ? styles.svgContainer : {}}>
-                          <Text>
-                            <FontAwesomeIcon 
-                              icon={screen.icon}
-                              size={focused ? iconActiveSize : iconInactiveSize} 
-                              style={focused ? iconActiveStyle : iconInactiveStyle}
-                            />
-                          </Text>
-                        </View>
-                      </View>
-                  }}
-                />
-              );
-            })}
+            {
+              tabScreens.map((screen: ITabScreen, index: number) => {
+                return (
+                  <Tab.Screen
+                    key={index}
+                    name={screen.name}
+                    component={screen.component}
+                    options={({ navigation }: any) => ({
+                        tabBarButton: () => <TabButton
+                          index={index}
+                          length={tabScreens.length}
+                          icon={screen.icon}
+                          focused={focusedScreens[index]}
+                          onPress={() => {
+                            setFocusedScreen(index);
+                            navigation.navigate(screen.name)
+                          }}
+                        />
+                      })
+                    }
+                  />
+                );
+              })
+            }
           </Tab.Navigator>
         </NavigationContainer>
       </ContrastPolarityContext.Provider>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useCallback, ReactElement, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,11 +9,14 @@ import {
   TouchableWithoutFeedback,
   useColorScheme,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AccountParamList } from "../../scripts/screen_params";
 
 import { styles } from "./report_styles";
 import { styles as globalStyles } from "../../../App_styles";
 
-import { TDefaultProps, TTextInputStyle } from "../../scripts/types";
+import { TTextInputStyle } from "../../scripts/types";
 
 import { hslToString } from "../../scripts/colors";
 
@@ -23,7 +26,18 @@ import ReportSvg from "../../assets/svgs/report.svg";
 import Button from "../../components/button/button";
 import TopNav from "../../components/top_nav/top_nav";
 
-export default function ReportScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
+type Props = NativeStackScreenProps<AccountParamList, "ReportScreen">;
+
+export default function ReportScreen({ navigation, route } : any) : ReactElement<Props> {
+
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!route.params.validNavigation) navigation.popToTop();
+      route.params.validNavigation = false;
+    }, [])
+  );
+
   const [titleText, setTitleText] = React.useState<string>("");
   const [descriptionText, setDescriptionText] = React.useState<string>("");
 

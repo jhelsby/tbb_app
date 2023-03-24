@@ -37,36 +37,10 @@ export const styles = StyleSheet.create({
     color: '#fff',
   },
   tabBar: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    right: 20,
     height: 60,
-    zIndex: 2,
-  },
-  iconContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: '100%',
-    height: 60,
-  },
-  circleContainer: {
-    position: "absolute",
-    width: '100%',
-    bottom: 0,
-  },
-  circle: {
-    borderRadius: 1000,
-  },
-  circleActive: {
-    width: '100%',
-    height: 80,
-  },
-  circleInactive: {
-    width: 1,
-    height: 1,
-  },
-  svgContainer: {
-    paddingBottom: 10,
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    left: 16,
   },
 });

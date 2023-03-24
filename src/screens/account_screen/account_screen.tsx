@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { View, Text, useColorScheme } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AccountParamList } from '../../scripts/screen_params';
 
 import { styles } from './account_styles';
 import { styles as globalStyles } from "../../../App_styles";
@@ -10,9 +12,9 @@ import AccountSvg from "../../assets/svgs/account.svg";
 import { ColorContext } from '../../context/color_context';
 import { hslToString } from '../../scripts/colors';
 
-import { TDefaultProps } from "../../scripts/types";
+type Props = NativeStackScreenProps<AccountParamList, 'AccountScreen'>;
 
-export default function AccountScreen(props : TDefaultProps) : React.ReactElement<TDefaultProps> {
+export default function AccountScreen({ navigation }: Props) : ReactElement<Props> {
   const { color } = React.useContext(ColorContext);
 
   const isDarkMode = useColorScheme() === "dark";
@@ -40,7 +42,7 @@ export default function AccountScreen(props : TDefaultProps) : React.ReactElemen
           </Button>
         </View>
         <View style={styles.buttonContainer}>
-          <Button onPress={() => props.navigation.navigate("Report")} >
+          <Button onPress={() => navigation.navigate("ReportScreen", { validNavigation: true })} >
             <Text style={[styles.buttonText]}>Report</Text>
           </Button>
         </View>

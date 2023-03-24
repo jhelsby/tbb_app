@@ -7,18 +7,12 @@ import { faChevronRight, faNewspaper } from '@fortawesome/free-solid-svg-icons';
 import { styles } from './card_styles';
 import { styles as globalStyles } from '../../../App_styles';
 
-import { TCardProps } from '../../scripts/types';
+import { ICardProps } from '../../scripts/interfaces';
 
-export default function Card(props : TCardProps) : React.ReactElement<TCardProps> {
+export default function Card(props : ICardProps) : React.ReactElement<ICardProps> {
   const [pressed, setPressed] = React.useState(false);
 
   const isDarkMode = useColorScheme() === 'dark';
-
-  const handlePress = () : void => {
-    if (props.page) {
-      props.navigation.navigate(props.page);
-    }
-  };
 
   return (
     <Pressable
@@ -28,7 +22,7 @@ export default function Card(props : TCardProps) : React.ReactElement<TCardProps
         pressed ? styles.pressed : {},
         isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer
       ]}
-      onPress={handlePress}
+      onPress={props.onPress}
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}>
       <View style={

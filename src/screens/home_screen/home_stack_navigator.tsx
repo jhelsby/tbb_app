@@ -1,5 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useContext } from "react";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import React, { useContext, ReactElement } from "react";
+import { RootTabParamList, HomeParamList } from "../../scripts/screen_params";
 
 import HomeScreen from "./home_screen";
 import HelpScreen from "../help_screen/help_screen";
@@ -13,9 +15,12 @@ import { ContrastPolarityContext } from "../../context/contrast_polarity_context
 import { RootNavsContext } from "../../context/root_nav_context";
 import { colorInterpolate } from "../../scripts/colors";
 
-const Stack = createNativeStackNavigator();
 
-export default function HomeStackNavigator() : JSX.Element {
+
+const Stack = createNativeStackNavigator<HomeParamList>();
+type Props = BottomTabScreenProps<RootTabParamList, "HomeStack">;
+
+export default function HomeStackNavigator() : ReactElement<Props> {
   const {
     startColor,
     startColorLight,
@@ -34,10 +39,10 @@ export default function HomeStackNavigator() : JSX.Element {
   return (
     <ColorContext.Provider value={{ color, colorLight }}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Help" component={HelpScreen} />
-        <Stack.Screen name="TakeReadings" component={ViewReadingsScreen} />
-        <Stack.Screen name="Loading" component={LoadingScreen} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="HelpScreen" component={HelpScreen} />
+        <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
+        <Stack.Screen name="TakeReadingScreen" component={ViewReadingsScreen} />
       </Stack.Navigator>
     </ColorContext.Provider>
   );

@@ -1,15 +1,29 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, ReactElement, useCallback } from 'react';
 import { View, Animated, BackHandler } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { HomeParamList } from '../../scripts/screen_params';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faWater } from '@fortawesome/free-solid-svg-icons';
 
 import { color1, color3, colorInterpolate } from '../../scripts/colors';
-import { THSL, TDefaultProps } from '../../scripts/types';
+import { THSL } from '../../scripts/types';
 
 import { styles } from './loading_screen_styles';
 
-export default function LoadingScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
+type Props = NativeStackScreenProps<HomeParamList, 'LoadingScreen'>;
+
+export default function LoadingScreen({ navigation, route }: any) : ReactElement<Props> {
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!route.params.validNavigation) navigation.popToTop();
+      route.params.validNavigation = false;
+    }, [])
+  );
+
+
   let colors: string[] = [];
   for(let i: number = 0; i < 5; i++) {
     const color: THSL = colorInterpolate(color1, color3, i / 4);
@@ -60,7 +74,7 @@ export default function LoadingScreen({ navigation } : TDefaultProps) : React.Re
     }, 800);
 
     const loadingScreenTimer = setTimeout(() => {
-      navigation.navigate('TakeReadings');
+      navigation.navigate('TakeReadingScreen', { validNavigation: true});
     }, 10000);
 
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {

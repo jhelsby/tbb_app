@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback, ReactElement } from "react";
 import { View, Text, ScrollView, Dimensions, useColorScheme } from "react-native";
 import { BarChart, PieChart } from "react-native-chart-kit";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { styles } from "./view_readings_styles";
 import { styles as globalStyles } from "../../../App_styles";
@@ -12,7 +13,7 @@ import TopNav from "../../components/top_nav/top_nav";
 
 import { TPieChartData } from "../../scripts/types";
 
-export default function ViewReadingsScreen({ navigation } : { navigation: any }) : JSX.Element {
+export default function ViewReadingsScreen({ navigation, route } : any) : ReactElement<any> {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
 
@@ -34,6 +35,13 @@ export default function ViewReadingsScreen({ navigation } : { navigation: any })
     });
     setPieChartData(data);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!route.params.validNavigation) navigation.popToTop();
+      route.params.validNavigation = false;
+    }, [])
+  );
 
   return (
     <View style={[styles.container, isDarkMode ? globalStyles.darkPage : globalStyles.lightPage]}>

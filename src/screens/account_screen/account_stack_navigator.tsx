@@ -1,5 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useContext } from "react";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import React, { useContext, ReactElement } from "react";
+import { RootTabParamList, AccountParamList } from "../../scripts/screen_params";
 
 import AccountScreen from "./account_screen";
 import ReportScreen from "../report_screen/report_screen";
@@ -11,9 +13,10 @@ import { ContrastPolarityContext } from "../../context/contrast_polarity_context
 import { RootNavsContext } from "../../context/root_nav_context";
 import { colorInterpolate } from "../../scripts/colors";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<AccountParamList>();
+type Props = BottomTabScreenProps<RootTabParamList, "AccountStack">;
 
-export default function AccountStackNavigator() : JSX.Element {
+export default function AccountStackNavigator() : ReactElement<Props> {
   const {
     startColor,
     startColorLight,
@@ -30,8 +33,8 @@ export default function AccountStackNavigator() : JSX.Element {
   return (
     <ColorContext.Provider value={{ color, colorLight }}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Account" component={AccountScreen} />
-        <Stack.Screen name="Report" component={ReportScreen} />
+        <Stack.Screen name="AccountScreen" component={AccountScreen} />
+        <Stack.Screen name="ReportScreen" component={ReportScreen} />
       </Stack.Navigator>
     </ColorContext.Provider>
   );

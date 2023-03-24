@@ -1,10 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useCallback, ReactElement } from "react";
 import { View, Text, ScrollView, useColorScheme } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { NewsParamList } from "../../scripts/screen_params";
 
 import { styles } from "./view_news_styles";
 import { styles as globalStyles } from "../../../App_styles";
 
-import { TDefaultProps, TNewsData } from "../../scripts/types";
+import { TNewsData } from "../../scripts/types";
 
 import { ColorContext } from "../../context/color_context";
 import { hslToString } from "../../scripts/colors";
@@ -13,7 +16,17 @@ import TopNav from "../../components/top_nav/top_nav";
 import NewsSvg from "../../assets/svgs/news.svg";
 import tempData from './data.temp.json';
 
-export default function ViewNewsScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
+type Props = NativeStackScreenProps<NewsParamList, "ViewNewsScreen">;
+
+export default function ViewNewsScreen({ navigation, route } : any) : ReactElement<Props> {
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!route.params.validNavigation) navigation.popToTop();
+      route.params.validNavigation = false;
+    }, [])
+  );
+
   const { color } = useContext(ColorContext);
 
   const isDarkMode = useColorScheme() === 'dark';

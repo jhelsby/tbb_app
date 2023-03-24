@@ -1,17 +1,22 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, ReactElement } from "react";
 import { View, Animated, Dimensions, useColorScheme } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { MapParamList } from "../../scripts/screen_params";
 
 import { styles } from "./map_styles";
 
-import { TDefaultProps, TMarkerData, TCardProps } from "../../scripts/types";
+import { TMarkerData } from "../../scripts/types";
+import { ICardProps } from "../../scripts/interfaces";
 
 import MapIcon from "../../components/map_icon/map_icon";
 import Card from "../../components/card/card";
 
 import tempData from "./data.temp.json";
 
-export default function MapScreen({ navigation } : TDefaultProps) : React.ReactElement<TDefaultProps> {
+type Props = NativeStackScreenProps<MapParamList, "MapScreen">;
+
+export default function MapScreen({ navigation } : Props) : ReactElement<Props> {
   const [activeMarkers, setActiveMarkers] = useState<boolean[]>(
     tempData.markers.map(() => false)
   );
@@ -19,15 +24,14 @@ export default function MapScreen({ navigation } : TDefaultProps) : React.ReactE
   const isDarkMode = useColorScheme() === "dark";
 
   const [activeCard, setActiveCard] = useState<boolean>(false);
-  const [cardData, setCardData] = useState<TCardProps>({
+  const [cardData, setCardData] = useState<ICardProps>({
     isIcon: false,
-    navigation: navigation,
     highLight: false,
     title: "",
     subtitle1: "",
     subtitle2: "",
     description: "",
-    page: "ViewReadings"
+    onPress: () => navigation.navigate("ViewReadingScreen", { validNavigation: true })
   });
 
   const screenWidth = Dimensions.get("window").width;
@@ -44,15 +48,14 @@ export default function MapScreen({ navigation } : TDefaultProps) : React.ReactE
   const handleMarkerPress = (index: number) => {
     const newActiveMarkers = activeMarkers.map((marker, i) => {
       if (i === index) {
-        const cardData: TCardProps = {
+        const cardData: ICardProps = {
           isIcon: false,
-          navigation: navigation,
           highLight: tempData.markers[i].isSafe,
           title: "Lorem ipsum",
           subtitle1: `${tempData.markers[i].latitude}, ${tempData.markers[i].longitude}`,
           subtitle2: `${tempData.markers[i].date}`,
           description: "Laboris in et ullamco magna excepteur aliquip mollit occaecat aliqua anim exercitation.",
-          page: "ViewReadings"
+          onPress: () => navigation.navigate("ViewReadingScreen", { validNavigation: true })
         }
         setActiveCard(!marker);
         setCardData(cardData);
@@ -63,6 +66,8 @@ export default function MapScreen({ navigation } : TDefaultProps) : React.ReactE
     });
     setActiveMarkers(newActiveMarkers);
   };
+
+
 
   return (
     <View style={styles.container}>

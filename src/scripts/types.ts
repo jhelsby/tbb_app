@@ -4,9 +4,6 @@ export type TRGB = { r: number, g: number, b: number };
 
 export type THex = string;
 
-export type TDefaultProps = {
-  navigation : any,
-};
 
 export type TRootNav = {
   name: string;
@@ -14,16 +11,6 @@ export type TRootNav = {
   icon: any;
 };
 
-export type TCardProps = {
-  navigation : any,
-  isIcon: boolean,
-  highLight : boolean | null,
-  title : string,
-  subtitle1 : string,
-  subtitle2 : string,
-  description : string,
-  page : string
-};
 
 export type TTopNavProps = {
   handlePress: () => void;

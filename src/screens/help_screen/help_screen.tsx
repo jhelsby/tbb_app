@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useCallback, ReactElement } from "react";
 import { View, Text, ScrollView, useColorScheme } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { HomeParamList } from "../../scripts/screen_params";
 
 import { styles } from "./help_styles";
 import { styles as globalStyles } from "../../../App_styles";
-
-import { TDefaultProps } from "../../scripts/types";
 
 import { ColorContext } from "../../context/color_context";
 import { hslToString } from "../../scripts/colors";
@@ -12,8 +12,19 @@ import { hslToString } from "../../scripts/colors";
 import HelpSvg from "../../assets/svgs/help.svg";
 import TopNav from "../../components/top_nav/top_nav";
 import tempData from './data.temp.json';
+import { useFocusEffect } from "@react-navigation/native";
 
-export default function HelpScreen({ navigation }: TDefaultProps) : React.ReactElement<TDefaultProps> {
+type Props = NativeStackScreenProps<HomeParamList, "HelpScreen">;
+
+export default function HelpScreen({ navigation, route }: any) : ReactElement<Props> {
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!route.params.validNavigation) navigation.popToTop();
+      route.params.validNavigation = false;
+    }, [])
+  );
+
   const { color } = useContext(ColorContext);
 
   const isDarkMode = useColorScheme() === 'dark';
