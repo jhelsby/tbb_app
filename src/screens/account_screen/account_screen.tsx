@@ -60,11 +60,13 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
           )
         }
         <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
-          <View style={styles.buttonContainer}>
+          {
+          loggedIn && (<View style={styles.buttonContainer}>
             <Button onPress={handleDeletePress}>
               <Text style={[styles.buttonText]}>Delete Data</Text>
             </Button>
-          </View>
+          </View>)
+          }
           <View style={styles.buttonContainer}>
             <Button onPress={() => navigation.navigate("ReportScreen", { validNavigation: true })} >
               <Text style={[styles.buttonText]}>Report</Text>
