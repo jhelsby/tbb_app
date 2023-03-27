@@ -51,6 +51,11 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
                   <Text style={[styles.buttonText]}>Login</Text>
                 </Button>
               </View>
+              <View style={styles.buttonContainer}>
+                <Button onPress={() => navigation.navigate("SignupScreen", { validNavigation: true })}>
+                  <Text style={[styles.buttonText]}>SignUp</Text>
+                </Button>
+              </View>
             </View>
           )
         }

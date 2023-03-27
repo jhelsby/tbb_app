@@ -6,6 +6,7 @@ import { RootTabParamList, AccountParamList } from "../../scripts/screen_params"
 import AccountScreen from "./account_screen";
 import ReportScreen from "../report_screen/report_screen";
 import LoginScreen from "../login_screen/login_screen";
+import SignupScreen from "../signup_screen/signup_screen";
 
 import { THSL } from "../../scripts/types";
 
@@ -37,6 +38,7 @@ export default function AccountStackNavigator() : ReactElement<Props> {
         <Stack.Screen name="AccountScreen" component={AccountScreen} />
         <Stack.Screen name="ReportScreen" component={ReportScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="SignupScreen" component={SignupScreen} />
       </Stack.Navigator>
     </ColorContext.Provider>
   );
