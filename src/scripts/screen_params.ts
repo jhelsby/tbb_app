@@ -31,4 +31,5 @@ export type NewsParamList = {
 export type AccountParamList = {
   AccountScreen: undefined;
   ReportScreen: { validNavigation: boolean } | undefined;
+  LoginScreen: { validNavigation: boolean } | undefined;
 };
