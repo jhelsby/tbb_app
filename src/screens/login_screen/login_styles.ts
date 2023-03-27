@@ -92,4 +92,16 @@ export const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   },
+  bottomText: {
+    fontSize: 16,
+    width: '100%',
+    textAlign: 'center',
+    marginVertical: 5,
+    paddingHorizontal: '5%',
+  },
+  clickableText: {
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+    paddingBottom: 10,
+  }
 });
