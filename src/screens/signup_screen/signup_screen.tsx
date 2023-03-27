@@ -13,6 +13,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AccountParamList } from "../../scripts/screen_params";
 
+import { auth, registerWithEmailAndPassword, signInWithGoogle } from "../../scripts/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+
 import { styles } from "./signup_styles";
 import { styles as globalStyles } from "../../../App_styles";
 
@@ -37,8 +40,22 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
     }, [])
   );
 
+  const [name, setName] = React.useState<string>("");
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
+  const [confirmPassword, setConfirmPassword] = React.useState<string>("");
+  const [user, loading, error] = useAuthState(auth);
+
+  const register = () => {
+    if (password === confirmPassword && name && email && password) {
+      registerWithEmailAndPassword(email, password);
+    }
+  }
+
+  useEffect(() => {
+    if (loading) return;
+    if (user) navigation.popToTop();
+  }, [user, loading])
 
   const isDarkMode = useColorScheme() === "dark";
   const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
@@ -96,13 +113,9 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
     setKeyboardVisible(true);
   }
 
-  const handleSubmit = () => {
-    const inputData = {
-      email: email,
-      password: password,
-    }
-    console.log("Submitted: ", inputData);
-    navigation.goBack();
+  const handlePasswordChange = (event: any) => {
+    // ##CHECK PASSWORD STRENGTH##
+    setConfirmPassword(event.nativeEvent.text);
   }
 
   return (
@@ -125,8 +138,24 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
             globalStyles.tile,
             styles.form,
             containerContrast,
-            isKeyboardVisible ? {} : { height: 320 }
+            isKeyboardVisible ? {} : { height: 'auto' }
           ]}>
+            <View style={styles.textContainer}>
+              <Text style={[styles.label, textContrast]}>Name:</Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  textInputStyles[0],
+                  containerContrast,
+                  textContrast
+                ]}
+                cursorColor={hslToString(color)}
+                onFocus={() => handleFocus(0)}
+                onChange={
+                  (event) => setName(event.nativeEvent.text)
+                }
+              />
+            </View>
             <View style={styles.textContainer}>
               <Text style={[styles.label, textContrast]}>Email:</Text>
               <TextInput
@@ -160,9 +189,29 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
                 }
               />
             </View>
+            <View style={styles.textContainer}>
+              <Text style={[styles.label, textContrast]}>Confirm Password:</Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  textInputStyles[0],
+                  containerContrast,
+                  textContrast
+                ]}
+                cursorColor={hslToString(color)}
+                onFocus={() => handleFocus(0)}
+                secureTextEntry={true}
+                onChange={handlePasswordChange}
+              />
+            </View>
             <View style={styles.buttonContainer}>
-              <Button onPress={handleSubmit}>
+              <Button onPress={register}>
                 <Text style={styles.buttonText}>Sign Up</Text>
+              </Button>
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button onPress={signInWithGoogle}>
+                <Text style={styles.buttonText}>Login with Google</Text>
               </Button>
             </View>
           </View>
