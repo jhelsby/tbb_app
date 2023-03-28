@@ -10,8 +10,14 @@ import { colorInterpolate, color1, color3 } from "../../scripts/colors";
 import tempData from "./data.temp.json";
 
 import TopNav from "../../components/top_nav/top_nav";
+import Button from "../../components/button/button";
+
+import { postReading } from "../../scripts/firebase";
 
 import { TPieChartData } from "../../scripts/types";
+
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../scripts/firebase";
 
 export default function ViewReadingsScreen({ navigation, route } : any) : ReactElement<any> {
   const screenWidth = Dimensions.get("window").width;
@@ -23,6 +29,8 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
   const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   const [pieChartData, setPieChartData] = React.useState([] as TPieChartData[]);
+
+  const [isLoggedIn, setLoggedIn] = React.useState(false);
 
   useEffect(() => {
     let data : TPieChartData[] = [];
@@ -46,6 +54,30 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
     }, [])
   );
 
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  });
+
+  const handleSync = () => {
+    console.log("Syncing...");
+    postReading({
+      latitude: 123,
+      longitude: 456,
+      isSafe: true,
+      date: "lorem",
+      turbidity: 1,
+      ph: 2,
+      chloride: 3,
+      nitrate: 4,
+      flouride: 5,
+      conductivity: 6,
+    });
+  }
+
   return (
     <View style={[styles.container, pageContrast]}>
       <TopNav handlePress={() => navigation.popToTop()} />
@@ -61,6 +93,17 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
           <Text style={styles.data}>{tempData.date}</Text>
           <Text style={styles.data}>{tempData.location}</Text>
         </View>
+        {
+          isLoggedIn && (
+          <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleSync} >
+                <Text style={[styles.buttonText]}>Sync</Text>
+              </Button>
+            </View>
+          </View>
+          )
+        }
         <View style={[globalStyles.tile, styles.barChartContainer, containerContrast]}>
           <BarChart
             data={{

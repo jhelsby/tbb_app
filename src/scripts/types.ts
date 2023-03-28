@@ -11,7 +11,6 @@ export type TRootNav = {
   icon: any;
 };
 
-
 export type TTopNavProps = {
   handlePress: () => void;
 };
@@ -41,4 +40,17 @@ export type TMarkerData = {
   longitude: number,
   isSafe: boolean,
   date: string,
+}
+
+export type TReading = {
+  latitude: number,
+  longitude: number,
+  isSafe: boolean,
+  date: string,
+  turbidity: number,
+  ph: number,
+  chloride: number,
+  nitrate: number,
+  flouride: number,
+  conductivity: number,
 }

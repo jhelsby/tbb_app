@@ -31,6 +31,28 @@ export const styles = StyleSheet.create({
   notSafe: {
     color: '#d95448'
   },
+  buttonPanel: {
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    width: '90%',
+    paddingTop: 15,
+    paddingHorizontal: 15,
+    marginHorizontal: '5%',
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    height: 50,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
   barChartContainer: {
     width: '90%',
     marginBottom: 20,

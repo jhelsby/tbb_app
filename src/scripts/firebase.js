@@ -15,7 +15,8 @@ import {
   getDocs,
   collection,
   where,
-  addDoc
+  addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -80,3 +81,26 @@ export const sendPasswordReset = async (email) => {
 export const logout = () => {
   signOut(auth);
 };
+
+
+
+
+
+
+
+const getUserName = () => {
+  return getAuth().currentUser.displayName;
+}
+
+export const postReading = async (reading) => {
+  try {
+    await addDoc(collection(getFirestore(), 'readings'), {
+      name: getUserName(),
+      ...reading,
+      timestamp: serverTimestamp()
+    });
+  }
+  catch(error) {
+    console.error('Error posting reading to Firebase Database', error);
+  }
+}
