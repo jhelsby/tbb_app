@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { View, Text, ScrollView,TextInput, useColorScheme } from 'react-native';
+import { View, Text, ScrollView, useColorScheme } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AccountParamList } from '../../scripts/screen_params';
 
@@ -11,6 +11,9 @@ import AccountSvg from "../../assets/svgs/account.svg";
 
 import { ColorContext } from '../../context/color_context';
 import { hslToString } from '../../scripts/colors';
+
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, logout } from '../../scripts/firebase';
 
 type Props = NativeStackScreenProps<AccountParamList, 'AccountScreen'>;
 
@@ -24,6 +27,14 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
 
 
   const [loggedIn, setLoggedIn] = React.useState(false);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  });
 
   const handleDeletePress = () => {
     console.log("Delete Pressed");
@@ -40,9 +51,18 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
         </View>
         {
           loggedIn ? (
-            <View style={[globalStyles.tile, styles.detailsContainer, containerContrast]}>
-              <Text style={[styles.detailsText, textContrast]}><Text style={{ fontWeight: 'bold' }}>Username: </Text>John Doe</Text>
-              <Text style={[styles.detailsText, textContrast]}><Text style={{ fontWeight: 'bold' }}>Location: </Text>London, UK</Text>
+            <View>
+              <View style={[globalStyles.tile, styles.detailsContainer, containerContrast]}>
+                <Text style={[styles.detailsText, textContrast]}><Text style={{ fontWeight: 'bold' }}>Username: </Text>John Doe</Text>
+                <Text style={[styles.detailsText, textContrast]}><Text style={{ fontWeight: 'bold' }}>Location: </Text>London, UK</Text>
+              </View>
+              <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+                <View style={styles.buttonContainer}>
+                  <Button onPress={logout}>
+                    <Text style={[styles.buttonText]}>Log Out</Text>
+                  </Button>
+                </View>
+              </View>
             </View>
           ) : (
             <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>

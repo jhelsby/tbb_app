@@ -33,14 +33,14 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const googleProvider = new GoogleAuthProvider();
 
 
-const signInWithGoogle = async () => {
+export const signInWithGoogle = async () => {
   try {
-    const googleProvider = new GoogleAuthProvider();
     const res = await signInWithPopup(getAuth(), googleProvider);
     // const q = query(collection(db, "users"), where("uid", "==", user.uid));
     // const docs = await getDocs(q);
@@ -58,7 +58,7 @@ const signInWithGoogle = async () => {
   }
 };
 
-const logInWithEmailAndPassword = async (email, password) => {
+export const logInWithEmailAndPassword = async (email, password) => {
   console.log("Logging in with email: ", email, " and password: ", password);
   await signInWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
@@ -72,7 +72,7 @@ const logInWithEmailAndPassword = async (email, password) => {
   });
 };
 
-const registerWithEmailAndPassword = async (email, password) => {
+export const registerWithEmailAndPassword = async (email, password) => {
   console.log("Registering with email: ", email, " and password: ", password);
   createUserWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
@@ -87,7 +87,7 @@ const registerWithEmailAndPassword = async (email, password) => {
   });
 };
 
-const sendPasswordReset = async (email) => {
+export const sendPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
     alert("Password reset link sent!");
@@ -97,16 +97,6 @@ const sendPasswordReset = async (email) => {
   }
 };
 
-const logout = () => {
+export const logout = () => {
   signOut(auth);
-};
-
-export {
-  auth,
-  db,
-  signInWithGoogle,
-  logInWithEmailAndPassword,
-  registerWithEmailAndPassword,
-  sendPasswordReset,
-  logout,
 };
