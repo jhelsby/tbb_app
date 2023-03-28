@@ -75,7 +75,7 @@ export default function LoadingScreen({ navigation, route }: any) : ReactElement
 
     const loadingScreenTimer = setTimeout(() => {
       navigation.navigate('TakeReadingScreen', { validNavigation: true});
-    }, 10000);
+    }, 2000);
 
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       clearTimeout(loadingScreenTimer);
