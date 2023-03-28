@@ -8,7 +8,7 @@ export type RootTabParamList = {
 
 export type MapParamList = {
   MapScreen: undefined;
-  ViewReadingScreen: { validNavigation: boolean } | undefined;
+  ViewReadingScreen: { validNavigation: boolean, readingId?: string } | undefined;
 };
 
 export type ReadingsParamList = {

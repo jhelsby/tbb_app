@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef, ReactElement } from "react";
+import React, { useEffect, useState, useRef, useCallback, ReactElement } from "react";
 import { View, Animated, Dimensions, useColorScheme } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { MapParamList } from "../../scripts/screen_params";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { styles } from "./map_styles";
 
@@ -12,14 +13,13 @@ import { ICardProps } from "../../scripts/interfaces";
 import MapIcon from "../../components/map_icon/map_icon";
 import Card from "../../components/card/card";
 
-import tempData from "./data.temp.json";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, getReadings } from "../../scripts/firebase";
 
 type Props = NativeStackScreenProps<MapParamList, "MapScreen">;
 
 export default function MapScreen({ navigation } : Props) : ReactElement<Props> {
-  const [activeMarkers, setActiveMarkers] = useState<boolean[]>(
-    tempData.markers.map(() => false)
-  );
+  const [activeMarkers, setActiveMarkers] = useState<boolean[]>([]);
 
   const isDarkMode = useColorScheme() === "dark";
 
@@ -33,6 +33,32 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
     description: "",
     onPress: () => navigation.navigate("ViewReadingScreen", { validNavigation: true })
   });
+
+
+  const [ isLoggedIn, setLoggedIn ] = useState<boolean>(false);
+  const [ markers, setMarkers ] = useState<any>([]);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  });
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isLoggedIn) {
+        console.log("Getting Markers...")
+        getReadings().then((reading) => {
+          setMarkers(reading);
+          setActiveMarkers(reading.map((marker) => false));
+          console.log(reading)
+        });
+      }
+    }, [isLoggedIn])
+  );
+
 
   const screenWidth = Dimensions.get("window").width;
   const cardAnimation = useRef(new Animated.Value(screenWidth)).current;
@@ -50,12 +76,15 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
       if (i === index) {
         const cardData: ICardProps = {
           isIcon: false,
-          highLight: tempData.markers[i].isSafe,
-          title: "Lorem ipsum",
-          subtitle1: `${tempData.markers[i].latitude}, ${tempData.markers[i].longitude}`,
-          subtitle2: `${tempData.markers[i].date}`,
+          highLight: markers[i].isSafe,
+          title: `Reading ${markers[i].id}`,
+          subtitle1: `${markers[i].location.latitude}, ${markers[i].location.longitude}`,
+          subtitle2: `Date: ${markers[i].datetime.date}`,
           description: "Laboris in et ullamco magna excepteur aliquip mollit occaecat aliqua anim exercitation.",
-          onPress: () => navigation.navigate("ViewReadingScreen", { validNavigation: true })
+          onPress: () => navigation.navigate("ViewReadingScreen", {
+            validNavigation: true,
+            readingId: markers[i].id
+          })
         }
         setActiveCard(!marker);
         setCardData(cardData);
@@ -92,14 +121,16 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
           longitudeDelta: 0.0421
         }}>
           {
-            tempData.markers.map((marker: TMarkerData, index: number) => {
+            markers.map((marker: any, index: number) => {
               return (
                 <MapIcon
                   key={index}
                   index={index}
                   onActive={handleMarkerPress}
                   active={activeMarkers[index]}
-                  {...marker}
+                  latitude={marker.location.latitude}
+                  longitude={marker.location.longitude}
+                  isSafe={marker.isSafe}
                 />
               );
             })

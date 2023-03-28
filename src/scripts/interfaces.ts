@@ -13,7 +13,6 @@ export type IMarkerProps = {
   latitude: number,
   longitude: number,
   isSafe: boolean,
-  date: string,
   index: number,
   onActive: (index: number) => void,
   active: boolean,
