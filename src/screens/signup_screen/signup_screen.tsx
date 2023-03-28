@@ -113,11 +113,6 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
     setKeyboardVisible(true);
   }
 
-  const handlePasswordChange = (event: any) => {
-    // ##CHECK PASSWORD STRENGTH##
-    setConfirmPassword(event.nativeEvent.text);
-  }
-
   return (
     <View style={[styles.container, pageContrast]}>
       <TopNav handlePress={() => navigation.goBack()} />
@@ -201,7 +196,9 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
                 cursorColor={hslToString(color)}
                 onFocus={() => handleFocus(0)}
                 secureTextEntry={true}
-                onChange={handlePasswordChange}
+                onChange={
+                  (event) => setConfirmPassword(event.nativeEvent.text)
+                }
               />
             </View>
             <View style={styles.buttonContainer}>
