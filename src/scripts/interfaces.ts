@@ -6,6 +6,7 @@ import * as type from './types';
 export interface IButtonProps {
   onPress: ((event: GestureResponderEvent) => void) | null | undefined;
   children: React.ReactNode;
+  disabled?: boolean;
 }
 
 export type IMarkerProps = {

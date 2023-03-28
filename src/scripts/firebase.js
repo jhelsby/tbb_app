@@ -99,13 +99,16 @@ const getUserName = () => {
 
 export const postReading = async (reading) => {
   try {
+    let docName;
     await addDoc(collection(getFirestore(), 'readings'), {
       name: getUserName(),
       ...reading,
       timestamp: serverTimestamp()
+    }).then((docRef) => {
+      docName = docRef.id;
     });
-  }
-  catch(error) {
+    return docName;
+  } catch(error) {
     console.error('Error posting reading to Firebase Database', error);
   }
 

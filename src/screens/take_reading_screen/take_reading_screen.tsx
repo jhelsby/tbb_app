@@ -1,20 +1,19 @@
 import React, { useEffect, useCallback, ReactElement } from "react";
-import { View, Text, ScrollView, Dimensions, useColorScheme } from "react-native";
+import { View, Text, ScrollView, Dimensions, useColorScheme, Alert } from "react-native";
 import { BarChart, PieChart } from "react-native-chart-kit";
 import { useFocusEffect } from "@react-navigation/native";
 
-import { styles } from "./view_readings_styles";
+import { styles } from "./take_reading_styles";
 import { styles as globalStyles } from "../../../App_styles";
 import { colorInterpolate, color1, color3 } from "../../scripts/colors";
 
 import TopNav from "../../components/top_nav/top_nav";
-
-import { TPieChartData, TReading } from "../../scripts/types";
+import Button from "../../components/button/button";
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, doesDocExist, getReading, postReading } from "../../scripts/firebase";
 
-export default function ViewReadingsScreen({ navigation, route } : any) : ReactElement<any> {
+export default function TakeReadingScreen({ navigation, route } : any) : ReactElement<any> {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
 
@@ -34,6 +33,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
   });
 
   const [isLoggedIn, setLoggedIn] = React.useState(false);
+  const [docName, setDocName] = React.useState<string>("");
 
   const [readingData, setReadingData] = React.useState<any>({
     location: {
@@ -62,45 +62,6 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
     }, [])
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      if (isLoggedIn) {
-        getReading(route.params.readingId).then((data: any) => {
-          console.log(data)
-          setReadingData(data);
-  
-  
-          const tempPieChartData: any[] = [];
-  
-          data.measurements.forEach((measurement: any, index: number) => {
-            const color: any = colorInterpolate(color3, color1, index/(data.measurements.length - 1));
-            tempPieChartData.push({
-              name: measurement.name,
-              value: measurement.value,
-              color: `hsl(${color.h}, ${color.s}%, ${color.l}%)`,
-              legendFontColor: "#7F7F7F",
-              legendFontSize: 15,
-            });
-          });
-          setPieChartData(tempPieChartData);
-  
-          setBarChartData({
-            labels: data.measurements.map((measurement: any) => measurement.name),
-            datasets: [
-              {
-                data: data.measurements.map((measurement: any) => measurement.value),
-                colors: data.measurements.map((measurement: any, index: number) => {
-                  const color: any = colorInterpolate(color3, color1, index/(readingData.measurements.length - 1));
-                  return (opacity = 1) => `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
-                })
-              },
-            ],
-          });
-        });
-      }
-    }, [isLoggedIn])
-  )
-
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setLoggedIn(true);
@@ -108,6 +69,20 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
       setLoggedIn(false);
     }
   });
+
+  const handleSync = async () => {
+    if (isLoggedIn) {
+      if (docName) {
+        Alert.alert("This reading has already been synced.");
+      } else {
+        console.log("Syncing...");
+        const docName = await postReading(readingData);
+        if (docName) {
+          setDocName(docName);
+        }
+      }
+    }
+  }
 
   return (
     <View style={[styles.container, pageContrast]}>
@@ -124,6 +99,17 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
           <Text style={styles.data}>{readingData.datetime.date}</Text>
           <Text style={styles.data}>{`Latitude: ${readingData.location.latitude}, Longitude: ${readingData.location.latitude}`}</Text>
         </View>
+        {
+          isLoggedIn && (
+          <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleSync} disabled={!!docName} >
+                <Text style={[styles.buttonText]}>{docName ? "Synced" : "Sync"}</Text>
+              </Button>
+            </View>
+          </View>
+          )
+        }
         <View style={[globalStyles.tile, styles.barChartContainer, containerContrast]}>
           <BarChart
             data={barChartData}

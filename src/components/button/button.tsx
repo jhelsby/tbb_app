@@ -19,15 +19,19 @@ export default function Button(props: PropsWithChildren<IButtonProps>) : React.R
     backgroundColor: hslToString(colorLight)
   }
 
+  const disabledStyle : { backgroundColor: string } = {
+    backgroundColor: 'hsl(0, 0%, 80%)'
+  }
+
   return (
     <Pressable
       style={[
         styles.container, 
-        pressed ? activeStyle : inactiveStyle,
+        props.disabled ? disabledStyle : pressed ? activeStyle : inactiveStyle,
         Array.isArray(props.children) ? styles.containerMulti : styles.containerSingle
       ]}
-      onPress={props.onPress}
-      onPressIn={() => setPressed(true)}
+      onPress={props.disabled ? () => {} : props.onPress}
+      onPressIn={() => setPressed(true && !props.disabled)}
       onPressOut={() => setPressed(false)}>
       {
         props.children
