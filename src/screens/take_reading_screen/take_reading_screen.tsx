@@ -37,8 +37,8 @@ export default function TakeReadingScreen({ navigation, route } : any) : ReactEl
 
   const [readingData, setReadingData] = React.useState<any>({
     location: {
-      latitude: 0,
-      longitude: 0,
+      latitude: Math.round(Math.random() * 90 * 1000000) / 1000000,
+      longitude: Math.round(Math.random() * 180 * 1000000) / 1000000,
     },
     datetime: {
       date: "",
