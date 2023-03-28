@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 110,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     backgroundColor: '#fff',
     padding: 20,
     overflow: 'hidden',
@@ -96,7 +96,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     width: '100%',
     textAlign: 'center',
-    marginVertical: 5,
+    marginVertical: 10,
     paddingHorizontal: '5%',
   },
   clickableText: {

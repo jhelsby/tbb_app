@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 110,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     backgroundColor: '#fff',
     padding: 20,
     overflow: 'hidden',

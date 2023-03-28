@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { View, Text, Platform, useColorScheme } from "react-native";
+import React, { useEffect, useState } from "react";
+import { useColorScheme, Keyboard } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -73,6 +73,23 @@ export default function App() {
     },
   ];
 
+
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true); // or some other action
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false); // or some other action
+    });
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   const focusedScreens: boolean[] = tabScreens.map((screen: ITabScreen) => screen.name === "HomeNav");
 
   const setFocusedScreen = (index: number) => {
@@ -109,7 +126,8 @@ export default function App() {
               tabBarStyle: {
                 ...styles.tabBar,
                 ...styles.tile,
-                ...containerContrast
+                ...containerContrast,
+                bottom: isKeyboardVisible ? -100 : 16
                }
             }}>
             {

@@ -6,6 +6,8 @@ export const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     paddingTop: '5%',
+    borderColor: 'blue',
+    borderWidth: 1,
   },
   lightPage: {
     backgroundColor: '#EBF1FF',
@@ -39,7 +41,6 @@ export const styles = StyleSheet.create({
   tabBar: {
     height: 60,
     position: 'absolute',
-    bottom: 16,
     right: 16,
     left: 16,
   },
