@@ -159,3 +159,54 @@ export const doesDocExist = async (collectionName, docName) => {
     console.error('Error getting reading from Firebase Database', error);
   }
 }
+
+export const getAllNews = async () => {
+  const news = [];
+  const newsQuery = query(collection(getFirestore(), 'news'), orderBy('timestamp', 'desc'));
+  const querySnapshot = await getDocs(newsQuery);
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    news.push({
+      id: doc.id,
+      ...doc.data()
+    });
+  });
+  return news;
+}
+
+export const postNews = async () => {
+  try {
+    let docName;
+    await addDoc(collection(db, 'news'), {
+      title: "New News",
+      author: "Admin",
+      datetime: {
+        date: "2021-05-01",
+        time: "12:00:00"
+      },
+      descripton: "This is a new news article",
+      content: [
+        {
+          heading: "Heading 1",
+          text: "Nisi ex eiusmod est labore cillum ipsum ex. Nisi et qui labore veniam quis pariatur. Do cupidatat ad minim aliquip Lorem adipisicing exercitation proident laborum minim anim. Consequat non duis ipsum ipsum laboris excepteur proident sunt commodo anim. Amet fugiat do mollit adipisicing."
+        },
+        {
+          heading: "Heading 2",
+          text: "Magna ullamco sit aliqua proident cillum culpa occaecat laboris proident ipsum deserunt laborum eiusmod ex. Aliquip dolor enim quis laborum deserunt occaecat ad ea consequat in do dolor aliquip. Cillum deserunt mollit cillum est anim quis proident ex ea. Nulla ut exercitation irure duis Lorem consectetur ad consequat ullamco. Sunt labore mollit et adipisicing sit consequat magna officia. Excepteur occaecat nisi aute consequat consequat qui aliqua magna officia."
+        },
+        {
+          heading: "Heading 3",
+          text: "Tempor fugiat consectetur elit eiusmod exercitation do mollit commodo adipisicing tempor. Quis cillum esse id anim excepteur aliquip consequat aute labore id laboris. Exercitation laboris cupidatat pariatur aute irure ea laboris et mollit proident anim nostrud consequat voluptate."
+        }
+      ],
+      timestamp: serverTimestamp()
+    }).then((docRef) => {
+      docName = docRef.id;
+    });
+    return docName;
+  } catch(error) {
+    console.error('Error posting reading to Firebase Database', error);
+  }
+
+  console.log("Posted Reading")
+}

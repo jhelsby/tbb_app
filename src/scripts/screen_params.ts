@@ -25,7 +25,7 @@ export type HomeParamList = {
 
 export type NewsParamList = {
   NewsScreen: undefined;
-  ViewNewsScreen: { validNavigation: boolean } | undefined;
+  ViewNewsScreen: { validNavigation: boolean, newsId?: string } | undefined;
 };
 
 export type AccountParamList = {
