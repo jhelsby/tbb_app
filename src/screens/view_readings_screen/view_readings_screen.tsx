@@ -122,7 +122,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
         <View style={[globalStyles.tile, styles.dataContainer, containerContrast]}>
           <Text style={[styles.dataTitle, readingData.isSafe ? styles.safe : styles.notSafe]}>{readingData.isSafe ? "SAFE" : "NOT SAFE"}</Text>
           <Text style={styles.data}>{readingData.datetime.date}</Text>
-          <Text style={styles.data}>{`Latitude: ${readingData.location.latitude}, Longitude: ${readingData.location.latitude}`}</Text>
+          <Text style={styles.data}>{`Latitude: ${readingData.location.latitude}, Longitude: ${readingData.location.longitude}`}</Text>
         </View>
         <View style={[globalStyles.tile, styles.barChartContainer, containerContrast]}>
           <BarChart
