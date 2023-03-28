@@ -37,11 +37,12 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
+        console.log("Getting Readings...")
         getReadings().then((readings) => {
           setReadings(readings);
         });
       }
-    }, [])
+    }, [isLoggedIn])
   );
 
   const handleSync = () => {
@@ -74,10 +75,14 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
                 isIcon={false}
                 highLight={reading.isSafe}
                 title={"Reading " + reading.id}
-                subtitle1={`Latitude: ${reading.latitude}, Longitude: ${reading.longitude}`}
-                subtitle2={reading.date} 
+                subtitle1={`Latitude: ${reading.location.latitude}, Longitude: ${reading.location.longitude}`}
+                subtitle2={`Date: ${reading.datetime.date}, Time: ${reading.datetime.time}`}
                 description={"Description needs to be changed"}
-                onPress={() => navigation.navigate("ViewReadingScreen", { validNavigation: true })}
+                onPress={() => navigation.navigate("ViewReadingScreen",
+                {
+                  validNavigation: true,
+                  readingId: reading.id,
+                })}
               />
             );
           })

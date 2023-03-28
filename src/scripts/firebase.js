@@ -12,6 +12,8 @@ import {
 import {
   getFirestore,
   query,
+  doc,
+  getDoc,
   getDocs,
   collection,
   where,
@@ -48,7 +50,7 @@ export const logInWithEmailAndPassword = async (email, password) => {
   .then((userCredential) => {
     // Signed in 
     const user = userCredential.user;
-    console.log("Logged in user: ", user);
+    console.log("Logged in user");
     // ...
   }).catch((error) => {
     const errorCode = error.code;
@@ -106,8 +108,26 @@ export const postReading = async (reading) => {
   catch(error) {
     console.error('Error posting reading to Firebase Database', error);
   }
+
+  console.log("Posted Reading")
 }
 
+export const getReading = async (id) => {
+  try {
+    let reading = {};
+    const docRef = doc(db, "readings", id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      reading = docSnap.data();
+    } else {
+      throw new Error(`No reading found with id: ${id}`);
+    }
+    console.log("Got Reading")
+    return reading;
+  } catch(error) {
+    console.error('Error getting reading from Firebase Database', error);
+  }
+}
 
 export const getReadings = async () => {
   const readings = [];
@@ -123,5 +143,16 @@ export const getReadings = async () => {
     });
   });
 
+  console.log("Got Readings")
   return readings;
+}
+
+export const doesDocExist = async (collectionName, docName) => {
+  try {
+    const docRef = doc(db, collectionName, docName);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists();
+  } catch(error) {
+    console.error('Error getting reading from Firebase Database', error);
+  }
 }

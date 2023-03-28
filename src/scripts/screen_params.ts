@@ -13,7 +13,7 @@ export type MapParamList = {
 
 export type ReadingsParamList = {
   ReadingsScreen: undefined;
-  ViewReadingScreen: { validNavigation: boolean } | undefined;
+  ViewReadingScreen: { validNavigation: boolean, readingId?: string } | undefined;
 };
 
 export type HomeParamList = {

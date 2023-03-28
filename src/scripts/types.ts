@@ -43,14 +43,21 @@ export type TMarkerData = {
 }
 
 export type TReading = {
-  latitude: number,
-  longitude: number,
+  location: {
+    latitude: number,
+    longitude: number,
+  },
+  datetime: {
+    date: string,
+    time: string,
+  }
   isSafe: boolean,
-  date: string,
-  turbidity: number,
-  ph: number,
-  chloride: number,
-  nitrate: number,
-  flouride: number,
-  conductivity: number,
+  measurements: {
+    turbidity: number,
+    ph: number,
+    chloride: number,
+    nitrate: number,
+    flouride: number,
+    conductivity: number,
+  }
 }
