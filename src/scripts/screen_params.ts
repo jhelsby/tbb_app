@@ -33,4 +33,5 @@ export type AccountParamList = {
   ReportScreen: { validNavigation: boolean } | undefined;
   LoginScreen: { validNavigation: boolean } | undefined;
   SignupScreen: { validNavigation: boolean } | undefined;
+  ResetPasswordScreen: { validNavigation: boolean } | undefined;
 };

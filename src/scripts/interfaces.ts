@@ -1,9 +1,10 @@
 import React from "react";
+import { GestureResponderEvent } from "react-native";
 
 import * as type from './types';
 
 export interface IButtonProps {
-  onPress: () => void;
+  onPress: ((event: GestureResponderEvent) => void) | null | undefined;
   children: React.ReactNode;
 }
 
