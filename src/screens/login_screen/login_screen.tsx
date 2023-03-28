@@ -13,7 +13,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AccountParamList } from "../../scripts/screen_params";
 
-import { auth, signInWithGoogle, logInWithEmailAndPassword } from "../../scripts/firebase";
+import { auth, logInWithEmailAndPassword } from "../../scripts/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import { styles } from "./login_styles";
@@ -167,11 +167,6 @@ export default function LoginScreen({ navigation, route } : any) : ReactElement<
             <View style={styles.buttonContainer}>
               <Button onPress={() => logInWithEmailAndPassword(email, password)}>
                 <Text style={styles.buttonText}>Login</Text>
-              </Button>
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button onPress={signInWithGoogle}>
-                <Text style={styles.buttonText}>Login with Google</Text>
               </Button>
             </View>
             <Text

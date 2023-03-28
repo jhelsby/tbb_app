@@ -36,27 +36,7 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const googleProvider = new GoogleAuthProvider();
 
-
-export const signInWithGoogle = async () => {
-  try {
-    const res = await signInWithPopup(getAuth(), googleProvider);
-    // const q = query(collection(db, "users"), where("uid", "==", user.uid));
-    // const docs = await getDocs(q);
-    // if (docs.docs.length === 0) {
-    //   await addDoc(collection(db, "users"), {
-    //     uid: user.uid,
-    //     name: user.displayName,
-    //     authProvider: "google",
-    //     email: user.email,
-    //   });
-    // }
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  }
-};
 
 export const logInWithEmailAndPassword = async (email, password) => {
   console.log("Logging in with email: ", email, " and password: ", password);
