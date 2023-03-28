@@ -7,6 +7,10 @@ import { styles } from "./readings_styles";
 import { styles as globalStyles } from "../../../App_styles";
 
 import Card from "../../components/card/card";
+import Button from "../../components/button/button";
+
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../scripts/firebase";
 
 import readingsData from "./data.temp.json";
 
@@ -18,6 +22,21 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
   const isDarkMode = useColorScheme() === 'dark';
   const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
   const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
+  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
+
+  const [isLoggedIn, setLoggedIn] = React.useState(false);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  });
+
+  const handleSync = () => {
+    console.log("Syncing All...");
+  };
 
   return (
     <View style={[styles.container, pageContrast]}>
@@ -26,6 +45,17 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
           paddingBottom: 90,
         }}>
         <Text style={[styles.title, textContrast]}>Readings</Text>
+        {
+          isLoggedIn && (
+          <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleSync} >
+                <Text style={[styles.buttonText]}>Sync All</Text>
+              </Button>
+            </View>
+          </View>
+          )
+        }
         {
           cards.map((card, index) => {
             return (
