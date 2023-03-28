@@ -160,6 +160,23 @@ export const doesDocExist = async (collectionName, docName) => {
   }
 }
 
+export const getNews = async (id) => {
+  try {
+    let reading = {};
+    const docRef = doc(db, "news", id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      reading = docSnap.data();
+    } else {
+      throw new Error(`No news found with id: ${id}`);
+    }
+    console.log("Got News")
+    return reading;
+  } catch(error) {
+    console.error('Error getting news from Firebase Database', error);
+  }
+}
+
 export const getAllNews = async () => {
   const news = [];
   const newsQuery = query(collection(getFirestore(), 'news'), orderBy('timestamp', 'desc'));
@@ -184,19 +201,26 @@ export const postNews = async () => {
         date: "2021-05-01",
         time: "12:00:00"
       },
-      descripton: "This is a new news article",
-      content: [
+      description: "This is a new news article",
+      contents: [
         {
           heading: "Heading 1",
-          text: "Nisi ex eiusmod est labore cillum ipsum ex. Nisi et qui labore veniam quis pariatur. Do cupidatat ad minim aliquip Lorem adipisicing exercitation proident laborum minim anim. Consequat non duis ipsum ipsum laboris excepteur proident sunt commodo anim. Amet fugiat do mollit adipisicing."
+          paragraphs: [
+            "Nisi ex eiusmod est labore cillum ipsum ex. Nisi et qui labore veniam quis pariatur. Do cupidatat ad minim aliquip Lorem adipisicing exercitation proident laborum minim anim. Consequat non duis ipsum ipsum laboris excepteur proident sunt commodo anim. Amet fugiat do mollit adipisicing."
+          ]
         },
         {
           heading: "Heading 2",
-          text: "Magna ullamco sit aliqua proident cillum culpa occaecat laboris proident ipsum deserunt laborum eiusmod ex. Aliquip dolor enim quis laborum deserunt occaecat ad ea consequat in do dolor aliquip. Cillum deserunt mollit cillum est anim quis proident ex ea. Nulla ut exercitation irure duis Lorem consectetur ad consequat ullamco. Sunt labore mollit et adipisicing sit consequat magna officia. Excepteur occaecat nisi aute consequat consequat qui aliqua magna officia."
+          paragraphs: [
+            "Magna ullamco sit aliqua proident cillum culpa occaecat laboris proident ipsum deserunt laborum eiusmod ex. Aliquip dolor enim quis laborum deserunt occaecat ad ea consequat in do dolor aliquip. Cillum deserunt mollit cillum est anim quis proident ex ea. Nulla ut exercitation irure duis Lorem consectetur ad consequat ullamco. Sunt labore mollit et adipisicing sit consequat magna officia. Excepteur occaecat nisi aute consequat consequat qui aliqua magna officia.",
+            "Cillum deserunt mollit cillum est anim quis proident ex ea. Nulla ut exercitation irure duis Lorem consectetur ad consequat ullamco. Sunt labore mollit et adipisicing sit consequat magna officia. Excepteur occaecat nisi aute consequat consequat qui aliqua magna officia."
+          ]
         },
         {
           heading: "Heading 3",
-          text: "Tempor fugiat consectetur elit eiusmod exercitation do mollit commodo adipisicing tempor. Quis cillum esse id anim excepteur aliquip consequat aute labore id laboris. Exercitation laboris cupidatat pariatur aute irure ea laboris et mollit proident anim nostrud consequat voluptate."
+          paragraphs: [
+            "Tempor fugiat consectetur elit eiusmod exercitation do mollit commodo adipisicing tempor. Quis cillum esse id anim excepteur aliquip consequat aute labore id laboris. Exercitation laboris cupidatat pariatur aute irure ea laboris et mollit proident anim nostrud consequat voluptate."
+          ]
         }
       ],
       timestamp: serverTimestamp()
