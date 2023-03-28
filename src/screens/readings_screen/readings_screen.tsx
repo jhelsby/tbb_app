@@ -1,7 +1,8 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useCallback } from "react";
 import { View, Text, ScrollView, useColorScheme } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ReadingsParamList } from "../../scripts/screen_params";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { styles } from "./readings_styles";
 import { styles as globalStyles } from "../../../App_styles";
@@ -10,14 +11,11 @@ import Card from "../../components/card/card";
 import Button from "../../components/button/button";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../scripts/firebase";
-
-import readingsData from "./data.temp.json";
+import { auth, getReadings } from "../../scripts/firebase";
 
 type Props = NativeStackScreenProps<ReadingsParamList, "ReadingsScreen">;
 
 export default function ReadingsScreen({ navigation } : Props) : ReactElement<Props> {
-  const cards = readingsData.cards;
 
   const isDarkMode = useColorScheme() === 'dark';
   const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
@@ -26,6 +24,8 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
 
   const [isLoggedIn, setLoggedIn] = React.useState(false);
 
+  const [readings, setReadings] = React.useState<any>([]);
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setLoggedIn(true);
@@ -33,6 +33,16 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
       setLoggedIn(false);
     }
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isLoggedIn) {
+        getReadings().then((readings) => {
+          setReadings(readings);
+        });
+      }
+    }, [])
+  );
 
   const handleSync = () => {
     console.log("Syncing All...");
@@ -57,16 +67,16 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
           )
         }
         {
-          cards.map((card, index) => {
+          readings.length !== 0 && readings.map((reading: any, index: number) => {
             return (
               <Card
                 key={index}
                 isIcon={false}
-                highLight={card.highlight}
-                title={card.title}
-                subtitle1={card.location}
-                subtitle2={card.date} 
-                description={card.description}
+                highLight={reading.isSafe}
+                title={"Reading " + reading.id}
+                subtitle1={`Latitude: ${reading.latitude}, Longitude: ${reading.longitude}`}
+                subtitle2={reading.date} 
+                description={"Description needs to be changed"}
                 onPress={() => navigation.navigate("ViewReadingScreen", { validNavigation: true })}
               />
             );

@@ -17,6 +17,9 @@ import {
   where,
   addDoc,
   serverTimestamp,
+  onSnapshot,
+  orderBy,
+  limit,
 } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -103,4 +106,22 @@ export const postReading = async (reading) => {
   catch(error) {
     console.error('Error posting reading to Firebase Database', error);
   }
+}
+
+
+export const getReadings = async () => {
+  const readings = [];
+  // Create the query to load the last 12 messages and listen for new ones.
+  const recentReadingsQuery = query(collection(getFirestore(), 'readings'), orderBy('timestamp', 'desc'), limit(12));
+  
+  const querySnapshot = await getDocs(recentReadingsQuery);
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    readings.push({
+      id: doc.id,
+      ...doc.data()
+    });
+  });
+
+  return readings;
 }
