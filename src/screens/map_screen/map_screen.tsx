@@ -56,6 +56,9 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
             setActiveMarkers(reading.map((marker) => false));
           }
         });
+      } else {
+        setMarkers([]);
+        setActiveMarkers([]);
       }
     }, [isLoggedIn])
   );

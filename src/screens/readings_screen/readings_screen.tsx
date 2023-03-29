@@ -12,6 +12,7 @@ import Button from "../../components/button/button";
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, getAllReadings } from "../../scripts/firebase";
+import { TReading } from "../../scripts/types";
 
 type Props = NativeStackScreenProps<ReadingsParamList, "ReadingsScreen">;
 
@@ -24,7 +25,7 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
 
   const [isLoggedIn, setLoggedIn] = React.useState(false);
 
-  const [readings, setReadings] = React.useState<any>([]);
+  const [readings, setReadings] = React.useState<TReading[]>([]);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -39,8 +40,10 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
       if (isLoggedIn) {
         console.log("Getting Readings...")
         getAllReadings().then((readings) => {
-          setReadings(readings);
+          if (readings) setReadings(readings as TReading[]);
         });
+      } else {
+        setReadings([]);
       }
     }, [isLoggedIn])
   );

@@ -25,12 +25,10 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
 
   const [pieChartData, setPieChartData] = React.useState<any>([]);
   const [barChartData, setBarChartData] = React.useState<any>({
-    labels: ["Turbidity", "pH", "Chloride", "Nitrate", "Flouride", "Conductivity"],
-    datasets: [
-      {
-        data: [0, 0, 0, 0, 0, 0],
-      },
-    ],
+    labels: [],
+    datasets: [{
+      data: [],
+    }],
   });
 
   const [isLoggedIn, setLoggedIn] = React.useState(false);
@@ -96,6 +94,35 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
               },
             ],
           });
+        });
+      } else {
+        setBarChartData({
+          labels: [],
+          datasets: [{
+            data: [],
+          }],
+        });
+        setPieChartData([]);
+        setReadingData({
+          location: {
+            latitude: 0,
+            longitude: 0,
+          },
+          datetime: {
+            date: "",
+            time: "",
+          },
+          id: "",
+          isSafe: false,
+          hasSynced: true,
+          measurements: [
+            {name: "turbidity", value: 0},
+            {name: "ph", value: 0},
+            {name: "chloride", value: 0},
+            {name: "nitrate", value: 0},
+            {name: "flouride", value: 0},
+            {name: "conductivity", value: 0},
+          ],
         });
       }
     }, [isLoggedIn])

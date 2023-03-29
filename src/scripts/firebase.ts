@@ -142,16 +142,14 @@ export const sendPasswordReset = async (email: string) : Promise<boolean> => {
 export const logout = async () : Promise<boolean> => {
   let success: boolean = false;
   // Sign out
-  signOut(auth).then(() => {
+  try {
+    signOut(auth)
     console.log("Logged out");
     success = true;
-  }).catch((error: any) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
+  } catch(error) {
+    console.error(error);
     success = false;
-  });
+  }
   return success;
 };
 

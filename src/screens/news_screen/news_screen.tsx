@@ -11,6 +11,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, getAllNews } from "../../scripts/firebase";
 
 import Card from "../../components/card/card";
+import { TNews } from "../../scripts/types";
 
 type Props = NativeStackScreenProps<NewsParamList, "NewsScreen">;
 
@@ -22,7 +23,7 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
 
   const [isLoggedIn, setLoggedIn] = React.useState(false);
 
-  const [news, setNews] = React.useState<any>([]);
+  const [news, setNews] = React.useState<TNews[]>([]);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -37,8 +38,10 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
       if (isLoggedIn) {
         console.log("Getting News...")
         getAllNews().then((news) => {
-          setNews(news);
+          if (news) setNews(news as TNews[]);
         });
+      } else {
+        setNews([]);
       }
     }, [isLoggedIn])
   );

@@ -40,6 +40,11 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
     console.log("Delete Pressed");
   };
 
+  const handleLogout = async () => {
+    const success: boolean = await logout();
+    if (!success) console.error("Logout failed");
+  };
+
   return (
     <View style={[globalStyles.page, styles.container, pageContrast]}>
       <ScrollView style={styles.scrollView}>
@@ -58,7 +63,7 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
               </View>
               <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
                 <View style={styles.buttonContainer}>
-                  <Button onPress={logout}>
+                  <Button onPress={handleLogout}>
                     <Text style={[styles.buttonText]}>Log Out</Text>
                   </Button>
                 </View>
