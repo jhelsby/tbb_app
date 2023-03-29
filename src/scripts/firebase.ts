@@ -1,5 +1,3 @@
-// Import the functions you need from the SDKs you need
-
 import { FirebaseApp, initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -54,6 +52,10 @@ export const auth: Auth = getAuth(app);
 // gets the firestore database
 export const db: Firestore = getFirestore(app);
 
+// ========================================================
+// ===================== AUTHENTICATION ===================
+// ========================================================
+
 
 /**
  * logins in a user with email and password
@@ -83,19 +85,21 @@ export const logInWithEmailAndPassword = async (email: string, password: string)
 /**
  * Register and new user with email and password
  * 
- * @param email 
- * @param password 
- * @returns 
+ * @param email - the email of the user
+ * @param password - the password of the user
+ * @returns the user if successful, null otherwise
  */
 export const registerWithEmailAndPassword = async (email: string, password: string) : Promise<User | null> => {
   let user: User | null = null;
   console.log("Registering with email: ", email, " and password: ", password);
+  // Create a new user
   createUserWithEmailAndPassword(auth, email, password)
   .then((userCredential: UserCredential) => {
     // Signed in 
     user = userCredential.user;
     console.log("User Registered:");
   }).catch((error: any) => {
+    // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
     console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
@@ -103,12 +107,21 @@ export const registerWithEmailAndPassword = async (email: string, password: stri
   return user;
 };
 
+/**
+ * 
+ * Sends a password reset email to the user
+ * 
+ * @param email - the email of the user
+ * @returns true if successful, false otherwise
+ */
 export const sendPasswordReset = async (email: string) : Promise<boolean> => {
   let success: boolean = false;
   try {
+    // Send password reset email
     await sendPasswordResetEmail(auth, email);
     success = true;
   } catch (error: any) {
+    // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
     console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
@@ -117,12 +130,21 @@ export const sendPasswordReset = async (email: string) : Promise<boolean> => {
   return success;
 };
 
+
+/**
+ * Logs out the current user
+ * 
+ * @returns true if successful, false otherwise
+ * 
+*/
 export const logout = async () : Promise<boolean> => {
   let success: boolean = false;
+  // Sign out
   signOut(auth).then(() => {
     console.log("Logged out");
     success = true;
   }).catch((error: any) => {
+    // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
     console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
@@ -131,29 +153,47 @@ export const logout = async () : Promise<boolean> => {
   return success;
 };
 
-
-
-
-
-
-
+/**
+ * Gets the current user
+ * 
+ * @returns the current user if logged in, null otherwise
+*/
 const getUserName = () : string | null => {
+  // Get the current user
   if (auth.currentUser) {
     return auth.currentUser.displayName;
   }
+  // If no user is logged in
   return 'Anonymous';
 }
 
+
+
+// ========================================================
+// ===================== DATABASE =========================
+// ========================================================
+
+
+/**
+ * Send the reading to the database
+ * 
+ * @param reading - the reading to post
+ * 
+ * @returns the id of the document if successful, null otherwise
+ */
 export const postReading = async (reading: TReading) : Promise<string | null | undefined> => {
+  // Add a new document to the readings collection.
   await addDoc(collection(db, 'readings'), {
     name: getUserName(),
     ...reading,
     timestamp: serverTimestamp()
   }).then((docRef: DocumentReference<DocumentData>) => {
+    // Log the id of the document
     console.log("Posted Reading")
     const docName: string = docRef.id;
     return docName;
   }).catch((error: any) => {
+    // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
     console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
@@ -161,17 +201,28 @@ export const postReading = async (reading: TReading) : Promise<string | null | u
   });
 }
 
+/**
+ * Gets a reading from the database by id
+ * 
+ * @param id - the id of the reading to get
+ * 
+ * @returns the reading if successful, null otherwise
+ */
 export const getReading = async (id: string) : Promise<TReading | null | undefined> => {
+  // Get the document with the id
   const docRef: DocumentReference<DocumentData> = doc(db, "readings", id);
   getDoc(docRef).then((docSnap: DocumentSnapshot<DocumentData>) => {
     if (docSnap.exists()) {
+      // Get the data from the document if the document exists
       const reading: TReading = docSnap.data() as TReading;
       console.log("Got Reading")
       return reading;
     } else {
+      // if the document doesn't exist throw an error
       throw new Error(`No reading found with id: ${id}`);
     }
   }).catch((error: any) => {
+    // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
     console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
@@ -179,18 +230,25 @@ export const getReading = async (id: string) : Promise<TReading | null | undefin
   });
 }
 
+
+/**
+ * Gets the last 12 readings from the database
+ * 
+ * @returns the readings if successful, null otherwise
+ */
 export const getReadings = async () : Promise<TReading[] | null | undefined> => {
   const readings: TReading[] = [];
-  // Create the query to load the last 12 messages and listen for new ones.
+  // Get the last 12 readings
   const recentReadingsQuery: Query<DocumentData> = query(
     collection(getFirestore(), 'readings'), 
     orderBy('timestamp', 'desc'), 
     limit(12)
   );
   
+  // Get the documents from the query
   getDocs(recentReadingsQuery).then((querySnapshot: any) => {
     querySnapshot.forEach((doc: any) => {
-      // doc.data() is never undefined for query doc snapshots
+      // Add the data from the document to the readings array
       readings.push({
         id: doc.id,
         hasSynced: true,
@@ -199,6 +257,7 @@ export const getReadings = async () : Promise<TReading[] | null | undefined> => 
       console.log("Got Readings")
       return readings;
     }).catch((error: any) => {
+      // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
       console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
@@ -207,11 +266,22 @@ export const getReadings = async () : Promise<TReading[] | null | undefined> => 
   });
 }
 
+/**
+ * Checks if a document exists in a collection
+ * 
+ * @param collectionName - the name of the collection to check
+ * @param docName - the name of the document to check
+ * 
+ * @returns true if the document exists, false otherwise
+ */
 export const doesDocExist = async (collectionName: string, docName: string) : Promise<boolean | null | undefined> => {
+  // Get the document with the id
   const docRef: DocumentReference<DocumentData> = doc(db, collectionName, docName);
   getDoc(docRef).then((docSnap: DocumentSnapshot<DocumentData>) => {
+    // Return true if the document exists, false otherwise
     return !!docSnap.exists();
   }).catch((error: any) => {
+    // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
     console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
@@ -219,18 +289,27 @@ export const doesDocExist = async (collectionName: string, docName: string) : Pr
   });
 }
 
+/**
+ * Gets a news article from the database by id
+ * 
+ * @param id - the id of the news to get
+ */
 export const getNews = async (id: string) : Promise<TNews | null |undefined> => {
   let news: TNews | null = null;
+  // Get the document with the id
   const docRef: DocumentReference<DocumentData> = doc(db, "news", id);
   getDoc(docRef).then((docSnap: DocumentSnapshot<DocumentData>) => {
     if (docSnap.exists()) {
+      // Get the data from the document if the document exists
       news = docSnap.data() as TNews;
       console.log("Got News")
       return news;
     } else {
+      // if the document doesn't exist throw an error
       throw new Error(`No news found with id: ${id}`);
     }
   }).catch((error: any) => {
+    // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
     console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
@@ -241,14 +320,15 @@ export const getNews = async (id: string) : Promise<TNews | null |undefined> => 
 /**
  * Gets all news from the database.
  * 
- * @returns {TNews[] | null | undefined} An array of news objects or null if there was an error.
+ * @returns the news if successful, null otherwise
  */
-export const getAllNews = async () => {
+export const getAllNews = async (): Promise<TNews[] | null | undefined> => {
   const news: TNews[] = [];
+  // Get all news
   const newsQuery = query(collection(getFirestore(), 'news'), orderBy('timestamp', 'desc'));
   getDocs(newsQuery).then((querySnapshot: any) => {
     querySnapshot.forEach((doc: DocumentSnapshot<DocumentData>) => {
-      // doc.data() is never undefined for query doc snapshots
+      // Add the data from the document to the news array
       const data: TNews = doc.data() as TNews;
       news.push({
         ...data,
@@ -257,6 +337,7 @@ export const getAllNews = async () => {
       return news;
     });
   }).catch((error: any) => {
+    // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
     console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
@@ -264,7 +345,13 @@ export const getAllNews = async () => {
   });
 }
 
+/**
+ * Posts a new news article to the database.
+ * 
+ * @returns the id of the new news article if successful, null otherwise
+*/
 export const postNews = async (): Promise<string | null | undefined> => {
+  // Add a new document with a generated id.
   await addDoc(collection(db, 'news'), {
     title: "New News",
     author: "Admin",
@@ -296,10 +383,12 @@ export const postNews = async (): Promise<string | null | undefined> => {
     ],
     timestamp: serverTimestamp()
   }).then((docRef) => {
+    // Get the id of the new document
     const docName: string = docRef.id;
     console.log("Posted Reading")
     return docName;
   }).catch((error: any) => {
+    // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
     console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
