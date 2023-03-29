@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback, ReactElement } from "react";
-import { View, Animated, Dimensions, useColorScheme } from "react-native";
+import { View, Text, Animated, Dimensions, useColorScheme } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { MapParamList } from "../../scripts/screen_params";
 import { useFocusEffect } from "@react-navigation/native";
 
 import { styles } from "./map_styles";
+import { styles as globalStyles } from "../../../App_styles";
 
 import { TMarkerData } from "../../scripts/types";
 import { ICardProps } from "../../scripts/interfaces";
@@ -22,6 +23,8 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
   const [activeMarkers, setActiveMarkers] = useState<boolean[]>([]);
 
   const isDarkMode = useColorScheme() === "dark";
+  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
+  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
 
   const [activeCard, setActiveCard] = useState<boolean>(false);
   const [cardData, setCardData] = useState<ICardProps>({
@@ -140,16 +143,28 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
             })
           }
       </MapView>
-      <Animated.View style={[
-        styles.cardContainer,
-        { transform: [
-          {
-            translateX: cardAnimation
-          }
-        ]}
-      ]}>
-        <Card {...cardData} />
-      </Animated.View>
+      {
+        isLoggedIn ? (
+          <Animated.View style={[
+            styles.cardContainer,
+            { transform: [
+              { translateX: cardAnimation }
+            ]}
+          ]}>
+            <Card {...cardData} />
+          </Animated.View>
+        ) : (
+          <View
+            style={[
+              globalStyles.tile,
+              styles.infoContainer,
+              containerContrast,
+            ]}
+          >
+            <Text style={[styles.infoText, textContrast]}>Please Login to use the map to find nearby clean water.</Text>
+          </View>
+        )
+      }
     </View>
   );
 }

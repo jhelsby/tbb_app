@@ -60,7 +60,7 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
         }}>
         <Text style={[styles.title, textContrast]}>Readings</Text>
         {
-          isLoggedIn && (
+          isLoggedIn ? (
           <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
             <View style={styles.buttonContainer}>
               <Button onPress={handleSync} >
@@ -68,6 +68,16 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
               </Button>
             </View>
           </View>
+          ) : (
+            <View
+              style={[
+                globalStyles.tile,
+                styles.infoContainer,
+                containerContrast,
+              ]}
+            >
+              <Text style={[styles.infoText, textContrast]}>Please Login to see readings that have been saved to the cloud.</Text>
+            </View>
           )
         }
         {

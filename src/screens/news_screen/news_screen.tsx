@@ -20,6 +20,7 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
   const isDarkMode = useColorScheme() === 'dark';
   const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
   const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
+  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
 
   const [isLoggedIn, setLoggedIn] = React.useState(false);
 
@@ -54,7 +55,7 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
         }}>
         <Text style={[styles.title, textContrast]}>News</Text>
         {
-          news.map((card: any, index: number) => {
+          isLoggedIn ? news.map((card: any, index: number) => {
             return (
               <Card
                 key={index}
@@ -70,7 +71,17 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
                 description={card.description} 
               />
             );
-          })
+          }) : (
+            <View
+              style={[
+                globalStyles.tile,
+                styles.infoContainer,
+                containerContrast,
+              ]}
+            >
+              <Text style={[styles.infoText, textContrast]}>Please Login to see news articles.</Text>
+            </View>
+          )
         }
       </ScrollView>
     </View>

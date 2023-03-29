@@ -17,5 +17,22 @@ export const styles = StyleSheet.create({
     right: 0,
     bottom: 90,
     overflow: 'hidden',
-  }
+  },
+  infoContainer: {
+    position: 'absolute',
+    top: 30,
+    width: '90%',
+    marginHorizontal: '5%',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    backgroundColor: '#fff',
+    padding: 20,
+  },
+  infoText: {
+    fontSize: 16,
+    width: '100%',
+    textAlign: 'left',
+    marginVertical: 5,
+    paddingHorizontal: '5%',
+  },
 });
