@@ -23,13 +23,6 @@ export type TPieChartData = {
   legendFontSize: number
 };
 
-export type TNewsData = {
-  title: string,
-  author: string,
-  date: string,
-  contents: { heading: string, paragraphs: string[] }[],
-}
-
 export type TTextInputStyle = {
   borderColor: string,
   borderWidth: number,
@@ -51,7 +44,9 @@ export type TReading = {
     date: string,
     time: string,
   }
+  id: string,
   isSafe: boolean,
+  hasSynced: boolean,
   measurements: {
     turbidity: number,
     ph: number,
@@ -60,4 +55,19 @@ export type TReading = {
     flouride: number,
     conductivity: number,
   }
+}
+
+export type TNews = {
+  id: string,
+  title: string,
+  author: string,
+  datetime: {
+    date: string,
+    time: string,
+  },
+  description: string,
+  contents: { 
+    heading: string, 
+    paragraphs: string[] 
+  }[],
 }
