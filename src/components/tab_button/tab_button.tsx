@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Animated, useColorScheme } from "react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
-import { color1, color1Light, color3, color3Light, colorInterpolate } from "../../scripts/colors";
+import { color1, color1Light, color2, color2Light, colorInterpolate } from "../../scripts/colors";
 
 import { THSL } from "../../scripts/types";
 
@@ -26,8 +26,8 @@ export default function TabButton(props: any) {
   const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
   const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
-  const activeColor: THSL = colorInterpolate(color1, color3, index/(length - 1));
-  const inactiveColor: THSL = colorInterpolate(color1Light, color3Light, index/(length - 1));
+  const activeColor: THSL = colorInterpolate(color1, color2, index/(length - 1));
+  const inactiveColor: THSL = colorInterpolate(color1Light, color2Light, index/(length - 1));
   const activeColorString: string = `hsl(${activeColor.h}, ${activeColor.s}%, ${activeColor.l}%)`;
   const inactiveColorString: string = `hsl(${inactiveColor.h}, ${inactiveColor.s}%, ${inactiveColor.l}%)`;
 

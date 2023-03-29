@@ -1,11 +1,9 @@
 import { THSL } from "./types";
 
-export const color1 : THSL = { h: 220, s: 100, l: 69}
-export const color2 : THSL = { h: 28, s: 64, l: 59 };
-export const color3 : THSL = { h: 5, s: 66, l: 57 };
-export const color1Light : THSL = { h: 220, s: 67, l: 86 };
-export const color2Light : THSL = { h: 33, s: 84, l: 68 };
-export const color3Light : THSL = { h: 0, s: 71, l: 83 };
+export const color1 : THSL = { h: 208, s: 39, l: 40};
+export const color2 : THSL = { h: 33, s: 65, l: 57 };
+export const color1Light : THSL = { h: 203, s: 34, l: 48 };
+export const color2Light : THSL = { h: 33, s: 47, l: 72 };
 export const backgroundColor : THSL = { h: 0, s: 0, l: 100 };
 export const textColor : THSL = { h: 0, s: 0, l: 0 };
 

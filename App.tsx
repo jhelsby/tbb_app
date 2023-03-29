@@ -20,8 +20,8 @@ import { styles } from "./App_styles";
 import {
   color1,
   color1Light,
-  color3,
-  color3Light,
+  color2,
+  color2Light,
   backgroundColor,
   textColor,
   colorInterpolate,
@@ -87,8 +87,8 @@ export default function App() {
 
   const startColor: THSL = color1;
   const startColorLight: THSL = color1Light;
-  const endColor: THSL = color3;
-  const endColorLight: THSL = color3Light;
+  const endColor: THSL = color2;
+  const endColorLight: THSL = color2Light;
 
   return (
     <RootNavsContext.Provider value={tabScreens.map(screen => screen.name)}>

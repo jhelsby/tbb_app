@@ -7,7 +7,7 @@ import { styles } from "./home_styles";
 import { styles as globalStyles } from "../../../App_styles";
 
 import { ColorContext } from "../../context/color_context";
-import { color3, color3Light, hslToString } from "../../scripts/colors";
+import { color2, color2Light, hslToString } from "../../scripts/colors";
 
 import HomeSvg from "../../assets/svgs/home.svg";
 import Button from "../../components/button/button";

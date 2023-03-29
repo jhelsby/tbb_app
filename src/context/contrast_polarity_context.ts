@@ -3,8 +3,8 @@ import { createContext } from "react";
 import {
   color1,
   color1Light,
-  color3,
-  color3Light,
+  color2,
+  color2Light,
   backgroundColor,
   textColor
 } from "../scripts/colors";
@@ -12,8 +12,8 @@ import {
 export const ContrastPolarityContext = createContext({
   startColor: color1,
   startColorLight: color1Light,
-  endColor: color3,
-  endColorLight: color3Light,
+  endColor: color2,
+  endColorLight: color2Light,
   backgroundColor: backgroundColor,
   textColor: textColor
 });

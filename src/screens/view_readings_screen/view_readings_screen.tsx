@@ -5,7 +5,7 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import { styles } from "./view_readings_styles";
 import { styles as globalStyles } from "../../../App_styles";
-import { colorInterpolate, color1, color3 } from "../../scripts/colors";
+import { colorInterpolate, color1, color2 } from "../../scripts/colors";
 
 import tempData from "./data.temp.json";
 
@@ -27,7 +27,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
   useEffect(() => {
     let data : TPieChartData[] = [];
     tempData.results.forEach((result: any, index: number) => {
-      const color: any = colorInterpolate(color3, color1, index/(tempData.results.length - 1));
+      const color: any = colorInterpolate(color2, color1, index/(tempData.results.length - 1));
       data.push({
         name: result.name,
         value: result.value,
@@ -69,7 +69,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
                 {
                   data: tempData.results.map((result: any) => result.value),
                   colors: tempData.results.map((result: any, index: number) => {
-                    const color: any = colorInterpolate(color3, color1, index/(tempData.results.length - 1));
+                    const color: any = colorInterpolate(color2, color1, index/(tempData.results.length - 1));
                     return (opacity = 1) => `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
                   })
                 },
