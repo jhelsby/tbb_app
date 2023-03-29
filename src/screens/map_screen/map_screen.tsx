@@ -14,7 +14,7 @@ import MapIcon from "../../components/map_icon/map_icon";
 import Card from "../../components/card/card";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, getReadings } from "../../scripts/firebase";
+import { auth, getAllReadings } from "../../scripts/firebase";
 
 type Props = NativeStackScreenProps<MapParamList, "MapScreen">;
 
@@ -50,10 +50,11 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
     useCallback(() => {
       if (isLoggedIn) {
         console.log("Getting Markers...")
-        getReadings().then((reading) => {
-          setMarkers(reading);
-          setActiveMarkers(reading.map((marker) => false));
-          console.log(reading)
+        getAllReadings().then((reading) => {
+          if (reading) {
+            setMarkers(reading);
+            setActiveMarkers(reading.map((marker) => false));
+          }
         });
       }
     }, [isLoggedIn])

@@ -23,6 +23,8 @@ import {
   DocumentReference,
   DocumentData,
   DocumentSnapshot,
+  QuerySnapshot,
+  QueryDocumentSnapshot,
   Query,
   Firestore,
 } from "firebase/firestore";
@@ -209,25 +211,25 @@ export const postReading = async (reading: TReading) : Promise<string | null | u
  * @returns the reading if successful, null otherwise
  */
 export const getReading = async (id: string) : Promise<TReading | null | undefined> => {
-  // Get the document with the id
-  const docRef: DocumentReference<DocumentData> = doc(db, "readings", id);
-  getDoc(docRef).then((docSnap: DocumentSnapshot<DocumentData>) => {
+  console.log(`Getting Reading with id: ${id}`);
+  let reading: TReading | null = null;
+  try {
+    // Get the document with the id
+    const docRef: DocumentReference<DocumentData> = doc(db, "readings", id);
+    const docSnap: DocumentSnapshot<DocumentData> = await getDoc(docRef);
     if (docSnap.exists()) {
       // Get the data from the document if the document exists
-      const reading: TReading = docSnap.data() as TReading;
+      reading = docSnap.data() as TReading;
       console.log("Got Reading")
-      return reading;
     } else {
       // if the document doesn't exist throw an error
-      throw new Error(`No reading found with id: ${id}`);
+      throw new Error(`No news found with id: ${id}`);
     }
-  }).catch((error: any) => {
+  } catch (error) {
     // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
-    return null;
-  });
+    console.error(error);
+  }
+  return reading;
 }
 
 
@@ -236,34 +238,33 @@ export const getReading = async (id: string) : Promise<TReading | null | undefin
  * 
  * @returns the readings if successful, null otherwise
  */
-export const getReadings = async () : Promise<TReading[] | null | undefined> => {
+export const getAllReadings = async () : Promise<TReading[] | null | undefined> => {
   const readings: TReading[] = [];
-  // Get the last 12 readings
-  const recentReadingsQuery: Query<DocumentData> = query(
-    collection(getFirestore(), 'readings'), 
-    orderBy('timestamp', 'desc'), 
-    limit(12)
-  );
-  
-  // Get the documents from the query
-  getDocs(recentReadingsQuery).then((querySnapshot: any) => {
-    querySnapshot.forEach((doc: any) => {
-      // Add the data from the document to the readings array
-      readings.push({
-        id: doc.id,
-        hasSynced: true,
-        ...doc.data()
-      });
-      console.log("Got Readings")
-      return readings;
-    }).catch((error: any) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
-      return null;
+  // Get all news
+  const readingsQuery = query(collection(db, 'readings'), orderBy('timestamp', 'desc'));
+  await getDocs(readingsQuery).then((querySnapshot: any) => {
+    querySnapshot.forEach((docSnap: DocumentSnapshot<DocumentData>) => {
+      // Add the data from the document to the news array
+      const data: DocumentData | undefined = docSnap.data();
+      if (data) {
+        readings.push({
+          location: data.location,
+          datetime: data.datetime,
+          isSafe: data.isSafe,
+          hasSynced: true,
+          measurements: data.measurements,
+          id: docSnap.id
+        });
+      }
     });
+    console.log("Got All Readings")
+  }).catch((error: any) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
   });
+  return readings;
 }
 
 /**
@@ -295,26 +296,25 @@ export const doesDocExist = async (collectionName: string, docName: string) : Pr
  * @param id - the id of the news to get
  */
 export const getNews = async (id: string) : Promise<TNews | null |undefined> => {
+  console.log(`Getting News Article with id: ${id}`);
   let news: TNews | null = null;
-  // Get the document with the id
-  const docRef: DocumentReference<DocumentData> = doc(db, "news", id);
-  getDoc(docRef).then((docSnap: DocumentSnapshot<DocumentData>) => {
+  try {
+    // Get the document with the id
+    const docRef: DocumentReference<DocumentData> = doc(db, "news", id);
+    const docSnap: DocumentSnapshot<DocumentData> = await getDoc(docRef);
     if (docSnap.exists()) {
       // Get the data from the document if the document exists
       news = docSnap.data() as TNews;
-      console.log("Got News")
-      return news;
+      console.log("Got News Article")
     } else {
       // if the document doesn't exist throw an error
       throw new Error(`No news found with id: ${id}`);
     }
-  }).catch((error: any) => {
+  } catch (error) {
     // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
-    return null;
-  });
+    console.error(error);
+  }
+  return news;
 }
 
 /**
@@ -326,23 +326,29 @@ export const getAllNews = async (): Promise<TNews[] | null | undefined> => {
   const news: TNews[] = [];
   // Get all news
   const newsQuery = query(collection(getFirestore(), 'news'), orderBy('timestamp', 'desc'));
-  getDocs(newsQuery).then((querySnapshot: any) => {
-    querySnapshot.forEach((doc: DocumentSnapshot<DocumentData>) => {
+  await getDocs(newsQuery).then((querySnapshot: any) => {
+    querySnapshot.forEach((docSnap: DocumentSnapshot<DocumentData>) => {
       // Add the data from the document to the news array
-      const data: TNews = doc.data() as TNews;
-      news.push({
-        ...data,
-      });
-      console.log("Got News")
-      return news;
+      const data: DocumentData | undefined = docSnap.data();
+      if (data) {
+        news.push({
+          datetime: data.datetime,
+          title: data.title,
+          contents: data.contents,
+          author: data.author,
+          description: data.description,
+          id: docSnap.id
+        });
+      }
     });
+    console.log("Got All News")
   }).catch((error: any) => {
     // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
     console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
-    return null;
   });
+  return news;
 }
 
 /**

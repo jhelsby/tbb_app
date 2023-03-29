@@ -5,14 +5,14 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import { styles } from "./view_readings_styles";
 import { styles as globalStyles } from "../../../App_styles";
-import { colorInterpolate, color1, color3 } from "../../scripts/colors";
+import { colorInterpolate, color1, color3, hslToString } from "../../scripts/colors";
 
 import TopNav from "../../components/top_nav/top_nav";
 
-import { TPieChartData, TReading } from "../../scripts/types";
+import { THSL, TMeasurement, TPieChartData, TReading } from "../../scripts/types";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, doesDocExist, getReading, postReading } from "../../scripts/firebase";
+import { auth, getReading, postReading } from "../../scripts/firebase";
 
 export default function ViewReadingsScreen({ navigation, route } : any) : ReactElement<any> {
   const screenWidth = Dimensions.get("window").width;
@@ -35,7 +35,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
 
   const [isLoggedIn, setLoggedIn] = React.useState(false);
 
-  const [readingData, setReadingData] = React.useState<any>({
+  const [readingData, setReadingData] = React.useState<TReading>({
     location: {
       latitude: 0,
       longitude: 0,
@@ -44,7 +44,9 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
       date: "",
       time: "",
     },
+    id: "",
     isSafe: false,
+    hasSynced: true,
     measurements: [
       {name: "turbidity", value: 0},
       {name: "ph", value: 0},
@@ -66,18 +68,16 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
     useCallback(() => {
       if (isLoggedIn) {
         getReading(route.params.readingId).then((data: any) => {
-          console.log(data)
           setReadingData(data);
-  
   
           const tempPieChartData: any[] = [];
   
-          data.measurements.forEach((measurement: any, index: number) => {
+          data.measurements.forEach((measurement: TMeasurement, index: number) => {
             const color: any = colorInterpolate(color3, color1, index/(data.measurements.length - 1));
             tempPieChartData.push({
               name: measurement.name,
               value: measurement.value,
-              color: `hsl(${color.h}, ${color.s}%, ${color.l}%)`,
+              color: hslToString(color),
               legendFontColor: "#7F7F7F",
               legendFontSize: 15,
             });
@@ -85,13 +85,13 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
           setPieChartData(tempPieChartData);
   
           setBarChartData({
-            labels: data.measurements.map((measurement: any) => measurement.name),
+            labels: data.measurements.map((measurement: TMeasurement) => measurement.name),
             datasets: [
               {
-                data: data.measurements.map((measurement: any) => measurement.value),
-                colors: data.measurements.map((measurement: any, index: number) => {
-                  const color: any = colorInterpolate(color3, color1, index/(readingData.measurements.length - 1));
-                  return (opacity = 1) => `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
+                data: data.measurements.map((measurement: TMeasurement) => measurement.value),
+                colors: data.measurements.map((measurement: TMeasurement, index: number) => {
+                  const color: THSL = colorInterpolate(color3, color1, index/(readingData.measurements.length - 1));
+                  return () => hslToString(color);
                 })
               },
             ],
@@ -142,7 +142,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
               backgroundGradientTo: isDarkMode ? "#2E2E2E" : "#fff",
               barPercentage: 0.8,
               decimalPlaces: 4,
-              color: (opacity = 1) => `#7F7F7F`,
+              color: () => `#7F7F7F`,
               style: {
                 borderRadius: 16,
               },
@@ -159,7 +159,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
               backgroundGradientFrom: "#fff",
               backgroundGradientTo: "#fff",
               decimalPlaces: 2,
-              color: (opacity = 1) => `#d95448`,
+              color: () => `#d95448`,
             }}
             accessor="value"
             backgroundColor="transparent"

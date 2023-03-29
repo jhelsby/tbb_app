@@ -11,7 +11,7 @@ import Card from "../../components/card/card";
 import Button from "../../components/button/button";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, getReadings } from "../../scripts/firebase";
+import { auth, getAllReadings } from "../../scripts/firebase";
 
 type Props = NativeStackScreenProps<ReadingsParamList, "ReadingsScreen">;
 
@@ -38,7 +38,7 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
     useCallback(() => {
       if (isLoggedIn) {
         console.log("Getting Readings...")
-        getReadings().then((readings) => {
+        getAllReadings().then((readings) => {
           setReadings(readings);
         });
       }

@@ -48,7 +48,9 @@ export default function ViewNewsScreen({ navigation, route } : any) : ReactEleme
       if (isLoggedIn) {
         console.log("Getting News Data...")
         getNews(route.params.newsId).then((data: any) => {
-          setData(data);
+          if (data) {
+            setData(data);
+          }
         });
       }
     }, [isLoggedIn])

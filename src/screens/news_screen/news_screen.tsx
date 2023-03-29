@@ -38,7 +38,6 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
         console.log("Getting News...")
         getAllNews().then((news) => {
           setNews(news);
-          console.log({news})
         });
       }
     }, [isLoggedIn])

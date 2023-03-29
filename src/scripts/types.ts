@@ -35,6 +35,11 @@ export type TMarkerData = {
   date: string,
 }
 
+export type TMeasurement= {
+  name: string,
+  value: number,
+}
+
 export type TReading = {
   location: {
     latitude: number,
@@ -47,14 +52,7 @@ export type TReading = {
   id: string,
   isSafe: boolean,
   hasSynced: boolean,
-  measurements: {
-    turbidity: number,
-    ph: number,
-    chloride: number,
-    nitrate: number,
-    flouride: number,
-    conductivity: number,
-  }
+  measurements: TMeasurement[],
 }
 
 export type TNews = {
