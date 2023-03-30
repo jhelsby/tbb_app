@@ -22,21 +22,13 @@ import {
   color1Light,
   color3,
   color3Light,
-  backgroundColor,
-  textColor,
-  colorInterpolate,
-  hslToString
 } from "./src/scripts/colors";
 
-import { ContrastPolarityContext } from "./src/context/contrast_polarity_context";
 import { RootNavsContext } from "./src/context/root_nav_context";
-
-import { THSL } from "./src/scripts/types";
 
 import { Provider } from "react-redux";
 import { store } from "./src/scripts/store";
-import { useAppDispatch } from "./src/scripts/redux_hooks";
-import { setDarkMode, selectContainerContrast, setColors } from "./src/slices/color/colorSlice";
+import { setDarkMode, setColors } from "./src/slices/color/colorSlice";
 
 interface ITabScreen {
   name: string;
