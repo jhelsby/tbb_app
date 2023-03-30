@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { View, Text, Platform, useColorScheme } from "react-native";
+import { useColorScheme } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -32,6 +32,8 @@ import { ContrastPolarityContext } from "./src/context/contrast_polarity_context
 import { RootNavsContext } from "./src/context/root_nav_context";
 
 import { THSL } from "./src/scripts/types";
+import { Provider } from "react-redux";
+import { store } from "./src/scripts/store";
 
 interface ITabScreen {
   name: string;
@@ -91,54 +93,56 @@ export default function App() {
   const endColorLight: THSL = color3Light;
 
   return (
-    <RootNavsContext.Provider value={tabScreens.map(screen => screen.name)}>
-      <ContrastPolarityContext.Provider value={{
-        startColor,
-        startColorLight,
-        endColor,
-        endColorLight,
-        backgroundColor,
-        textColor
-      }}>
-        <NavigationContainer>
-          <Tab.Navigator
-            initialRouteName='HomeNav'
-            screenOptions={{
-              headerShown: false,
-              tabBarShowLabel: false,
-              tabBarStyle: {
-                ...styles.tabBar,
-                ...styles.tile,
-                ...containerContrast
-               }
-            }}>
-            {
-              tabScreens.map((screen: ITabScreen, index: number) => {
-                return (
-                  <Tab.Screen
-                    key={index}
-                    name={screen.name}
-                    component={screen.component}
-                    options={({ navigation }: any) => ({
-                        tabBarButton: () => <TabButton
-                          index={index}
-                          length={tabScreens.length}
-                          icon={screen.icon}
-                          focused={focusedScreens[index]}
-                          onPress={() => {
-                            setFocusedScreen(index);
-                            navigation.navigate(screen.name)
-                          }}
-                        />
-                      })
-                    }
-                  />
-                );
-              })
-            }
-          </Tab.Navigator>
-        </NavigationContainer>
-      </ContrastPolarityContext.Provider>
-    </RootNavsContext.Provider>
+    <Provider store={store}>
+      <RootNavsContext.Provider value={tabScreens.map(screen => screen.name)}>
+        <ContrastPolarityContext.Provider value={{
+          startColor,
+          startColorLight,
+          endColor,
+          endColorLight,
+          backgroundColor,
+          textColor
+        }}>
+          <NavigationContainer>
+            <Tab.Navigator
+              initialRouteName='HomeNav'
+              screenOptions={{
+                headerShown: false,
+                tabBarShowLabel: false,
+                tabBarStyle: {
+                  ...styles.tabBar,
+                  ...styles.tile,
+                  ...containerContrast
+                }
+              }}>
+              {
+                tabScreens.map((screen: ITabScreen, index: number) => {
+                  return (
+                    <Tab.Screen
+                      key={index}
+                      name={screen.name}
+                      component={screen.component}
+                      options={({ navigation }: any) => ({
+                          tabBarButton: () => <TabButton
+                            index={index}
+                            length={tabScreens.length}
+                            icon={screen.icon}
+                            focused={focusedScreens[index]}
+                            onPress={() => {
+                              setFocusedScreen(index);
+                              navigation.navigate(screen.name)
+                            }}
+                          />
+                        })
+                      }
+                    />
+                  );
+                })
+              }
+            </Tab.Navigator>
+          </NavigationContainer>
+        </ContrastPolarityContext.Provider>
+      </RootNavsContext.Provider>
+    </Provider>
   );
 }
