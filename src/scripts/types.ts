@@ -42,3 +42,10 @@ export type TMarkerData = {
   isSafe: boolean,
   date: string,
 }
+
+export type TContrastSliceState = {
+  pageContrast: any,
+  textContrast: any,
+  containerContrast: any,
+  darkMode: boolean
+}
