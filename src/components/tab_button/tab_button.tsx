@@ -7,6 +7,7 @@ import { styles } from "./tab_button_styles";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
 import { selectColor, selectLightColor, selectContainerContrast, selectDarkMode } from "../../slices/color/colorSlice";
+import { selectNavFocus } from "../../slices/root_nav/rootNavSlice";
 
 
 
@@ -16,6 +17,8 @@ export default function TabButton(props: any) {
 
   const activeColor: string = useAppSelector(state => selectColor(state, { index: props.index }));
   const inactiveColor: string = useAppSelector(state => selectLightColor(state, { index: props.index }));
+
+  const isFocused: boolean = useAppSelector(state => selectNavFocus(state, { index: props.index }))
 
 
   // circleScale is used to animate the circle in and out of view but can also be used
@@ -31,27 +34,27 @@ export default function TabButton(props: any) {
   useEffect(() => {
     Animated.parallel([
       Animated.timing(viewScale, {
-        toValue: props.focused ? 1.5 : 1,
+        toValue: isFocused ? 1.5 : 1,
         duration: timeSpan,
         useNativeDriver: true,
       }),
       Animated.timing(viewTranslate, {
-        toValue: props.focused ? -18 : 0,
+        toValue: isFocused ? -18 : 0,
         duration: timeSpan,
         useNativeDriver: true,
       }),
       Animated.timing(circleScale, {
-        toValue: props.focused ? 1 : 0,
+        toValue: isFocused ? 1 : 0,
         duration: timeSpan,
         useNativeDriver: true,
       }),
       Animated.timing(inactiveIconOpacity, {
-        toValue: props.focused ? 0 : 1,
+        toValue: isFocused ? 0 : 1,
         duration: timeSpan,
         useNativeDriver: true,
       }),
     ]).start();
-  }, [props.focused]);
+  }, [isFocused]);
 
   return (
     <TouchableOpacity

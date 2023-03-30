@@ -1,3 +1,5 @@
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+
 export type THSL = { h: number, s: number, l: number };
 
 export type TRGB = { r: number, g: number, b: number };
@@ -5,11 +7,7 @@ export type TRGB = { r: number, g: number, b: number };
 export type THex = string;
 
 
-export type TRootNav = {
-  name: string;
-  component: any;
-  icon: any;
-};
+
 
 
 export type TTopNavProps = {
@@ -50,4 +48,14 @@ export type TColorSliceState = {
   darkMode: boolean,
   colors: string[],
   lightColors: string[], 
+}
+
+export type TRootNav = {
+  name: string;
+  focused: boolean,
+  icon: IconDefinition;
+};
+
+export type TRootNavSliceState = {
+  rootNavs: TRootNav[],
 }

@@ -1,6 +1,3 @@
-import React from "react";
-
-import * as type from './types';
 
 export interface IButtonProps {
   onPress: () => void;

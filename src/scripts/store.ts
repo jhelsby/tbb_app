@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import colorReducer from '../slices/color/colorSlice'
+import rootNavReducer from '../slices/root_nav/rootNavSlice'
 
 export const store = configureStore({
   reducer: {
-    color: colorReducer
+    color: colorReducer,
+    rootNav: rootNavReducer
   }
 })
 
