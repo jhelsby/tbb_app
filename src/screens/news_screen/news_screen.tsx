@@ -10,14 +10,19 @@ import Card from "../../components/card/card";
 
 import newsData from "./data.temp.json";
 
+import { useAppSelector } from "../../scripts/redux_hooks";
+import { selectPageContrast, selectTextContrast } from "../../slices/contrast/contrastSlice";
+
 type Props = NativeStackScreenProps<NewsParamList, "NewsScreen">;
 
 export default function NewsScreen({ navigation } : Props) : ReactElement<Props> {
-  const cards = newsData.cards;
+  
+  // Get the contrast settings from the redux store
+  const pageContrast = useAppSelector(selectPageContrast);
+  const textContrast = useAppSelector(selectTextContrast);
 
-  const isDarkMode = useColorScheme() === 'dark';
-  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
-  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
+
+  const cards = newsData.cards;
 
   return (
     <View style={[styles.container, pageContrast]}>

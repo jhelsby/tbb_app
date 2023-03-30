@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { useColorScheme } from "react-native";
+import React, { useEffect } from "react";
+import { useColorScheme, ColorSchemeName } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -32,8 +32,11 @@ import { ContrastPolarityContext } from "./src/context/contrast_polarity_context
 import { RootNavsContext } from "./src/context/root_nav_context";
 
 import { THSL } from "./src/scripts/types";
+
 import { Provider } from "react-redux";
 import { store } from "./src/scripts/store";
+import { useAppDispatch } from "./src/scripts/redux_hooks";
+import { setDarkMode, selectContainerContrast } from "./src/slices/contrast/contrastSlice";
 
 interface ITabScreen {
   name: string;
@@ -45,7 +48,7 @@ interface ITabScreen {
 const Tab: any = createBottomTabNavigator<RootTabParamList>();
 
 export default function App() {
-
+  const [containerContrast, setContainerContrast] = React.useState(store.getState().contrast.containerContrast);
 
   const tabScreens: ITabScreen[] = [
     {
@@ -84,8 +87,12 @@ export default function App() {
     });
   };
 
-  const isDarkMode: boolean = useColorScheme() === "dark";
-  const containerContrast = isDarkMode ? styles.darkContainer : styles.lightContainer;
+  // Set dark mode
+  const colorScheme: ColorSchemeName = useColorScheme();
+  useEffect(() => {
+    store.dispatch(setDarkMode(colorScheme === "dark"))
+    setContainerContrast(store.getState().contrast.containerContrast);
+  }, [colorScheme])
 
   const startColor: THSL = color1;
   const startColorLight: THSL = color1Light;

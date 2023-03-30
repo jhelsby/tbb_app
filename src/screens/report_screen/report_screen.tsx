@@ -25,9 +25,16 @@ import { ColorContext } from "../../context/color_context";
 import Button from "../../components/button/button";
 import TopNav from "../../components/top_nav/top_nav";
 
+import { useAppSelector } from "../../scripts/redux_hooks";
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/contrast/contrastSlice";
+
 type Props = NativeStackScreenProps<AccountParamList, "ReportScreen">;
 
 export default function ReportScreen({ navigation, route } : any) : ReactElement<Props> {
+  // Get the contrast settings from the redux store
+  const containerContrast = useAppSelector(selectContainerContrast);
+  const pageContrast = useAppSelector(selectPageContrast);
+  const textContrast = useAppSelector(selectTextContrast);
 
 
   useFocusEffect(
@@ -39,11 +46,6 @@ export default function ReportScreen({ navigation, route } : any) : ReactElement
 
   const [titleText, setTitleText] = React.useState<string>("");
   const [descriptionText, setDescriptionText] = React.useState<string>("");
-
-  const isDarkMode = useColorScheme() === "dark";
-  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
-  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
-  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   const { color, colorLight } = useContext(ColorContext);
 

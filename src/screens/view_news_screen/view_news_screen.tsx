@@ -16,9 +16,16 @@ import TopNav from "../../components/top_nav/top_nav";
 import NewsSvg from "../../assets/svgs/news.svg";
 import tempData from './data.temp.json';
 
+import { useAppSelector } from "../../scripts/redux_hooks";
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/contrast/contrastSlice";
+
 type Props = NativeStackScreenProps<NewsParamList, "ViewNewsScreen">;
 
 export default function ViewNewsScreen({ navigation, route } : any) : ReactElement<Props> {
+  // Get the contrast settings from the redux store
+  const containerContrast = useAppSelector(selectContainerContrast);
+  const pageContrast = useAppSelector(selectPageContrast);
+  const textContrast = useAppSelector(selectTextContrast);
 
   useFocusEffect(
     useCallback(() => {
@@ -28,11 +35,6 @@ export default function ViewNewsScreen({ navigation, route } : any) : ReactEleme
   );
 
   const { color } = useContext(ColorContext);
-
-  const isDarkMode = useColorScheme() === 'dark';
-  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
-  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
-  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   return (
     <View style={[styles.container, pageContrast]}>

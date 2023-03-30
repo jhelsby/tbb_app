@@ -14,14 +14,19 @@ import Card from "../../components/card/card";
 
 import tempData from "./data.temp.json";
 
+import { useAppSelector } from "../../scripts/redux_hooks";
+import { selectDarkMode } from "../../slices/contrast/contrastSlice";
+
 type Props = NativeStackScreenProps<MapParamList, "MapScreen">;
 
 export default function MapScreen({ navigation } : Props) : ReactElement<Props> {
+
+  const isDarkMode = useAppSelector(selectDarkMode);
+
   const [activeMarkers, setActiveMarkers] = useState<boolean[]>(
     tempData.markers.map(() => false)
   );
 
-  const isDarkMode = useColorScheme() === "dark";
 
   const [activeCard, setActiveCard] = useState<boolean>(false);
   const [cardData, setCardData] = useState<ICardProps>({

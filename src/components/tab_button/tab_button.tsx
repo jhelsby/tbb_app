@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { View, TouchableOpacity, Animated, useColorScheme } from "react-native";
+import { View, TouchableOpacity, Animated } from "react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
@@ -8,26 +8,19 @@ import { color1, color1Light, color3, color3Light, colorInterpolate } from "../.
 import { THSL } from "../../scripts/types";
 
 import { styles } from "./tab_button_styles";
-import { styles as globalStyles } from "../../../App_styles";
+
+import { useAppSelector } from "../../scripts/redux_hooks";
+import { selectContainerContrast, selectDarkMode } from "../../slices/contrast/contrastSlice";
 
 
 
 export default function TabButton(props: any) {
-  const {
-    icon,
-    onPress,
-    focused,
-    index,
-    length,
-  } = props;
+  const isDarkMode = useAppSelector(selectDarkMode);
+  const containerContrast = useAppSelector(selectContainerContrast);
 
-  const isDarkMode = useColorScheme() === 'dark';
-  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
-  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
-  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
-  const activeColor: THSL = colorInterpolate(color1, color3, index/(length - 1));
-  const inactiveColor: THSL = colorInterpolate(color1Light, color3Light, index/(length - 1));
+  const activeColor: THSL = colorInterpolate(color1, color3, props.index/(props.length - 1));
+  const inactiveColor: THSL = colorInterpolate(color1Light, color3Light, props.index/(props.length - 1));
   const activeColorString: string = `hsl(${activeColor.h}, ${activeColor.s}%, ${activeColor.l}%)`;
   const inactiveColorString: string = `hsl(${inactiveColor.h}, ${inactiveColor.s}%, ${inactiveColor.l}%)`;
 
@@ -45,31 +38,31 @@ export default function TabButton(props: any) {
   useEffect(() => {
     Animated.parallel([
       Animated.timing(viewScale, {
-        toValue: focused ? 1.5 : 1,
+        toValue: props.focused ? 1.5 : 1,
         duration: timeSpan,
         useNativeDriver: true,
       }),
       Animated.timing(viewTranslate, {
-        toValue: focused ? -18 : 0,
+        toValue: props.focused ? -18 : 0,
         duration: timeSpan,
         useNativeDriver: true,
       }),
       Animated.timing(circleScale, {
-        toValue: focused ? 1 : 0,
+        toValue: props.focused ? 1 : 0,
         duration: timeSpan,
         useNativeDriver: true,
       }),
       Animated.timing(inactiveIconOpacity, {
-        toValue: focused ? 0 : 1,
+        toValue: props.focused ? 0 : 1,
         duration: timeSpan,
         useNativeDriver: true,
       }),
     ]).start();
-  }, [focused]);
+  }, [props.focused]);
 
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={props.onPress}
       activeOpacity={1}
       style={styles.buttonContainer}>
       <Animated.View
@@ -90,14 +83,14 @@ export default function TabButton(props: any) {
               styles.icon,
               { opacity: circleScale }
             ]}>
-            <FontAwesomeIcon icon={icon} size={25} color={'#fff'} />
+            <FontAwesomeIcon icon={props.icon} size={25} color={'#fff'} />
           </Animated.View>
           <Animated.View
             style={[
               styles.icon,
               { opacity: inactiveIconOpacity }
             ]}>
-            <FontAwesomeIcon icon={icon} size={30} color={inactiveColorString} />
+            <FontAwesomeIcon icon={props.icon} size={30} color={inactiveColorString} />
           </Animated.View>
           
         </View>

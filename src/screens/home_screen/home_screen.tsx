@@ -12,15 +12,20 @@ import { color3, color3Light, hslToString } from "../../scripts/colors";
 import HomeSvg from "../../assets/svgs/home.svg";
 import Button from "../../components/button/button";
 
+import { useAppSelector } from "../../scripts/redux_hooks";
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/contrast/contrastSlice";
+
 type Props = NativeStackScreenProps<HomeParamList, "HomeScreen">;
 
 export default function HomeScreen({ navigation } : Props) : ReactElement<Props> {
-  const { color, colorLight } = useContext(ColorContext);
+
   
-  const isDarkMode = useColorScheme() === "dark";
-  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
-  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
-  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
+  // Get the contrast settings from the redux store
+  const containerContrast = useAppSelector(selectContainerContrast);
+  const pageContrast = useAppSelector(selectPageContrast);
+  const textContrast = useAppSelector(selectTextContrast);
+
+  const { color, colorLight } = useContext(ColorContext);
 
   return (
     <View style={[globalStyles.page, styles.pageContainer, pageContrast]}>

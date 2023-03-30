@@ -13,14 +13,18 @@ import TopNav from "../../components/top_nav/top_nav";
 
 import { TPieChartData } from "../../scripts/types";
 
+import { useAppSelector } from "../../scripts/redux_hooks";
+import { selectContainerContrast, selectPageContrast, selectTextContrast, selectDarkMode } from "../../slices/contrast/contrastSlice";
+
 export default function ViewReadingsScreen({ navigation, route } : any) : ReactElement<any> {
+  // Get the contrast settings from the redux store
+  const containerContrast = useAppSelector(selectContainerContrast);
+  const pageContrast = useAppSelector(selectPageContrast);
+  const textContrast = useAppSelector(selectTextContrast);
+  const isDarkMode = useAppSelector(selectDarkMode);
+
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
-
-  const isDarkMode = useColorScheme() === "dark";
-  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
-  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
-  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
 
   const [pieChartData, setPieChartData] = React.useState([] as TPieChartData[]);
 

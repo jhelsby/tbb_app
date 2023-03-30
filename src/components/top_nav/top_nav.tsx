@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, useColorScheme } from 'react-native';
+import { View, Text } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -11,11 +11,14 @@ import { styles as globalStyles } from '../../../App_styles';
 
 import { TTopNavProps } from '../../scripts/types';
 
+import { useAppSelector } from '../../scripts/redux_hooks';
+import { selectContainerContrast } from '../../slices/contrast/contrastSlice';
+
 export default function TopNav(props: TTopNavProps) : React.ReactElement<TTopNavProps> {
-  const isDarkMode = useColorScheme() === 'dark';
+  const containerContrast = useAppSelector(selectContainerContrast);
 
   return (
-    <View style={[globalStyles.tile, styles.header, isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer]}>
+    <View style={[globalStyles.tile, styles.header, containerContrast]}>
       <View style={styles.backButtonContainer}>
         <Button onPress={props.handlePress}>
           <FontAwesomeIcon icon={faArrowLeft} size={30} color="#fff" />

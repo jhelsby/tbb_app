@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { View, Text, useColorScheme } from 'react-native';
+import { View, Text } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AccountParamList } from '../../scripts/screen_params';
 
@@ -11,17 +11,18 @@ import AccountSvg from "../../assets/svgs/account.svg";
 
 import { ColorContext } from '../../context/color_context';
 import { hslToString } from '../../scripts/colors';
-import { text } from '@fortawesome/fontawesome-svg-core';
+
+import { useAppSelector } from '../../scripts/redux_hooks';
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from '../../slices/contrast/contrastSlice';
 
 type Props = NativeStackScreenProps<AccountParamList, 'AccountScreen'>;
 
 export default function AccountScreen({ navigation }: Props) : ReactElement<Props> {
   const { color } = React.useContext(ColorContext);
 
-  const isDarkMode = useColorScheme() === "dark";
-  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
-  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
-  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
+  const containerContrast = useAppSelector(selectContainerContrast);
+  const pageContrast = useAppSelector(selectPageContrast);
+  const textContrast = useAppSelector(selectTextContrast);
 
   const handleDeletePress = () => {
     console.log("Delete Pressed");

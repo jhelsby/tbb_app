@@ -10,14 +10,17 @@ import Card from "../../components/card/card";
 
 import readingsData from "./data.temp.json";
 
+import { useAppSelector } from "../../scripts/redux_hooks";
+import { selectPageContrast, selectTextContrast } from "../../slices/contrast/contrastSlice";
+
 type Props = NativeStackScreenProps<ReadingsParamList, "ReadingsScreen">;
 
 export default function ReadingsScreen({ navigation } : Props) : ReactElement<Props> {
-  const cards = readingsData.cards;
+  // Get the contrast settings from the redux store
+  const pageContrast = useAppSelector(selectPageContrast);
+  const textContrast = useAppSelector(selectTextContrast);
 
-  const isDarkMode = useColorScheme() === 'dark';
-  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
-  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
+  const cards = readingsData.cards;
 
   return (
     <View style={[styles.container, pageContrast]}>
