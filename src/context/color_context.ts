@@ -3,9 +3,10 @@ import { createContext } from 'react';
 import {
   color1,
   color1Light,
+  hslToString,
 } from '../scripts/colors';
 
 export const ColorContext = createContext({
-  color: color1,
-  colorLight: color1Light,
+  color: hslToString(color1),
+  lightColor: hslToString(color1Light),
 });

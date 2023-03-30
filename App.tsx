@@ -36,7 +36,7 @@ import { THSL } from "./src/scripts/types";
 import { Provider } from "react-redux";
 import { store } from "./src/scripts/store";
 import { useAppDispatch } from "./src/scripts/redux_hooks";
-import { setDarkMode, selectContainerContrast } from "./src/slices/contrast/contrastSlice";
+import { setDarkMode, selectContainerContrast, setColors } from "./src/slices/color/colorSlice";
 
 interface ITabScreen {
   name: string;
@@ -48,7 +48,7 @@ interface ITabScreen {
 const Tab: any = createBottomTabNavigator<RootTabParamList>();
 
 export default function App() {
-  const [containerContrast, setContainerContrast] = React.useState(store.getState().contrast.containerContrast);
+  const [containerContrast, setContainerContrast] = React.useState(store.getState().color.containerContrast);
 
   const tabScreens: ITabScreen[] = [
     {
@@ -91,64 +91,61 @@ export default function App() {
   const colorScheme: ColorSchemeName = useColorScheme();
   useEffect(() => {
     store.dispatch(setDarkMode(colorScheme === "dark"))
-    setContainerContrast(store.getState().contrast.containerContrast);
+    setContainerContrast(store.getState().color.containerContrast);
   }, [colorScheme])
 
-  const startColor: THSL = color1;
-  const startColorLight: THSL = color1Light;
-  const endColor: THSL = color3;
-  const endColorLight: THSL = color3Light;
+
+  useEffect(() => {
+    store.dispatch(setColors({
+      startColor: color1,
+      startLightColor: color1Light,
+      endColor: color3,
+      endLightColor: color3Light,
+      length: tabScreens.length
+    }));
+  }, [])
 
   return (
     <Provider store={store}>
       <RootNavsContext.Provider value={tabScreens.map(screen => screen.name)}>
-        <ContrastPolarityContext.Provider value={{
-          startColor,
-          startColorLight,
-          endColor,
-          endColorLight,
-          backgroundColor,
-          textColor
-        }}>
-          <NavigationContainer>
-            <Tab.Navigator
-              initialRouteName='HomeNav'
-              screenOptions={{
-                headerShown: false,
-                tabBarShowLabel: false,
-                tabBarStyle: {
-                  ...styles.tabBar,
-                  ...styles.tile,
-                  ...containerContrast
-                }
-              }}>
-              {
-                tabScreens.map((screen: ITabScreen, index: number) => {
-                  return (
-                    <Tab.Screen
-                      key={index}
-                      name={screen.name}
-                      component={screen.component}
-                      options={({ navigation }: any) => ({
-                          tabBarButton: () => <TabButton
-                            index={index}
-                            length={tabScreens.length}
-                            icon={screen.icon}
-                            focused={focusedScreens[index]}
-                            onPress={() => {
-                              setFocusedScreen(index);
-                              navigation.navigate(screen.name)
-                            }}
-                          />
-                        })
-                      }
-                    />
-                  );
-                })
+        <NavigationContainer>
+          <Tab.Navigator
+            initialRouteName='HomeNav'
+            screenOptions={{
+              headerShown: false,
+              tabBarShowLabel: false,
+              tabBarStyle: {
+                ...styles.tabBar,
+                ...styles.tile,
+                ...containerContrast
               }
-            </Tab.Navigator>
-          </NavigationContainer>
-        </ContrastPolarityContext.Provider>
+            }}>
+            {
+              tabScreens.map((screen: ITabScreen, index: number) => {
+                return (
+                  <Tab.Screen
+                    key={index}
+                    name={screen.name}
+                    component={screen.component}
+                    options={({ navigation }: any) => ({
+                        tabBarButton: () => <TabButton
+                          index={index}
+                          length={tabScreens.length}
+                          icon={screen.icon}
+                          focused={focusedScreens[index]}
+                          onPress={() => {
+                            setFocusedScreen(index);
+                            navigation.navigate(screen.name)
+                          }}
+                        />
+                      })
+                    }
+                  />
+                );
+              })
+            }
+          </Tab.Navigator>
+        </NavigationContainer>
       </RootNavsContext.Provider>
     </Provider>
   );

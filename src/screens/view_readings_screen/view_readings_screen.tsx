@@ -5,7 +5,7 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import { styles } from "./view_readings_styles";
 import { styles as globalStyles } from "../../../App_styles";
-import { colorInterpolate, color1, color3 } from "../../scripts/colors";
+import { colorInterpolate, color1, color3, hslToString } from "../../scripts/colors";
 
 import tempData from "./data.temp.json";
 
@@ -14,7 +14,7 @@ import TopNav from "../../components/top_nav/top_nav";
 import { TPieChartData } from "../../scripts/types";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectContainerContrast, selectPageContrast, selectTextContrast, selectDarkMode } from "../../slices/contrast/contrastSlice";
+import { selectContainerContrast, selectPageContrast, selectTextContrast, selectDarkMode } from "../../slices/color/colorSlice";
 
 export default function ViewReadingsScreen({ navigation, route } : any) : ReactElement<any> {
   // Get the contrast settings from the redux store
@@ -35,7 +35,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
       data.push({
         name: result.name,
         value: result.value,
-        color: `hsl(${color.h}, ${color.s}%, ${color.l}%)`,
+        color: hslToString(color),
         legendFontColor: "#7F7F7F",
         legendFontSize: 15,
       });
@@ -74,7 +74,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
                   data: tempData.results.map((result: any) => result.value),
                   colors: tempData.results.map((result: any, index: number) => {
                     const color: any = colorInterpolate(color3, color1, index/(tempData.results.length - 1));
-                    return (opacity = 1) => `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
+                    return () => hslToString(color);
                   })
                 },
               ],

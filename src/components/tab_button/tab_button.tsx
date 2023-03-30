@@ -3,14 +3,10 @@ import { View, TouchableOpacity, Animated } from "react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
-import { color1, color1Light, color3, color3Light, colorInterpolate } from "../../scripts/colors";
-
-import { THSL } from "../../scripts/types";
-
 import { styles } from "./tab_button_styles";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectContainerContrast, selectDarkMode } from "../../slices/contrast/contrastSlice";
+import { selectColor, selectLightColor, selectContainerContrast, selectDarkMode } from "../../slices/color/colorSlice";
 
 
 
@@ -18,19 +14,16 @@ export default function TabButton(props: any) {
   const isDarkMode = useAppSelector(selectDarkMode);
   const containerContrast = useAppSelector(selectContainerContrast);
 
+  const activeColor: string = useAppSelector(state => selectColor(state, { index: props.index }));
+  const inactiveColor: string = useAppSelector(state => selectLightColor(state, { index: props.index }));
 
-  const activeColor: THSL = colorInterpolate(color1, color3, props.index/(props.length - 1));
-  const inactiveColor: THSL = colorInterpolate(color1Light, color3Light, props.index/(props.length - 1));
-  const activeColorString: string = `hsl(${activeColor.h}, ${activeColor.s}%, ${activeColor.l}%)`;
-  const inactiveColorString: string = `hsl(${inactiveColor.h}, ${inactiveColor.s}%, ${inactiveColor.l}%)`;
-
-  const viewScale: Animated.Value = useRef(new Animated.Value(1)).current;
-  const viewTranslate: Animated.Value = useRef(new Animated.Value(0)).current;
 
   // circleScale is used to animate the circle in and out of view but can also be used
   // to animate the opacity of the active icon as they are the same value.
   const circleScale: Animated.Value = useRef(new Animated.Value(0)).current;
   const inactiveIconOpacity: Animated.Value = useRef(new Animated.Value(1)).current;
+  const viewScale: Animated.Value = useRef(new Animated.Value(1)).current;
+  const viewTranslate: Animated.Value = useRef(new Animated.Value(0)).current;
 
 
   const timeSpan: number = 300;
@@ -75,7 +68,7 @@ export default function TabButton(props: any) {
           <Animated.View
             style={[
               styles.circle,
-              { backgroundColor: activeColorString },
+              { backgroundColor: activeColor },
               { transform: [{ scale: circleScale }]}
             ]} />
           <Animated.View
@@ -90,7 +83,7 @@ export default function TabButton(props: any) {
               styles.icon,
               { opacity: inactiveIconOpacity }
             ]}>
-            <FontAwesomeIcon icon={props.icon} size={30} color={inactiveColorString} />
+            <FontAwesomeIcon icon={props.icon} size={30} color={inactiveColor} />
           </Animated.View>
           
         </View>

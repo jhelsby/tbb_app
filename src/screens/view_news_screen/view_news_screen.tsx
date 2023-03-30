@@ -1,5 +1,5 @@
 import React, { useContext, useCallback, ReactElement } from "react";
-import { View, Text, ScrollView, useColorScheme } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NewsParamList } from "../../scripts/screen_params";
@@ -10,14 +10,13 @@ import { styles as globalStyles } from "../../../App_styles";
 import { TNewsData } from "../../scripts/types";
 
 import { ColorContext } from "../../context/color_context";
-import { hslToString } from "../../scripts/colors";
 
 import TopNav from "../../components/top_nav/top_nav";
 import NewsSvg from "../../assets/svgs/news.svg";
 import tempData from './data.temp.json';
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/contrast/contrastSlice";
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/color/colorSlice";
 
 type Props = NativeStackScreenProps<NewsParamList, "ViewNewsScreen">;
 
@@ -49,7 +48,7 @@ export default function ViewNewsScreen({ navigation, route } : any) : ReactEleme
           <Text style={styles.subtitle}>{tempData.date}</Text>
         </View>
         <View style={styles.svgContainer}>
-          <NewsSvg height="100%" width="100%" color={hslToString(color)} style={styles.svg} />
+          <NewsSvg height="100%" width="100%" color={color} style={styles.svg} />
         </View>
         <View style={styles.content}>
           {

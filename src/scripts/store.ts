@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import contrastReducer from '../slices/contrast/contrastSlice'
+import colorReducer from '../slices/color/colorSlice'
 
 export const store = configureStore({
   reducer: {
-    contrast: contrastReducer
+    color: colorReducer
   }
 })
 

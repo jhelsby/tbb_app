@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, ReactElement } from "react";
-import { View, Animated, Dimensions, useColorScheme } from "react-native";
+import { View, Animated, Dimensions } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { MapParamList } from "../../scripts/screen_params";
@@ -15,7 +15,7 @@ import Card from "../../components/card/card";
 import tempData from "./data.temp.json";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectDarkMode } from "../../slices/contrast/contrastSlice";
+import { selectDarkMode } from "../../slices/color/colorSlice";
 
 type Props = NativeStackScreenProps<MapParamList, "MapScreen">;
 

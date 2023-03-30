@@ -10,7 +10,7 @@ import { styles as globalStyles } from '../../../App_styles';
 import { ICardProps } from '../../scripts/interfaces';
 
 import { useAppSelector } from '../../scripts/redux_hooks';
-import { selectContainerContrast, selectTextContrast } from '../../slices/contrast/contrastSlice';
+import { selectContainerContrast, selectTextContrast } from '../../slices/color/colorSlice';
 
 export default function Card(props : ICardProps) : React.ReactElement<ICardProps> {
   const textContrast = useAppSelector(selectTextContrast);

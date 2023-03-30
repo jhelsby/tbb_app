@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
-  useColorScheme,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -18,15 +17,13 @@ import { styles as globalStyles } from "../../../App_styles";
 
 import { TTextInputStyle } from "../../scripts/types";
 
-import { hslToString } from "../../scripts/colors";
-
 import { ColorContext } from "../../context/color_context";
 
 import Button from "../../components/button/button";
 import TopNav from "../../components/top_nav/top_nav";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/contrast/contrastSlice";
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/color/colorSlice";
 
 type Props = NativeStackScreenProps<AccountParamList, "ReportScreen">;
 
@@ -36,6 +33,12 @@ export default function ReportScreen({ navigation, route } : any) : ReactElement
   const pageContrast = useAppSelector(selectPageContrast);
   const textContrast = useAppSelector(selectTextContrast);
 
+  const [titleText, setTitleText] = React.useState<string>("");
+  const [descriptionText, setDescriptionText] = React.useState<string>("");
+
+  // Get the color context
+  const { color, lightColor } = useContext(ColorContext);
+
 
   useFocusEffect(
     useCallback(() => {
@@ -43,11 +46,6 @@ export default function ReportScreen({ navigation, route } : any) : ReactElement
       route.params.validNavigation = false;
     }, [])
   );
-
-  const [titleText, setTitleText] = React.useState<string>("");
-  const [descriptionText, setDescriptionText] = React.useState<string>("");
-
-  const { color, colorLight } = useContext(ColorContext);
 
   const [isKeyboardVisible, setKeyboardVisible] = React.useState<boolean>(false);
   useEffect(() => {
@@ -71,12 +69,12 @@ export default function ReportScreen({ navigation, route } : any) : ReactElement
 
 
   const focusedStyle = {
-    borderColor: hslToString(color),
+    borderColor: color,
     borderWidth: 2,
   }
 
   const unfocusedStyle = {
-    borderColor: hslToString(colorLight),
+    borderColor: lightColor,
     borderWidth: 1,
   }
 
@@ -139,7 +137,7 @@ export default function ReportScreen({ navigation, route } : any) : ReactElement
                   containerContrast,
                   textContrast
                 ]}
-                cursorColor={hslToString(color)}
+                cursorColor={color}
                 onFocus={() => handleFocus(0)}
                 onChange={
                   (event) => setTitleText(event.nativeEvent.text)
@@ -156,7 +154,7 @@ export default function ReportScreen({ navigation, route } : any) : ReactElement
                   containerContrast,
                   textContrast
                 ]}
-                cursorColor={hslToString(color)}
+                cursorColor={color}
                 onFocus={() => handleFocus(1)}
                 onChange={
                   (event) => setDescriptionText(event.nativeEvent.text)

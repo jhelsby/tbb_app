@@ -1,17 +1,16 @@
 import React, { ReactElement } from "react";
-import { View, Text, ScrollView, useColorScheme } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NewsParamList } from "../../scripts/screen_params";
 
 import { styles } from "./news_styles";
-import { styles as globalStyles } from "../../../App_styles";
 
 import Card from "../../components/card/card";
 
 import newsData from "./data.temp.json";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectPageContrast, selectTextContrast } from "../../slices/contrast/contrastSlice";
+import { selectPageContrast, selectTextContrast } from "../../slices/color/colorSlice";
 
 type Props = NativeStackScreenProps<NewsParamList, "NewsScreen">;
 

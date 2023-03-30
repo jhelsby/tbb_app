@@ -10,10 +10,9 @@ import Button from '../../components/button/button';
 import AccountSvg from "../../assets/svgs/account.svg";
 
 import { ColorContext } from '../../context/color_context';
-import { hslToString } from '../../scripts/colors';
 
 import { useAppSelector } from '../../scripts/redux_hooks';
-import { selectContainerContrast, selectPageContrast, selectTextContrast } from '../../slices/contrast/contrastSlice';
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from '../../slices/color/colorSlice';
 
 type Props = NativeStackScreenProps<AccountParamList, 'AccountScreen'>;
 
@@ -34,7 +33,7 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
         <Text style={[styles.title, textContrast]}>Account</Text>
       </View>
       <View style={styles.svgContainer}>
-        <AccountSvg height="100%" width="100%" color={hslToString(color)} style={styles.svg} />
+        <AccountSvg height="100%" width="100%" color={color} style={styles.svg} />
       </View>
       <View style={[globalStyles.tile, styles.detailsContainer, containerContrast]}>
         <Text style={[styles.detailsText, textContrast]}><Text style={{ fontWeight: 'bold' }}>Username: </Text>John Doe</Text>

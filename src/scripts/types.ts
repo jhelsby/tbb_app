@@ -43,9 +43,11 @@ export type TMarkerData = {
   date: string,
 }
 
-export type TContrastSliceState = {
+export type TColorSliceState = {
   pageContrast: any,
   textContrast: any,
   containerContrast: any,
-  darkMode: boolean
+  darkMode: boolean,
+  colors: string[],
+  lightColors: string[], 
 }

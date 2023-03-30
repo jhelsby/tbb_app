@@ -7,7 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faWater } from '@fortawesome/free-solid-svg-icons';
 
-import { color1, color3, colorInterpolate } from '../../scripts/colors';
+import { color1, color3, colorInterpolate, hslToString } from '../../scripts/colors';
 import { THSL } from '../../scripts/types';
 
 import { styles } from './loading_screen_styles';
@@ -27,7 +27,7 @@ export default function LoadingScreen({ navigation, route }: any) : ReactElement
   let colors: string[] = [];
   for(let i: number = 0; i < 5; i++) {
     const color: THSL = colorInterpolate(color1, color3, i / 4);
-    colors.push(`hsl(${color.h}, ${color.s}%, ${color.l}%)`);
+    colors.push(hslToString(color));
   }
 
   const scaleValue1 = useRef(new Animated.Value(1)).current;

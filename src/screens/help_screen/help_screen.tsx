@@ -7,7 +7,6 @@ import { styles } from "./help_styles";
 import { styles as globalStyles } from "../../../App_styles";
 
 import { ColorContext } from "../../context/color_context";
-import { hslToString } from "../../scripts/colors";
 
 import HelpSvg from "../../assets/svgs/help.svg";
 import TopNav from "../../components/top_nav/top_nav";
@@ -15,7 +14,7 @@ import tempData from './data.temp.json';
 import { useFocusEffect } from "@react-navigation/native";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/contrast/contrastSlice";
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/color/colorSlice";
 
 type Props = NativeStackScreenProps<HomeParamList, "HelpScreen">;
 
@@ -44,7 +43,7 @@ export default function HelpScreen({ navigation, route }: any) : ReactElement<Pr
         }}>
         <Text style={[styles.title, textContrast]}>Help</Text>
         <View style={styles.svgContainer}>
-          <HelpSvg height="100%" width="100%" color={hslToString(color)} style={styles.svg} />
+          <HelpSvg height="100%" width="100%" color={color} style={styles.svg} />
         </View>
         <View style={styles.content}>
           {
