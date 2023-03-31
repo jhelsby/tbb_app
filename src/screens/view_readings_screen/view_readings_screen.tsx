@@ -83,7 +83,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
         });
         setPieChartData([]);
       }
-    }, [isLoggedIn])
+    }, [isLoggedIn, reading])
   )
 
   return (

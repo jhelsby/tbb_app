@@ -7,14 +7,13 @@ import { useFocusEffect } from "@react-navigation/native";
 import { styles } from "./news_styles";
 import { styles as globalStyles } from "../../../App_styles";
 
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, getAllNews } from "../../scripts/firebase";
-
 import Card from "../../components/card/card";
 import { TNews } from "../../scripts/types";
 
-import { useAppSelector } from "../../scripts/redux_hooks";
+import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
 import { selectPageContrast, selectTextContrast, selectContainerContrast } from "../../slices/color/colorSlice";
+import { selectIsLoggedIn } from "../../slices/account/accountSlice";
+import { emptyNews, fetchAllNews, selectNews } from "../../slices/news/newsSlice";
 
 type Props = NativeStackScreenProps<NewsParamList, "NewsScreen">;
 
@@ -25,27 +24,18 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
   const textContrast = useAppSelector(selectTextContrast);
   const containerContrast = useAppSelector(selectContainerContrast);
 
-  const [isLoggedIn, setLoggedIn] = React.useState(false);
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
-  const [news, setNews] = React.useState<TNews[]>([]);
+  const news = useAppSelector(selectNews);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  });
+  const dispatch = useAppDispatch();
 
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
-        console.log("Getting News...")
-        getAllNews().then((news) => {
-          if (news) setNews(news as TNews[]);
-        });
+        if (!news.length) dispatch(fetchAllNews())
       } else {
-        setNews([]);
+        dispatch(emptyNews())
       }
     }, [isLoggedIn])
   );
@@ -58,20 +48,20 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
         }}>
         <Text style={[styles.title, textContrast]}>News</Text>
         {
-          isLoggedIn ? news.map((card: any, index: number) => {
+          isLoggedIn ? news.map((article: any, index: number) => {
             return (
               <Card
                 key={index}
                 isIcon={true}
                 onPress={() => navigation.navigate("ViewNewsScreen", {
                   validNavigation: true,
-                  newsId: card.id,
+                  newsId: article.id,
                 })}
                 highLight={null}
-                title={card.title}
-                subtitle1={card.author}
-                subtitle2={card.datetime.date} 
-                description={card.description} 
+                title={article.title}
+                subtitle1={article.author}
+                subtitle2={article.datetime.date} 
+                description={article.description} 
               />
             );
           }) : (

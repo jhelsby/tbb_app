@@ -66,6 +66,12 @@ export type TReadingSliceState = {
   currentReading: TReading | null,
 }
 
+export type TNewsSliceState = {
+  isLoading: boolean;
+  hasError: boolean;
+  news: TNews[],
+}
+
 export type TMeasurement= {
   name: string,
   value: number,
