@@ -1,7 +1,6 @@
-import { PayloadAction, createAsyncThunk, createSlice, createSelector } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../scripts/store';
 import {
-  getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -11,6 +10,7 @@ import {
 } from "firebase/auth";
 
 import { TAccountSliceState } from '../../scripts/types';
+import { auth } from '../../scripts/firebase';
 
 const initialState: TAccountSliceState = {
   uid: null,
@@ -38,7 +38,7 @@ export const logInWithEmailAndPassword: any = createAsyncThunk(
   async (args: { email: string, password: string }) : Promise<string | null> => {
     let uid: string | null = null;
     console.log("Logging in with email: ", args.email, " and password: ", args.password);
-    await signInWithEmailAndPassword(getAuth(), args.email, args.password)
+    await signInWithEmailAndPassword(auth, args.email, args.password)
     .then((userCredential: UserCredential) => {
       // Signed in 
       uid = userCredential.user.uid;
@@ -65,7 +65,7 @@ export const registerWithEmailAndPassword: any = createAsyncThunk(
     let uid: string | null = null;
     console.log("Registering with email: ", args.email, " and password: ", args.password);
     // Create a new user
-    createUserWithEmailAndPassword(getAuth(), args.email, args.password)
+    createUserWithEmailAndPassword(auth, args.email, args.password)
     .then((userCredential: UserCredential) => {
       // Signed in 
       uid = userCredential.user.uid;
@@ -93,7 +93,7 @@ export const sendPasswordReset: any = createAsyncThunk(
     let success: boolean = false;
     try {
       // Send password reset email
-      await sendPasswordResetEmail(getAuth(), args.email);
+      await sendPasswordResetEmail(auth, args.email);
       success = true;
     } catch (error: any) {
       // Handle Errors here.
@@ -119,7 +119,7 @@ export const logout: any = createAsyncThunk(
     let success: boolean = false;
     // Sign out
     try {
-      signOut(getAuth())
+      signOut(auth)
       console.log("Logged out");
       success = true;
     } catch(error) {
@@ -200,6 +200,6 @@ export const selectIsLoggedIn = (state: RootState) => !!state.account.uid;
 
 export const selectUid = (state: RootState) => state.account.uid;
 
-export const selectUser = (): User | null => getAuth().currentUser;
+export const selectUser = (): User | null => auth.currentUser;
 
 export default accountSlice.reducer
