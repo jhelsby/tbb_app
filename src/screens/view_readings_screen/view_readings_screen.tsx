@@ -13,9 +13,8 @@ import { THSL, TMeasurement, TPieChartData, TReading } from "../../scripts/types
 
 import { useAppSelector } from "../../scripts/redux_hooks";
 import { selectContainerContrast, selectPageContrast, selectTextContrast, selectDarkMode } from "../../slices/color/colorSlice";
-
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, getReading, postReading } from "../../scripts/firebase";
+import { selectIsLoggedIn } from "../../slices/account/accountSlice";
+import { selectReadingById } from "../../slices/readings/readingsSlice";
 
 export default function ViewReadingsScreen({ navigation, route } : any) : ReactElement<any> {
   // Get the contrast settings from the redux store
@@ -23,6 +22,9 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
   const pageContrast = useAppSelector(selectPageContrast);
   const textContrast = useAppSelector(selectTextContrast);
   const isDarkMode = useAppSelector(selectDarkMode);
+
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const reading: TReading = useAppSelector(state => selectReadingById(state, { id: route.params.readingId }))
 
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
@@ -35,30 +37,6 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
     }],
   });
 
-  const [isLoggedIn, setLoggedIn] = React.useState(false);
-
-  const [readingData, setReadingData] = React.useState<TReading>({
-    location: {
-      latitude: 0,
-      longitude: 0,
-    },
-    datetime: {
-      date: "",
-      time: "",
-    },
-    id: "",
-    isSafe: false,
-    hasSynced: true,
-    measurements: [
-      {name: "turbidity", value: 0},
-      {name: "ph", value: 0},
-      {name: "chloride", value: 0},
-      {name: "nitrate", value: 0},
-      {name: "flouride", value: 0},
-      {name: "conductivity", value: 0},
-    ],
-  });
-
   useFocusEffect(
     useCallback(() => {
       if (!route.params.validNavigation) navigation.popToTop();
@@ -69,35 +47,32 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
-        getReading(route.params.readingId).then((data: any) => {
-          setReadingData(data);
-  
-          const tempPieChartData: any[] = [];
-  
-          data.measurements.forEach((measurement: TMeasurement, index: number) => {
-            const color: any = colorInterpolate(color3, color1, index/(data.measurements.length - 1));
-            tempPieChartData.push({
-              name: measurement.name,
-              value: measurement.value,
-              color: hslToString(color),
-              legendFontColor: "#7F7F7F",
-              legendFontSize: 15,
-            });
+        const tempPieChartData: any[] = [];
+        const measurements: TMeasurement[] = reading.measurements;
+
+        measurements.forEach((measurement: TMeasurement, index: number) => {
+          const color: any = colorInterpolate(color3, color1, index/(measurements.length - 1));
+          tempPieChartData.push({
+            name: measurement.name,
+            value: measurement.value,
+            color: hslToString(color),
+            legendFontColor: "#7F7F7F",
+            legendFontSize: 15,
           });
-          setPieChartData(tempPieChartData);
-  
-          setBarChartData({
-            labels: data.measurements.map((measurement: TMeasurement) => measurement.name),
-            datasets: [
-              {
-                data: data.measurements.map((measurement: TMeasurement) => measurement.value),
-                colors: data.measurements.map((measurement: TMeasurement, index: number) => {
-                  const color: THSL = colorInterpolate(color3, color1, index/(readingData.measurements.length - 1));
-                  return () => hslToString(color);
-                })
-              },
-            ],
-          });
+        });
+        setPieChartData(tempPieChartData);
+
+        setBarChartData({
+          labels: measurements.map((measurement: TMeasurement) => measurement.name),
+          datasets: [
+            {
+              data: measurements.map((measurement: TMeasurement) => measurement.value),
+              colors: measurements.map((measurement: TMeasurement, index: number) => {
+                const color: THSL = colorInterpolate(color3, color1, index/(measurements.length - 1));
+                return () => hslToString(color);
+              })
+            },
+          ],
         });
       } else {
         setBarChartData({
@@ -107,38 +82,9 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
           }],
         });
         setPieChartData([]);
-        setReadingData({
-          location: {
-            latitude: 0,
-            longitude: 0,
-          },
-          datetime: {
-            date: "",
-            time: "",
-          },
-          id: "",
-          isSafe: false,
-          hasSynced: true,
-          measurements: [
-            {name: "turbidity", value: 0},
-            {name: "ph", value: 0},
-            {name: "chloride", value: 0},
-            {name: "nitrate", value: 0},
-            {name: "flouride", value: 0},
-            {name: "conductivity", value: 0},
-          ],
-        });
       }
     }, [isLoggedIn])
   )
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  });
 
   return (
     <View style={[styles.container, pageContrast]}>
@@ -151,9 +97,9 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
           <Text style={[styles.title, textContrast]}>View Readings</Text>
         </View>
         <View style={[globalStyles.tile, styles.dataContainer, containerContrast]}>
-          <Text style={[styles.dataTitle, readingData.isSafe ? styles.safe : styles.notSafe]}>{readingData.isSafe ? "SAFE" : "NOT SAFE"}</Text>
-          <Text style={styles.data}>{readingData.datetime.date}</Text>
-          <Text style={styles.data}>{`Latitude: ${readingData.location.latitude}, Longitude: ${readingData.location.longitude}`}</Text>
+          <Text style={[styles.dataTitle, reading.isSafe ? styles.safe : styles.notSafe]}>{reading.isSafe ? "SAFE" : "NOT SAFE"}</Text>
+          <Text style={styles.data}>{reading.datetime.date}</Text>
+          <Text style={styles.data}>{`Latitude: ${reading.location.latitude}, Longitude: ${reading.location.longitude}`}</Text>
         </View>
         <View style={[globalStyles.tile, styles.barChartContainer, containerContrast]}>
           <BarChart

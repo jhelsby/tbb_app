@@ -13,19 +13,22 @@ import { ICardProps } from "../../scripts/interfaces";
 import MapIcon from "../../components/map_icon/map_icon";
 import Card from "../../components/card/card";
 
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, getAllReadings } from "../../scripts/firebase";
-
-import { useAppSelector } from "../../scripts/redux_hooks";
+import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
 import { selectDarkMode, selectContainerContrast, selectTextContrast } from "../../slices/color/colorSlice";
+import { selectIsLoggedIn } from "../../slices/account/accountSlice";
+import { selectReadings, fetchAllReadings, emptyReadings } from "../../slices/readings/readingsSlice";
 
 type Props = NativeStackScreenProps<MapParamList, "MapScreen">;
 
 export default function MapScreen({ navigation } : Props) : ReactElement<Props> {
+  const dispatch = useAppDispatch();
 
   const isDarkMode = useAppSelector(selectDarkMode);
   const containerContrast = useAppSelector(selectContainerContrast);
   const textContrast = useAppSelector(selectTextContrast);
+
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const readings = useAppSelector(selectReadings);
 
   const [activeMarkers, setActiveMarkers] = useState<boolean[]>([]);
   const [activeCard, setActiveCard] = useState<boolean>(false);
@@ -40,33 +43,24 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
   });
 
 
-  const [ isLoggedIn, setLoggedIn ] = useState<boolean>(false);
-  const [ markers, setMarkers ] = useState<any>([]);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  });
-
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
         console.log("Getting Markers...")
-        getAllReadings().then((reading) => {
-          if (reading) {
-            setMarkers(reading);
-            setActiveMarkers(reading.map((marker) => false));
-          }
-        });
+        if (!readings.length) dispatch(fetchAllReadings());
       } else {
-        setMarkers([]);
-        setActiveMarkers([]);
+        dispatch(emptyReadings());
       }
     }, [isLoggedIn])
   );
+
+  useEffect(() => {
+    if (readings) {
+      setActiveMarkers(readings.map(() => false));
+    } else {
+      setActiveMarkers([]);
+    }
+  }, [readings])
 
 
   const screenWidth = Dimensions.get("window").width;
@@ -85,14 +79,14 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
       if (i === index) {
         const cardData: ICardProps = {
           isIcon: false,
-          highLight: markers[i].isSafe,
-          title: `Reading ${markers[i].id}`,
-          subtitle1: `${markers[i].location.latitude}, ${markers[i].location.longitude}`,
-          subtitle2: `Date: ${markers[i].datetime.date}`,
+          highLight: readings[i].isSafe,
+          title: `Reading ${readings[i].id}`,
+          subtitle1: `${readings[i].location.latitude}, ${readings[i].location.longitude}`,
+          subtitle2: `Date: ${readings[i].datetime.date}`,
           description: "Laboris in et ullamco magna excepteur aliquip mollit occaecat aliqua anim exercitation.",
           onPress: () => navigation.navigate("ViewReadingScreen", {
             validNavigation: true,
-            readingId: markers[i].id
+            readingId: readings[i].id
           })
         }
         setActiveCard(!marker);
@@ -130,7 +124,7 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
           longitudeDelta: 0.0421
         }}>
           {
-            markers.map((marker: any, index: number) => {
+            readings.map((marker: any, index: number) => {
               return (
                 <MapIcon
                   key={index}

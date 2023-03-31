@@ -59,6 +59,13 @@ export type TAccountSliceState = {
   hasError: boolean;
 }
 
+export type TReadingSliceState = {
+  isLoading: boolean;
+  hasError: boolean;
+  readings: TReading[],
+  currentReading: TReading | null,
+}
+
 export type TMeasurement= {
   name: string,
   value: number,

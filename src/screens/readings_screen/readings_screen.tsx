@@ -10,12 +10,10 @@ import { styles as globalStyles } from "../../../App_styles";
 import Card from "../../components/card/card";
 import Button from "../../components/button/button";
 
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, getAllReadings } from "../../scripts/firebase";
-import { TReading } from "../../scripts/types";
-
-import { useAppSelector } from "../../scripts/redux_hooks";
+import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
 import { selectPageContrast, selectTextContrast, selectContainerContrast } from "../../slices/color/colorSlice";
+import { selectIsLoggedIn } from "../../slices/account/accountSlice";
+import { selectReadings, fetchAllReadings, emptyReadings, postAllReadings } from "../../slices/readings/readingsSlice";
 
 type Props = NativeStackScreenProps<ReadingsParamList, "ReadingsScreen">;
 
@@ -25,33 +23,25 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
   const textContrast = useAppSelector(selectTextContrast);
   const containerContrast = useAppSelector(selectContainerContrast);
 
-  const [isLoggedIn, setLoggedIn] = React.useState(false);
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
-  const [readings, setReadings] = React.useState<TReading[]>([]);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  });
+  const dispatch = useAppDispatch();
+  const readings = useAppSelector(selectReadings);
 
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
-        console.log("Getting Readings...")
-        getAllReadings().then((readings) => {
-          if (readings) setReadings(readings as TReading[]);
-        });
+        console.log("Fetching Readings...")
+        if (!readings.length) dispatch(fetchAllReadings());
       } else {
-        setReadings([]);
+        dispatch(emptyReadings());
       }
     }, [isLoggedIn])
   );
 
   const handleSync = () => {
     console.log("Syncing All...");
+    dispatch(postAllReadings(null))
   };
 
   return (
