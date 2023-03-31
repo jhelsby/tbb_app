@@ -10,8 +10,8 @@ import ViewNewsScreen from '../view_news_screen/view_news_screen';
 import { ColorContext } from "../../context/color_context";
 
 import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
-import { selectColor, selectLightColor } from "../../slices/color/colorSlice";
-import { selectNavIndex, setFocusedNav } from "../../slices/root_nav/rootNavSlice";
+import { selectColor, selectLightColor } from "../../slices/colorSlice";
+import { selectNavIndex, setFocusedNav } from "../../slices/rootNavSlice";
 
 const Stack = createNativeStackNavigator<NewsParamList>();
 type Props = BottomTabScreenProps<RootTabParamList, 'NewsStack'>;

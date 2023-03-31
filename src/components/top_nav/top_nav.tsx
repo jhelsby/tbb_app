@@ -12,7 +12,7 @@ import { styles as globalStyles } from '../../../App_styles';
 import { TTopNavProps } from '../../scripts/types';
 
 import { useAppSelector } from '../../scripts/redux_hooks';
-import { selectContainerContrast } from '../../slices/color/colorSlice';
+import { selectContainerContrast } from '../../slices/colorSlice';
 
 export default function TopNav(props: TTopNavProps) : React.ReactElement<TTopNavProps> {
   const containerContrast = useAppSelector(selectContainerContrast);

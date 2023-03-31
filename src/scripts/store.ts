@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import colorReducer from '../slices/color/colorSlice'
-import rootNavReducer from '../slices/root_nav/rootNavSlice'
-import accountReducer from "../slices/account/accountSlice";
-import readingsReducer from "../slices/readings/readingsSlice";
-import newsReducer from "../slices/news/newsSlice";
+import colorReducer from '../slices/colorSlice'
+import rootNavReducer from '../slices/rootNavSlice'
+import accountReducer from "../slices/accountSlice";
+import readingsReducer from "../slices/readingsSlice";
+import newsReducer from "../slices/newsSlice";
 
 export const store = configureStore({
   reducer: {

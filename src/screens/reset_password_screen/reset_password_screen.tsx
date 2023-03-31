@@ -27,8 +27,8 @@ import {
   selectContainerContrast,
   selectPageContrast,
   selectTextContrast,
-} from "../../slices/color/colorSlice";
-import { sendPasswordReset } from "../../slices/account/accountSlice";
+} from "../../slices/colorSlice";
+import { sendPasswordReset } from "../../slices/accountSlice";
 
 import Button from "../../components/button/button";
 import TopNav from "../../components/top_nav/top_nav";

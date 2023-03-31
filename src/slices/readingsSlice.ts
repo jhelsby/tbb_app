@@ -11,10 +11,10 @@ import {
   DocumentSnapshot,
 } from "firebase/firestore";
 
-import { db } from '../../scripts/firebase';
+import { db } from '../scripts/firebase';
 
-import { TReadingSliceState, TReading } from '../../scripts/types';
-import { RootState } from '../../scripts/store';
+import { TReadingSliceState, TReading } from '../scripts/types';
+import { RootState } from '../scripts/store';
 
 
 const defaultReading: TReading = ({

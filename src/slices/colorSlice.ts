@@ -1,10 +1,10 @@
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
-import { styles as globalStyles } from '../../../App_styles'
-import { TColorSliceState, THSL } from '../../scripts/types';
-import { RootState } from '../../scripts/store';
+import { styles as globalStyles } from '../../App_styles'
+import { TColorSliceState, THSL } from '../scripts/types';
+import { RootState } from '../scripts/store';
 
-import { colorInterpolate, hslToString } from '../../scripts/colors';
+import { colorInterpolate, hslToString } from '../scripts/colors';
 
 const initialState: TColorSliceState = {
   textContrast: globalStyles.lightText,

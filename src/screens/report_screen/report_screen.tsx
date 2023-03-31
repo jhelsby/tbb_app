@@ -23,7 +23,7 @@ import Button from "../../components/button/button";
 import TopNav from "../../components/top_nav/top_nav";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/color/colorSlice";
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/colorSlice";
 
 type Props = NativeStackScreenProps<AccountParamList, "ReportScreen">;
 

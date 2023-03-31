@@ -13,8 +13,8 @@ import ResetPasswordScreen from "../reset_password_screen/reset_password_screen"
 import { ColorContext } from "../../context/color_context";
 
 import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
-import { selectColor, selectLightColor } from "../../slices/color/colorSlice";
-import { selectNavIndex, setFocusedNav } from "../../slices/root_nav/rootNavSlice";
+import { selectColor, selectLightColor } from "../../slices/colorSlice";
+import { selectNavIndex, setFocusedNav } from "../../slices/rootNavSlice";
 
 
 

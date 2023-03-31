@@ -18,7 +18,7 @@ import {
   selectDarkMode,
   selectPageContrast,
   selectTextContrast,
-} from "../../slices/color/colorSlice";
+} from "../../slices/colorSlice";
 
 export default function TakeReadingScreen({ navigation, route } : any) : ReactElement<any> {
   const screenWidth = Dimensions.get("window").width;

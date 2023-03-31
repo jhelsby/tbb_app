@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../../scripts/store';
+import { RootState } from '../scripts/store';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -9,8 +9,8 @@ import {
   User,
 } from "firebase/auth";
 
-import { TAccountSliceState } from '../../scripts/types';
-import { auth } from '../../scripts/firebase';
+import { TAccountSliceState } from '../scripts/types';
+import { auth } from '../scripts/firebase';
 
 const initialState: TAccountSliceState = {
   uid: null,

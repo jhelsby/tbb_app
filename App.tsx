@@ -13,7 +13,7 @@ import { color1, color1Light, color3, color3Light } from "./src/scripts/colors";
 
 import { Provider } from "react-redux";
 import { store } from "./src/scripts/store";
-import { setDarkMode, setColors } from "./src/slices/color/colorSlice";
+import { setDarkMode, setColors } from "./src/slices/colorSlice";
 import { TRootNav } from "./src/scripts/types";
 
 import MapStackNavigator from "./src/screens/map_screen/map_stack_navigator";

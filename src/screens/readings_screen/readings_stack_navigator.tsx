@@ -10,8 +10,8 @@ import ViewReadingsScreen from "../view_readings_screen/view_readings_screen";
 import { ColorContext } from "../../context/color_context";
 
 import { useAppDispatch, useAppSelector } from "../../scripts/redux_hooks";
-import { selectColor, selectLightColor } from "../../slices/color/colorSlice";
-import { selectNavIndex, setFocusedNav } from "../../slices/root_nav/rootNavSlice";
+import { selectColor, selectLightColor } from "../../slices/colorSlice";
+import { selectNavIndex, setFocusedNav } from "../../slices/rootNavSlice";
 
 const Stack = createNativeStackNavigator<ReadingsParamList>();
 type Props = BottomTabScreenProps<RootTabParamList, "ReadingsStack">;

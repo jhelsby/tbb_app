@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { styles } from "./tab_button_styles";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectColor, selectLightColor, selectContainerContrast, selectDarkMode } from "../../slices/color/colorSlice";
-import { selectNavFocus } from "../../slices/root_nav/rootNavSlice";
+import { selectColor, selectLightColor, selectContainerContrast, selectDarkMode } from "../../slices/colorSlice";
+import { selectNavFocus } from "../../slices/rootNavSlice";
 
 
 

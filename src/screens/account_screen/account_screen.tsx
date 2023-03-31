@@ -12,8 +12,8 @@ import AccountSvg from "../../assets/svgs/account.svg";
 import { ColorContext } from '../../context/color_context';
 
 import { useAppSelector, useAppDispatch } from '../../scripts/redux_hooks';
-import { selectContainerContrast, selectPageContrast, selectTextContrast } from '../../slices/color/colorSlice';
-import { logout, selectUser } from '../../slices/account/accountSlice';
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from '../../slices/colorSlice';
+import { logout, selectUser } from '../../slices/accountSlice';
 
 type Props = NativeStackScreenProps<AccountParamList, 'AccountScreen'>;
 

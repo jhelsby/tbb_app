@@ -14,9 +14,9 @@ import MapIcon from "../../components/map_icon/map_icon";
 import Card from "../../components/card/card";
 
 import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
-import { selectDarkMode, selectContainerContrast, selectTextContrast } from "../../slices/color/colorSlice";
-import { selectIsLoggedIn } from "../../slices/account/accountSlice";
-import { selectReadings, fetchAllReadings, emptyReadings } from "../../slices/readings/readingsSlice";
+import { selectDarkMode, selectContainerContrast, selectTextContrast } from "../../slices/colorSlice";
+import { selectIsLoggedIn } from "../../slices/accountSlice";
+import { selectReadings, fetchAllReadings, emptyReadings } from "../../slices/readingsSlice";
 
 type Props = NativeStackScreenProps<MapParamList, "MapScreen">;
 

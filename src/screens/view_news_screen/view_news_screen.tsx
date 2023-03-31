@@ -13,8 +13,8 @@ import TopNav from "../../components/top_nav/top_nav";
 import NewsSvg from "../../assets/svgs/news.svg";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/color/colorSlice";
-import { selectNewsById } from "../../slices/news/newsSlice";
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/colorSlice";
+import { selectNewsById } from "../../slices/newsSlice";
 import { TNews } from "../../scripts/types";
 
 type Props = NativeStackScreenProps<NewsParamList, "ViewNewsScreen">;

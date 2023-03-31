@@ -11,9 +11,9 @@ import Card from "../../components/card/card";
 import { TNews } from "../../scripts/types";
 
 import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
-import { selectPageContrast, selectTextContrast, selectContainerContrast } from "../../slices/color/colorSlice";
-import { selectIsLoggedIn } from "../../slices/account/accountSlice";
-import { emptyNews, fetchAllNews, selectNews } from "../../slices/news/newsSlice";
+import { selectPageContrast, selectTextContrast, selectContainerContrast } from "../../slices/colorSlice";
+import { selectIsLoggedIn } from "../../slices/accountSlice";
+import { emptyNews, fetchAllNews, selectNews } from "../../slices/newsSlice";
 
 type Props = NativeStackScreenProps<NewsParamList, "NewsScreen">;
 

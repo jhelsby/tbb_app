@@ -12,9 +12,9 @@ import TopNav from "../../components/top_nav/top_nav";
 import { THSL, TMeasurement, TPieChartData, TReading } from "../../scripts/types";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectContainerContrast, selectPageContrast, selectTextContrast, selectDarkMode } from "../../slices/color/colorSlice";
-import { selectIsLoggedIn } from "../../slices/account/accountSlice";
-import { selectReadingById } from "../../slices/readings/readingsSlice";
+import { selectContainerContrast, selectPageContrast, selectTextContrast, selectDarkMode } from "../../slices/colorSlice";
+import { selectIsLoggedIn } from "../../slices/accountSlice";
+import { selectReadingById } from "../../slices/readingsSlice";
 
 export default function ViewReadingsScreen({ navigation, route } : any) : ReactElement<any> {
   // Get the contrast settings from the redux store

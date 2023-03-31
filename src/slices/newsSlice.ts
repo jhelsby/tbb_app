@@ -13,10 +13,10 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
-import { db } from '../../scripts/firebase';
+import { db } from '../scripts/firebase';
 
-import { TNews, TNewsSliceState } from '../../scripts/types';
-import { RootState } from '../../scripts/store';
+import { TNews, TNewsSliceState } from '../scripts/types';
+import { RootState } from '../scripts/store';
 
 
 const defaultNews: TNews = ({

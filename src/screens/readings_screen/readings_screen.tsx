@@ -11,9 +11,9 @@ import Card from "../../components/card/card";
 import Button from "../../components/button/button";
 
 import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
-import { selectPageContrast, selectTextContrast, selectContainerContrast } from "../../slices/color/colorSlice";
-import { selectIsLoggedIn } from "../../slices/account/accountSlice";
-import { selectReadings, fetchAllReadings, emptyReadings, postAllReadings } from "../../slices/readings/readingsSlice";
+import { selectPageContrast, selectTextContrast, selectContainerContrast } from "../../slices/colorSlice";
+import { selectIsLoggedIn } from "../../slices/accountSlice";
+import { selectReadings, fetchAllReadings, emptyReadings, postAllReadings } from "../../slices/readingsSlice";
 
 type Props = NativeStackScreenProps<ReadingsParamList, "ReadingsScreen">;
 

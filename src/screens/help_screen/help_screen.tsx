@@ -14,7 +14,7 @@ import tempData from './data.temp.json';
 import { useFocusEffect } from "@react-navigation/native";
 
 import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/color/colorSlice";
+import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/colorSlice";
 
 type Props = NativeStackScreenProps<HomeParamList, "HelpScreen">;
 

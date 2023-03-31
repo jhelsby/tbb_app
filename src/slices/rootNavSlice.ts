@@ -1,6 +1,6 @@
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../../scripts/store';
-import { TRootNav, TRootNavSliceState } from '../../scripts/types';
+import { RootState } from '../scripts/store';
+import { TRootNav, TRootNavSliceState } from '../scripts/types';
 
 
 import { faMap, faHome, faNewspaper, faUser, faChartLine } from "@fortawesome/free-solid-svg-icons";
