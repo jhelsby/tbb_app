@@ -14,11 +14,11 @@ export default function Button(props: PropsWithChildren<IButtonProps>) : React.R
     <Pressable
       style={[
         styles.container,
-        { backgroundColor: pressed ? color : lightColor },
+        { backgroundColor: props.disabled ? 'hsl(0, 0%, 80%)' : pressed ? color : lightColor },
         Array.isArray(props.children) ? styles.containerMulti : styles.containerSingle
       ]}
-      onPress={props.onPress}
-      onPressIn={() => setPressed(true)}
+      onPress={props.disabled ? () => {} : props.onPress}
+      onPressIn={() => setPressed(true && !props.disabled)}
       onPressOut={() => setPressed(false)}>
       {
         props.children

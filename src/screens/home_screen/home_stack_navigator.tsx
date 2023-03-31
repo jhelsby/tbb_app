@@ -6,7 +6,7 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import HomeScreen from "./home_screen";
 import HelpScreen from "../help_screen/help_screen";
-import ViewReadingsScreen from "../view_readings_screen/view_readings_screen";
+import TakeReadingsScreen from "../take_reading_screen/take_reading_screen";
 import LoadingScreen from "../loading_screen/loading_screen";
 
 import { ColorContext } from "../../context/color_context";
@@ -39,7 +39,7 @@ export default function HomeStackNavigator() : ReactElement<Props> {
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="HelpScreen" component={HelpScreen} />
         <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
-        <Stack.Screen name="TakeReadingScreen" component={ViewReadingsScreen} />
+        <Stack.Screen name="TakeReadingScreen" component={TakeReadingsScreen} />
       </Stack.Navigator>
     </ColorContext.Provider>
   );

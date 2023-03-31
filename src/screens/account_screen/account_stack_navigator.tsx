@@ -6,6 +6,9 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import AccountScreen from "./account_screen";
 import ReportScreen from "../report_screen/report_screen";
+import LoginScreen from "../login_screen/login_screen";
+import SignupScreen from "../signup_screen/signup_screen";
+import ResetPasswordScreen from "../reset_password_screen/reset_password_screen";
 
 import { ColorContext } from "../../context/color_context";
 
@@ -37,6 +40,9 @@ export default function AccountStackNavigator() : ReactElement<Props> {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="AccountScreen" component={AccountScreen} />
         <Stack.Screen name="ReportScreen" component={ReportScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="SignupScreen" component={SignupScreen} />
+        <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
       </Stack.Navigator>
     </ColorContext.Provider>
   );

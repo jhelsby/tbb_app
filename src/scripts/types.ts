@@ -22,13 +22,6 @@ export type TPieChartData = {
   legendFontSize: number
 };
 
-export type TNewsData = {
-  title: string,
-  author: string,
-  date: string,
-  contents: { heading: string, paragraphs: string[] }[],
-}
-
 export type TTextInputStyle = {
   borderColor: string,
   borderWidth: number,
@@ -58,4 +51,39 @@ export type TRootNav = {
 
 export type TRootNavSliceState = {
   rootNavs: TRootNav[],
+}
+
+export type TMeasurement= {
+  name: string,
+  value: number,
+}
+
+export type TReading = {
+  location: {
+    latitude: number,
+    longitude: number,
+  },
+  datetime: {
+    date: string,
+    time: string,
+  }
+  id: string,
+  isSafe: boolean,
+  hasSynced: boolean,
+  measurements: TMeasurement[],
+}
+
+export type TNews = {
+  id: string,
+  title: string,
+  author: string,
+  datetime: {
+    date: string,
+    time: string,
+  },
+  description: string,
+  contents: { 
+    heading: string, 
+    paragraphs: string[] 
+  }[],
 }

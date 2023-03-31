@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AccountParamList } from '../../scripts/screen_params';
 
@@ -14,6 +14,9 @@ import { ColorContext } from '../../context/color_context';
 import { useAppSelector } from '../../scripts/redux_hooks';
 import { selectContainerContrast, selectPageContrast, selectTextContrast } from '../../slices/color/colorSlice';
 
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, logout } from '../../scripts/firebase';
+
 type Props = NativeStackScreenProps<AccountParamList, 'AccountScreen'>;
 
 export default function AccountScreen({ navigation }: Props) : ReactElement<Props> {
@@ -23,34 +26,80 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
   const pageContrast = useAppSelector(selectPageContrast);
   const textContrast = useAppSelector(selectTextContrast);
 
+
+  const [loggedIn, setLoggedIn] = React.useState(false);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  });
+
   const handleDeletePress = () => {
     console.log("Delete Pressed");
   };
 
+  const handleLogout = async () => {
+    const success: boolean = await logout();
+    if (!success) console.error("Logout failed");
+  };
+
   return (
     <View style={[globalStyles.page, styles.container, pageContrast]}>
-      <View style={styles.titleContainer}>
-        <Text style={[styles.title, textContrast]}>Account</Text>
-      </View>
-      <View style={styles.svgContainer}>
-        <AccountSvg height="100%" width="100%" color={color} style={styles.svg} />
-      </View>
-      <View style={[globalStyles.tile, styles.detailsContainer, containerContrast]}>
-        <Text style={[styles.detailsText, textContrast]}><Text style={{ fontWeight: 'bold' }}>Username: </Text>John Doe</Text>
-        <Text style={[styles.detailsText, textContrast]}><Text style={{ fontWeight: 'bold' }}>Location: </Text>London, UK</Text>
-      </View>
-      <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
-        <View style={styles.buttonContainer}>
-          <Button onPress={handleDeletePress}>
-            <Text style={[styles.buttonText]}>Delete Data</Text>
-          </Button>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.titleContainer}>
+          <Text style={[styles.title, textContrast]}>Account</Text>
         </View>
-        <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate("ReportScreen", { validNavigation: true })} >
-            <Text style={[styles.buttonText]}>Report</Text>
-          </Button>
+        <View style={styles.svgContainer}>
+          <AccountSvg height="100%" width="100%" color={color} style={styles.svg} />
         </View>
-      </View>
+        {
+          loggedIn ? (
+            <View>
+              <View style={[globalStyles.tile, styles.detailsContainer, containerContrast]}>
+                <Text style={[styles.detailsText, textContrast]}><Text style={{ fontWeight: 'bold' }}>Username: </Text>John Doe</Text>
+                <Text style={[styles.detailsText, textContrast]}><Text style={{ fontWeight: 'bold' }}>Location: </Text>London, UK</Text>
+              </View>
+              <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+                <View style={styles.buttonContainer}>
+                  <Button onPress={handleLogout}>
+                    <Text style={[styles.buttonText]}>Log Out</Text>
+                  </Button>
+                </View>
+              </View>
+            </View>
+          ) : (
+            <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+              <View style={styles.buttonContainer}>
+                <Button onPress={() => navigation.navigate("LoginScreen", { validNavigation: true })}>
+                  <Text style={[styles.buttonText]}>Login</Text>
+                </Button>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button onPress={() => navigation.navigate("SignupScreen", { validNavigation: true })}>
+                  <Text style={[styles.buttonText]}>SignUp</Text>
+                </Button>
+              </View>
+            </View>
+          )
+        }
+        <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+          {
+          loggedIn && (<View style={styles.buttonContainer}>
+            <Button onPress={handleDeletePress}>
+              <Text style={[styles.buttonText]}>Delete Data</Text>
+            </Button>
+          </View>)
+          }
+          <View style={styles.buttonContainer}>
+            <Button onPress={() => navigation.navigate("ReportScreen", { validNavigation: true })} >
+              <Text style={[styles.buttonText]}>Report</Text>
+            </Button>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };

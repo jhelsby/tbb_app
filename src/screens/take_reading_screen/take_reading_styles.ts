@@ -94,6 +94,4 @@ export const styles = StyleSheet.create({
     color: '#999',
     width: '100%',
   },
-
-
 });

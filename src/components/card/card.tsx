@@ -15,8 +15,8 @@ import { selectContainerContrast, selectTextContrast } from '../../slices/color/
 export default function Card(props : ICardProps) : React.ReactElement<ICardProps> {
   const textContrast = useAppSelector(selectTextContrast);
   const containerContrast = useAppSelector(selectContainerContrast);
-  const [pressed, setPressed] = React.useState(false);
 
+  const [pressed, setPressed] = React.useState(false);
 
   return (
     <Pressable
@@ -39,10 +39,8 @@ export default function Card(props : ICardProps) : React.ReactElement<ICardProps
       </View>
       <View style={styles.content}>
         <Text style={[styles.title, textContrast]}>{props.title}</Text>
-        <View style={styles.subtitleContainer}>
-          <Text style={styles.subtitle}>{props.subtitle1}</Text>
-          <Text style={styles.subtitle}>{props.subtitle2}</Text>
-        </View>
+        <Text style={styles.subtitle}>{props.subtitle1}</Text>
+        <Text style={styles.subtitle}>{props.subtitle2}</Text>
         <Text style={styles.description}>{props.description}</Text>
       </View>
       <View style={styles.chevronContainer}>

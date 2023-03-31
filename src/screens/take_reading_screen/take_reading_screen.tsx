@@ -1,54 +1,57 @@
-import React, { useEffect, useCallback, ReactElement } from "react";
-import { View, Text, ScrollView, Dimensions, useColorScheme } from "react-native";
+import React, { useCallback, ReactElement } from "react";
+import { View, Text, ScrollView, Dimensions, Alert } from "react-native";
 import { BarChart, PieChart } from "react-native-chart-kit";
 import { useFocusEffect } from "@react-navigation/native";
 
-import { styles } from "./view_readings_styles";
+import { styles } from "./take_reading_styles";
 import { styles as globalStyles } from "../../../App_styles";
-import { colorInterpolate, color1, color3, hslToString } from "../../scripts/colors";
 
 import TopNav from "../../components/top_nav/top_nav";
-
-import { THSL, TMeasurement, TPieChartData, TReading } from "../../scripts/types";
-
-import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectContainerContrast, selectPageContrast, selectTextContrast, selectDarkMode } from "../../slices/color/colorSlice";
+import Button from "../../components/button/button";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, getReading, postReading } from "../../scripts/firebase";
+import { auth, postReading } from "../../scripts/firebase";
 
-export default function ViewReadingsScreen({ navigation, route } : any) : ReactElement<any> {
-  // Get the contrast settings from the redux store
-  const containerContrast = useAppSelector(selectContainerContrast);
-  const pageContrast = useAppSelector(selectPageContrast);
-  const textContrast = useAppSelector(selectTextContrast);
-  const isDarkMode = useAppSelector(selectDarkMode);
+import { useAppSelector } from "../../scripts/redux_hooks";
+import {
+  selectContainerContrast,
+  selectDarkMode,
+  selectPageContrast,
+  selectTextContrast,
+} from "../../slices/color/colorSlice";
 
+export default function TakeReadingScreen({ navigation, route } : any) : ReactElement<any> {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
 
+  const pageContrast = useAppSelector(selectPageContrast);
+  const containerContrast = useAppSelector(selectContainerContrast);
+  const textContrast = useAppSelector(selectTextContrast);
+  const isDarkMode = useAppSelector(selectDarkMode);
+
   const [pieChartData, setPieChartData] = React.useState<any>([]);
   const [barChartData, setBarChartData] = React.useState<any>({
-    labels: [],
-    datasets: [{
-      data: [],
-    }],
+    labels: ["Turbidity", "pH", "Chloride", "Nitrate", "Flouride", "Conductivity"],
+    datasets: [
+      {
+        data: [0, 0, 0, 0, 0, 0],
+      },
+    ],
   });
 
   const [isLoggedIn, setLoggedIn] = React.useState(false);
+  const [docName, setDocName] = React.useState<string>("");
 
-  const [readingData, setReadingData] = React.useState<TReading>({
+  const [readingData, setReadingData] = React.useState<any>({
     location: {
-      latitude: 0,
-      longitude: 0,
+      latitude: Math.round(Math.random() * 90 * 1000000) / 1000000,
+      longitude: Math.round(Math.random() * 180 * 1000000) / 1000000,
     },
     datetime: {
       date: "",
       time: "",
     },
-    id: "",
     isSafe: false,
-    hasSynced: true,
     measurements: [
       {name: "turbidity", value: 0},
       {name: "ph", value: 0},
@@ -66,72 +69,6 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
     }, [])
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      if (isLoggedIn) {
-        getReading(route.params.readingId).then((data: any) => {
-          setReadingData(data);
-  
-          const tempPieChartData: any[] = [];
-  
-          data.measurements.forEach((measurement: TMeasurement, index: number) => {
-            const color: any = colorInterpolate(color3, color1, index/(data.measurements.length - 1));
-            tempPieChartData.push({
-              name: measurement.name,
-              value: measurement.value,
-              color: hslToString(color),
-              legendFontColor: "#7F7F7F",
-              legendFontSize: 15,
-            });
-          });
-          setPieChartData(tempPieChartData);
-  
-          setBarChartData({
-            labels: data.measurements.map((measurement: TMeasurement) => measurement.name),
-            datasets: [
-              {
-                data: data.measurements.map((measurement: TMeasurement) => measurement.value),
-                colors: data.measurements.map((measurement: TMeasurement, index: number) => {
-                  const color: THSL = colorInterpolate(color3, color1, index/(readingData.measurements.length - 1));
-                  return () => hslToString(color);
-                })
-              },
-            ],
-          });
-        });
-      } else {
-        setBarChartData({
-          labels: [],
-          datasets: [{
-            data: [],
-          }],
-        });
-        setPieChartData([]);
-        setReadingData({
-          location: {
-            latitude: 0,
-            longitude: 0,
-          },
-          datetime: {
-            date: "",
-            time: "",
-          },
-          id: "",
-          isSafe: false,
-          hasSynced: true,
-          measurements: [
-            {name: "turbidity", value: 0},
-            {name: "ph", value: 0},
-            {name: "chloride", value: 0},
-            {name: "nitrate", value: 0},
-            {name: "flouride", value: 0},
-            {name: "conductivity", value: 0},
-          ],
-        });
-      }
-    }, [isLoggedIn])
-  )
-
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setLoggedIn(true);
@@ -139,6 +76,20 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
       setLoggedIn(false);
     }
   });
+
+  const handleSync = async () => {
+    if (isLoggedIn) {
+      if (docName) {
+        Alert.alert("This reading has already been synced.");
+      } else {
+        console.log("Syncing...");
+        const docName = await postReading(readingData);
+        if (docName) {
+          setDocName(docName);
+        }
+      }
+    }
+  }
 
   return (
     <View style={[styles.container, pageContrast]}>
@@ -153,8 +104,19 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
         <View style={[globalStyles.tile, styles.dataContainer, containerContrast]}>
           <Text style={[styles.dataTitle, readingData.isSafe ? styles.safe : styles.notSafe]}>{readingData.isSafe ? "SAFE" : "NOT SAFE"}</Text>
           <Text style={styles.data}>{readingData.datetime.date}</Text>
-          <Text style={styles.data}>{`Latitude: ${readingData.location.latitude}, Longitude: ${readingData.location.longitude}`}</Text>
+          <Text style={styles.data}>{`Latitude: ${readingData.location.latitude}, Longitude: ${readingData.location.latitude}`}</Text>
         </View>
+        {
+          isLoggedIn && (
+          <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleSync} disabled={!!docName} >
+                <Text style={[styles.buttonText]}>{docName ? "Synced" : "Sync"}</Text>
+              </Button>
+            </View>
+          </View>
+          )
+        }
         <View style={[globalStyles.tile, styles.barChartContainer, containerContrast]}>
           <BarChart
             data={barChartData}
@@ -173,7 +135,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
               backgroundGradientTo: isDarkMode ? "#2E2E2E" : "#fff",
               barPercentage: 0.8,
               decimalPlaces: 4,
-              color: () => `#7F7F7F`,
+              color: (opacity = 1) => `#7F7F7F`,
               style: {
                 borderRadius: 16,
               },
@@ -190,7 +152,7 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
               backgroundGradientFrom: "#fff",
               backgroundGradientTo: "#fff",
               decimalPlaces: 2,
-              color: () => `#d95448`,
+              color: (opacity = 1) => `#d95448`,
             }}
             accessor="value"
             backgroundColor="transparent"
