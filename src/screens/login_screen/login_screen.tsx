@@ -12,7 +12,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AccountParamList } from "../../scripts/screen_params";
 
-import { auth, logInWithEmailAndPassword } from "../../scripts/firebase";
+import { auth } from "../../scripts/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import { styles } from "./login_styles";
@@ -20,16 +20,15 @@ import { styles as globalStyles } from "../../../App_styles";
 
 import { TTextInputStyle } from "../../scripts/types";
 
-import { hslToString } from "../../scripts/colors";
-
 import { ColorContext } from "../../context/color_context";
 
-import { useAppSelector } from "../../scripts/redux_hooks";
+import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
 import {
   selectContainerContrast,
   selectPageContrast,
   selectTextContrast,
 } from "../../slices/color/colorSlice";
+import { logInWithEmailAndPassword } from "../../slices/account/accountSlice";
 
 import Button from "../../components/button/button";
 import TopNav from "../../components/top_nav/top_nav";
@@ -37,14 +36,15 @@ import TopNav from "../../components/top_nav/top_nav";
 type Props = NativeStackScreenProps<AccountParamList, "LoginScreen">;
 
 export default function LoginScreen({ navigation, route } : any) : ReactElement<Props> {
-
-
   useFocusEffect(
     useCallback(() => {
       if (!route.params.validNavigation) navigation.popToTop();
       route.params.validNavigation = false;
     }, [])
   );
+
+
+
 
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -59,11 +59,16 @@ export default function LoginScreen({ navigation, route } : any) : ReactElement<
     }
   }, [user, loading])
 
+
+
   const containerContrast = useAppSelector(selectContainerContrast);
   const pageContrast = useAppSelector(selectPageContrast);
   const textContrast = useAppSelector(selectTextContrast);
-
   const { color, lightColor } = useContext(ColorContext);
+
+
+  const dispatch = useAppDispatch();
+
 
   const [isKeyboardVisible, setKeyboardVisible] = React.useState<boolean>(false);
   useEffect(() => {
@@ -86,16 +91,11 @@ export default function LoginScreen({ navigation, route } : any) : ReactElement<
   }, []);
 
 
-  const focusedStyle = {
-    borderColor: color,
-    borderWidth: 2,
-  }
 
-  const unfocusedStyle = {
-    borderColor: lightColor,
-    borderWidth: 1,
-  }
 
+
+  const focusedStyle = { borderColor: color, borderWidth: 2 }
+  const unfocusedStyle = { borderColor: lightColor, borderWidth: 1 }
   const [textInputStyles, setTextInputStyles] = React.useState<TTextInputStyle[]>([
     unfocusedStyle,
     unfocusedStyle,
@@ -170,7 +170,7 @@ export default function LoginScreen({ navigation, route } : any) : ReactElement<
               />
             </View>
             <View style={styles.buttonContainer}>
-              <Button onPress={() => logInWithEmailAndPassword(email, password)}>
+              <Button onPress={() => dispatch(logInWithEmailAndPassword({email, password}))}>
                 <Text style={styles.buttonText}>Login</Text>
               </Button>
             </View>

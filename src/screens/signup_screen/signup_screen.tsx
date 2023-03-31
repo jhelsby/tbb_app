@@ -12,7 +12,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AccountParamList } from "../../scripts/screen_params";
 
-import { auth, registerWithEmailAndPassword } from "../../scripts/firebase";
+import { auth } from "../../scripts/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import { styles } from "./signup_styles";
@@ -22,12 +22,13 @@ import { TTextInputStyle } from "../../scripts/types";
 
 import { ColorContext } from "../../context/color_context";
 
-import { useAppSelector } from "../../scripts/redux_hooks";
+import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
 import {
   selectContainerContrast,
   selectPageContrast,
   selectTextContrast,
 } from "../../slices/color/colorSlice";
+import { registerWithEmailAndPassword } from "../../slices/account/accountSlice";
 
 import Button from "../../components/button/button";
 import TopNav from "../../components/top_nav/top_nav";
@@ -38,6 +39,8 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
   const pageContrast = useAppSelector(selectPageContrast);
   const containerContrast = useAppSelector(selectContainerContrast);
   const textContrast = useAppSelector(selectTextContrast);
+
+  const dispatch = useAppDispatch();
 
   const { color, lightColor } = useContext(ColorContext);
 
@@ -57,7 +60,7 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
 
   const register = () => {
     if (password === confirmPassword && name && email && password) {
-      registerWithEmailAndPassword(email, password);
+      dispatch(registerWithEmailAndPassword({ email, password }));
     }
   }
 

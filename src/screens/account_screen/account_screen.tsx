@@ -11,11 +11,9 @@ import AccountSvg from "../../assets/svgs/account.svg";
 
 import { ColorContext } from '../../context/color_context';
 
-import { useAppSelector } from '../../scripts/redux_hooks';
+import { useAppSelector, useAppDispatch } from '../../scripts/redux_hooks';
 import { selectContainerContrast, selectPageContrast, selectTextContrast } from '../../slices/color/colorSlice';
-
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth, logout } from '../../scripts/firebase';
+import { logout, selectUser } from '../../slices/account/accountSlice';
 
 type Props = NativeStackScreenProps<AccountParamList, 'AccountScreen'>;
 
@@ -26,24 +24,16 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
   const pageContrast = useAppSelector(selectPageContrast);
   const textContrast = useAppSelector(selectTextContrast);
 
+  const loggedIn = !!useAppSelector(selectUser)
 
-  const [loggedIn, setLoggedIn] = React.useState(false);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  });
+  const dispatch = useAppDispatch();
 
   const handleDeletePress = () => {
     console.log("Delete Pressed");
   };
 
   const handleLogout = async () => {
-    const success: boolean = await logout();
-    if (!success) console.error("Logout failed");
+    dispatch(logout())
   };
 
   return (

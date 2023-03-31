@@ -12,7 +12,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AccountParamList } from "../../scripts/screen_params";
 
-import { auth, sendPasswordReset } from "../../scripts/firebase";
+import { auth } from "../../scripts/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import { styles } from "./reset_password_styles";
@@ -22,12 +22,13 @@ import { TTextInputStyle } from "../../scripts/types";
 
 import { ColorContext } from "../../context/color_context";
 
-import { useAppSelector } from "../../scripts/redux_hooks";
+import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
 import {
   selectContainerContrast,
   selectPageContrast,
   selectTextContrast,
 } from "../../slices/color/colorSlice";
+import { sendPasswordReset } from "../../slices/account/accountSlice";
 
 import Button from "../../components/button/button";
 import TopNav from "../../components/top_nav/top_nav";
@@ -39,7 +40,10 @@ export default function ResetPasswordScreen({ navigation, route } : any) : React
   const containerContrast = useAppSelector(selectContainerContrast);
   const textContrast = useAppSelector(selectTextContrast);
 
+  const dispatch = useAppDispatch();
+
   const { color, lightColor } = useContext(ColorContext);
+
 
   useFocusEffect(
     useCallback(() => {
@@ -78,16 +82,8 @@ export default function ResetPasswordScreen({ navigation, route } : any) : React
   }, []);
 
 
-  const focusedStyle = {
-    borderColor: color,
-    borderWidth: 2,
-  }
-
-  const unfocusedStyle = {
-    borderColor: lightColor,
-    borderWidth: 1,
-  }
-
+  const focusedStyle = { borderColor: color, borderWidth: 2 }
+  const unfocusedStyle = { borderColor: lightColor, borderWidth: 1 }
   const [textInputStyles, setTextInputStyles] = React.useState<TTextInputStyle[]>([
     unfocusedStyle,
     unfocusedStyle,
@@ -145,7 +141,7 @@ export default function ResetPasswordScreen({ navigation, route } : any) : React
               />
             </View>
             <View style={styles.buttonContainer}>
-              <Button onPress={(e) => sendPasswordReset(email)}>
+              <Button onPress={() => dispatch(sendPasswordReset({ email }))}>
                 <Text style={styles.buttonText}>Reset Password</Text>
               </Button>
             </View>

@@ -1,12 +1,6 @@
 import { FirebaseApp, initializeApp } from "firebase/app";
 import {
   getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signOut,
-  UserCredential,
-  User,
   Auth,
 } from "firebase/auth";
 import {
@@ -54,118 +48,7 @@ export const auth: Auth = getAuth(app);
 // gets the firestore database
 export const db: Firestore = getFirestore(app);
 
-// ========================================================
-// ===================== AUTHENTICATION ===================
-// ========================================================
 
-
-/**
- * logins in a user with email and password
- * @param email - the email of the user
- * @param password - the password of the user
- * 
- * @returns the user if successful, null otherwise
- * 
- * @throws error if there is an error
-*/
-export const logInWithEmailAndPassword = async (email: string, password: string) : Promise<User | null> => {
-  let user: User | null = null;
-  console.log("Logging in with email: ", email, " and password: ", password);
-  await signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential: UserCredential) => {
-    // Signed in 
-    user = userCredential.user;
-    console.log("Logged in user");
-  }).catch((error: any) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
-  });
-  return user;
-};
-
-/**
- * Register and new user with email and password
- * 
- * @param email - the email of the user
- * @param password - the password of the user
- * @returns the user if successful, null otherwise
- */
-export const registerWithEmailAndPassword = async (email: string, password: string) : Promise<User | null> => {
-  let user: User | null = null;
-  console.log("Registering with email: ", email, " and password: ", password);
-  // Create a new user
-  createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential: UserCredential) => {
-    // Signed in 
-    user = userCredential.user;
-    console.log("User Registered:");
-  }).catch((error: any) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
-  });
-  return user;
-};
-
-/**
- * 
- * Sends a password reset email to the user
- * 
- * @param email - the email of the user
- * @returns true if successful, false otherwise
- */
-export const sendPasswordReset = async (email: string) : Promise<boolean> => {
-  let success: boolean = false;
-  try {
-    // Send password reset email
-    await sendPasswordResetEmail(auth, email);
-    success = true;
-  } catch (error: any) {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.error(`Error Code: ${errorCode} Error Message: ${errorMessage}`)
-    let success = false;
-  }
-  return success;
-};
-
-
-/**
- * Logs out the current user
- * 
- * @returns true if successful, false otherwise
- * 
-*/
-export const logout = async () : Promise<boolean> => {
-  let success: boolean = false;
-  // Sign out
-  try {
-    signOut(auth)
-    console.log("Logged out");
-    success = true;
-  } catch(error) {
-    console.error(error);
-    success = false;
-  }
-  return success;
-};
-
-/**
- * Gets the current user
- * 
- * @returns the current user if logged in, null otherwise
-*/
-const getUserName = () : string | null => {
-  // Get the current user
-  if (auth.currentUser) {
-    return auth.currentUser.displayName;
-  }
-  // If no user is logged in
-  return 'Anonymous';
-}
 
 
 
@@ -184,7 +67,7 @@ const getUserName = () : string | null => {
 export const postReading = async (reading: TReading) : Promise<string | null | undefined> => {
   // Add a new document to the readings collection.
   await addDoc(collection(db, 'readings'), {
-    name: getUserName(),
+    name: "getUserName()",
     ...reading,
     timestamp: serverTimestamp()
   }).then((docRef: DocumentReference<DocumentData>) => {

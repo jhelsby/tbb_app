@@ -55,7 +55,6 @@ export default function App() {
     AccountStackNavigator
   ];
 
-
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {

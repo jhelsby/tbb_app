@@ -53,6 +53,12 @@ export type TRootNavSliceState = {
   rootNavs: TRootNav[],
 }
 
+export type TAccountSliceState = {
+  uid: string | null;
+  isLoading: boolean;
+  hasError: boolean;
+}
+
 export type TMeasurement= {
   name: string,
   value: number,
