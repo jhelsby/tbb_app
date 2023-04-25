@@ -58,4 +58,12 @@ export const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   },
+  modalButtonContainer: {
+    height: '10%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
+    marginBottom: 20,
+  },
 });
