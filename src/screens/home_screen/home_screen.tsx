@@ -12,6 +12,7 @@ import { color3, color3Light, hslToString } from "../../scripts/colors";
 import HomeSvg from "../../assets/svgs/home.svg";
 import Button from "../../components/button/button";
 import Modal from "../../components/modal/modal";
+import useBLE from "../../scripts/useBLE";
 
 type Props = NativeStackScreenProps<HomeParamList, "HomeScreen">;
 
@@ -19,12 +20,31 @@ export default function HomeScreen({ navigation } : Props) : ReactElement<Props>
   const { color, colorLight } = useContext(ColorContext);
 
   const [isConnected, setConnected] = React.useState(false);
-  const [isModalVisible, setModalVisible] = React.useState(true);
+  const [isModalVisible, setModalVisible] = React.useState(false);
   
   const isDarkMode = useColorScheme() === "dark";
   const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
   const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
   const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
+
+  const {
+    requestPermissions,
+    scanForPeripherals
+  } = useBLE();
+
+  const scanForDevices = async () => {
+    console.log("Scanning for devices...");
+    const isPermissionGranted = await requestPermissions();
+    console.log("Permission granted: " + isPermissionGranted)
+    if (isPermissionGranted) {
+      scanForPeripherals();
+    }
+  }
+
+  const openModal = async () => {
+    await scanForDevices();
+    setModalVisible(true);
+  }
 
   const closeModal = () => {
     setModalVisible(false);
@@ -59,11 +79,11 @@ export default function HomeScreen({ navigation } : Props) : ReactElement<Props>
                   <Text style={styles.buttonText}>Help</Text>
                 </Button>
               </View>
-            </View> :
-            
+            </View>
+            :
             <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
               <View style={styles.buttonContainer}>
-                <Button onPress={() => setModalVisible(true)}>
+                <Button onPress={openModal}>
                   <Text style={styles.buttonText}>Connect</Text>
                 </Button>
               </View>
