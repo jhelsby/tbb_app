@@ -11,7 +11,7 @@ import {hslToString} from '../../scripts/colors';
 
 import HomeSvg from '../../svgs/home.svg';
 import Button from '../../components/button/button';
-import Modal from '../../components/modal/modal';
+import DeviceModal from '../../components/modal/modal';
 import useBLE from '../../scripts/useBLE';
 
 type Props = NativeStackScreenProps<HomeParamList, 'HomeScreen'>;
@@ -112,19 +112,12 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
           </View>
         )}
       </View>
-      {isModalVisible && (
-        <Modal title="Pick Bluetooth Device" handleClose={closeModal}>
-          {allDevices.map((device, index) => {
-            return (
-              <View key={index} style={styles.modalButtonContainer}>
-                <Button onPress={() => {}}>
-                  <Text style={styles.buttonText}>{device.name}</Text>
-                </Button>
-              </View>
-            );
-          })}
-        </Modal>
-      )}
+      <DeviceModal
+        closeModal={closeModal}
+        visible={isModalVisible}
+        connectToPeripheral={() => {}}
+        devices={allDevices}
+      />
     </View>
   );
 }

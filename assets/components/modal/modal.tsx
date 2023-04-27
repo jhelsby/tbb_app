@@ -1,42 +1,74 @@
-import React, {PropsWithChildren} from 'react';
-import {View, Text, Pressable, useColorScheme} from 'react-native';
-
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faClose} from '@fortawesome/free-solid-svg-icons';
+import React, {ReactElement, useCallback} from 'react';
+import {
+  FlatList,
+  ListRenderItemInfo,
+  Modal,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+} from 'react-native';
+import {Device} from 'react-native-ble-plx';
+import DeviceModalListItem from './modalItem';
 
 import {styles} from './modal_styles';
 import {styles as globalStyles} from '../../../App_styles';
 
-interface IModalProps {
-  title: string;
-  handleClose: () => void;
-}
+type DeviceModalProps = {
+  devices: Device[];
+  visible: boolean;
+  connectToPeripheral: (device: Device) => void;
+  closeModal: () => void;
+};
 
-export default function Modal(
-  props: PropsWithChildren<IModalProps>,
-): React.ReactElement {
+export default function DeviceModal(
+  props: DeviceModalProps,
+): ReactElement<DeviceModalProps> {
+  const {devices, visible, connectToPeripheral, closeModal} = props;
+
   const isDarkMode = useColorScheme() === 'dark';
+  const textContrast = isDarkMode
+    ? globalStyles.darkText
+    : globalStyles.lightText;
+  const containerContrast = isDarkMode
+    ? globalStyles.darkContainer
+    : globalStyles.lightContainer;
+
+  const renderDeviceModalListItem = useCallback(
+    (item: ListRenderItemInfo<Device>) => {
+      return (
+        <DeviceModalListItem
+          item={item}
+          connectToPeripheral={connectToPeripheral}
+          closeModal={closeModal}
+        />
+      );
+    },
+    [closeModal, connectToPeripheral],
+  );
 
   return (
-    <View style={styles.modalBackground}>
-      <View
-        style={[
-          styles.modalContainer,
-          globalStyles.tile,
-          isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer,
-        ]}>
-        <View style={styles.modalHeader}>
-          <View style={styles.modalTitleContainer}>
-            <Text style={styles.modalTitle}>{props.title}</Text>
-          </View>
-          <Pressable
-            style={styles.modalCrossContainer}
-            onPress={props.handleClose}>
-            <FontAwesomeIcon icon={faClose} size={50} color="#999" />
-          </Pressable>
-        </View>
-        <View style={styles.modalContentContainer}>{props.children}</View>
-      </View>
-    </View>
+    <Modal
+      style={[styles.modalContainer]}
+      animationType="slide"
+      transparent={true}
+      visible={visible}>
+      <TouchableOpacity
+        style={styles.modalClose}
+        activeOpacity={1}
+        onPress={closeModal}
+      />
+      <SafeAreaView
+        style={[styles.modalContent, containerContrast, globalStyles.tile]}>
+        <Text style={[styles.modalTitleText, textContrast, containerContrast]}>
+          Tap on a device to connect
+        </Text>
+        <FlatList
+          contentContainerStyle={styles.modalFlatlistContiner}
+          data={devices}
+          renderItem={renderDeviceModalListItem}
+        />
+      </SafeAreaView>
+    </Modal>
   );
 }
