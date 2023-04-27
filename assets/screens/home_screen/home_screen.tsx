@@ -12,11 +12,14 @@ import {hslToString} from '../../scripts/colors';
 import HomeSvg from '../../svgs/home.svg';
 import Button from '../../components/button/button';
 import Modal from '../../components/modal/modal';
+import useBLE from '../../scripts/useBLE';
 
 type Props = NativeStackScreenProps<HomeParamList, 'HomeScreen'>;
 
 export default function HomeScreen({navigation}: Props): ReactElement<Props> {
   const {color, colorLight} = useContext(ColorContext);
+
+  const {requestPermissions} = useBLE();
 
   const [isConnected, _] = React.useState(false);
   const [isModalVisible, setModalVisible] = React.useState(false);
@@ -33,7 +36,10 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
     : globalStyles.lightPage;
 
   const openModal = () => {
-    setModalVisible(true);
+    requestPermissions((result: boolean) => {
+      console.log('The android permission result is: ' + result);
+    });
+    //setModalVisible(true);
   };
 
   const closeModal = () => {
