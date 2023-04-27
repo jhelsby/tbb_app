@@ -7,17 +7,17 @@ import {styles} from './account_styles';
 import {styles as globalStyles} from '../../../App_styles';
 
 import Button from '../../components/button/button';
-// import AccountSvg from '../../svgs/account.svg';
+import AccountSvg from '../../svgs/account.svg';
 
-// import {ColorContext} from '../../context/color_context';
-// import {hslToString} from '../../scripts/colors';
+import {ColorContext} from '../../context/color_context';
+import {hslToString} from '../../scripts/colors';
 
 type Props = NativeStackScreenProps<AccountParamList, 'AccountScreen'>;
 
 export default function AccountScreen({
   navigation,
 }: Props): ReactElement<Props> {
-  // const {color} = React.useContext(ColorContext);
+  const {color} = React.useContext(ColorContext);
 
   const isDarkMode = useColorScheme() === 'dark';
   const textContrast = isDarkMode
@@ -40,12 +40,12 @@ export default function AccountScreen({
         <Text style={[styles.title, textContrast]}>Account</Text>
       </View>
       <View style={styles.svgContainer}>
-        {/* <AccountSvg
+        <AccountSvg
           height="100%"
           width="100%"
           color={hslToString(color)}
           style={styles.svg}
-        /> */}
+        />
       </View>
       <View
         style={[globalStyles.tile, styles.detailsContainer, containerContrast]}>

@@ -7,11 +7,11 @@ import {NewsParamList} from '../../scripts/screen_params';
 import {styles} from './view_news_styles';
 import {styles as globalStyles} from '../../../App_styles';
 
-// import {ColorContext} from '../../context/color_context';
-// import {hslToString} from '../../scripts/colors';
+import {ColorContext} from '../../context/color_context';
+import {hslToString} from '../../scripts/colors';
 
 import TopNav from '../../components/top_nav/top_nav';
-// import NewsSvg from '../../svgs/news.svg';
+import NewsSvg from '../../svgs/news.svg';
 import tempData from './data.temp.json';
 
 type Props = NativeStackScreenProps<NewsParamList, 'ViewNewsScreen'>;
@@ -29,7 +29,7 @@ export default function ViewNewsScreen({
     }, [navigation, route.params]),
   );
 
-  // const {color} = useContext(ColorContext);
+  const {color} = useContext(ColorContext);
 
   const isDarkMode = useColorScheme() === 'dark';
   const textContrast = isDarkMode
@@ -59,12 +59,12 @@ export default function ViewNewsScreen({
           <Text style={styles.subtitle}>{tempData.date}</Text>
         </View>
         <View style={styles.svgContainer}>
-          {/* <NewsSvg
+          <NewsSvg
             height="100%"
             width="100%"
             color={hslToString(color)}
             style={styles.svg}
-          /> */}
+          />
         </View>
         <View style={styles.content}>
           {tempData.contents.map((content, contentIdx) => {

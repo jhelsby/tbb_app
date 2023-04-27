@@ -9,14 +9,14 @@ import {styles as globalStyles} from '../../../App_styles';
 import {ColorContext} from '../../context/color_context';
 import {hslToString} from '../../scripts/colors';
 
-// import HomeSvg from '../../svgs/home.svg';
+import HomeSvg from '../../svgs/home.svg';
 import Button from '../../components/button/button';
 import Modal from '../../components/modal/modal';
 
 type Props = NativeStackScreenProps<HomeParamList, 'HomeScreen'>;
 
 export default function HomeScreen({navigation}: Props): ReactElement<Props> {
-  const {color} = useContext(ColorContext);
+  const {color, colorLight} = useContext(ColorContext);
 
   const [isConnected, _] = React.useState(false);
   const [isModalVisible, setModalVisible] = React.useState(false);
@@ -53,12 +53,12 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
           </Text>
         </View>
         <View style={styles.svgContainer}>
-          {/* <HomeSvg
+          <HomeSvg
             height="100%"
             width="100%"
             color={hslToString(colorLight)}
             style={styles.svg}
-          /> */}
+          />
         </View>
         {isConnected ? (
           <View
