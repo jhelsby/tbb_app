@@ -1,33 +1,39 @@
-import React, { useEffect, useRef } from "react";
-import { View, TouchableOpacity, Animated, useColorScheme } from "react-native";
+import React, {useEffect, useRef} from 'react';
+import {View, TouchableOpacity, Animated, useColorScheme} from 'react-native';
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
-import { color1, color1Light, color3, color3Light, colorInterpolate } from "../../scripts/colors";
+import {
+  color1,
+  color1Light,
+  color3,
+  color3Light,
+  colorInterpolate,
+} from '../../scripts/colors';
 
-import { THSL } from "../../scripts/types";
+import {THSL} from '../../scripts/types';
 
-import { styles } from "./tab_button_styles";
-import { styles as globalStyles } from "../../../App_styles";
-
-
+import {styles} from './tab_button_styles';
+import {styles as globalStyles} from '../../../App_styles';
 
 export default function TabButton(props: any) {
-  const {
-    icon,
-    onPress,
-    focused,
-    index,
-    length,
-  } = props;
+  const {icon, onPress, focused, index, length} = props;
 
   const isDarkMode = useColorScheme() === 'dark';
-  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
-  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
-  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
+  const containerContrast = isDarkMode
+    ? globalStyles.darkContainer
+    : globalStyles.lightContainer;
 
-  const activeColor: THSL = colorInterpolate(color1, color3, index/(length - 1));
-  const inactiveColor: THSL = colorInterpolate(color1Light, color3Light, index/(length - 1));
+  const activeColor: THSL = colorInterpolate(
+    color1,
+    color3,
+    index / (length - 1),
+  );
+  const inactiveColor: THSL = colorInterpolate(
+    color1Light,
+    color3Light,
+    index / (length - 1),
+  );
   const activeColorString: string = `hsl(${activeColor.h}, ${activeColor.s}%, ${activeColor.l}%)`;
   const inactiveColorString: string = `hsl(${inactiveColor.h}, ${inactiveColor.s}%, ${inactiveColor.l}%)`;
 
@@ -37,8 +43,9 @@ export default function TabButton(props: any) {
   // circleScale is used to animate the circle in and out of view but can also be used
   // to animate the opacity of the active icon as they are the same value.
   const circleScale: Animated.Value = useRef(new Animated.Value(0)).current;
-  const inactiveIconOpacity: Animated.Value = useRef(new Animated.Value(1)).current;
-
+  const inactiveIconOpacity: Animated.Value = useRef(
+    new Animated.Value(1),
+  ).current;
 
   const timeSpan: number = 300;
 
@@ -65,6 +72,7 @@ export default function TabButton(props: any) {
         useNativeDriver: true,
       }),
     ]).start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focused]);
 
   return (
@@ -73,35 +81,35 @@ export default function TabButton(props: any) {
       activeOpacity={1}
       style={styles.buttonContainer}>
       <Animated.View
-        style={[styles.button, { transform: [{ scale: viewScale }, { translateY: viewTranslate }]}]}>
-        <View style={[
-          styles.iconContainer,
-          containerContrast,
-          isDarkMode ? styles.borderDark : styles.borderLight,
+        style={[
+          styles.button,
+          {transform: [{scale: viewScale}, {translateY: viewTranslate}]},
         ]}>
+        <View
+          style={[
+            styles.iconContainer,
+            containerContrast,
+            isDarkMode ? styles.borderDark : styles.borderLight,
+          ]}>
           <Animated.View
             style={[
               styles.circle,
-              { backgroundColor: activeColorString },
-              { transform: [{ scale: circleScale }]}
-            ]} />
-          <Animated.View
-            style={[
-              styles.icon,
-              { opacity: circleScale }
-            ]}>
+              {backgroundColor: activeColorString},
+              {transform: [{scale: circleScale}]},
+            ]}
+          />
+          <Animated.View style={[styles.icon, {opacity: circleScale}]}>
             <FontAwesomeIcon icon={icon} size={25} color={'#fff'} />
           </Animated.View>
-          <Animated.View
-            style={[
-              styles.icon,
-              { opacity: inactiveIconOpacity }
-            ]}>
-            <FontAwesomeIcon icon={icon} size={30} color={inactiveColorString} />
+          <Animated.View style={[styles.icon, {opacity: inactiveIconOpacity}]}>
+            <FontAwesomeIcon
+              icon={icon}
+              size={30}
+              color={inactiveColorString}
+            />
           </Animated.View>
-          
         </View>
       </Animated.View>
     </TouchableOpacity>
-  )
+  );
 }

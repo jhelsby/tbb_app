@@ -1,9 +1,6 @@
-import { createContext } from 'react';
+import {createContext} from 'react';
 
-import {
-  color1,
-  color1Light,
-} from '../scripts/colors';
+import {color1, color1Light} from '../scripts/colors';
 
 export const ColorContext = createContext({
   color: color1,

@@ -1,15 +1,15 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   button: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   iconContainer: {
     width: 50,
@@ -33,9 +33,9 @@ export const styles = StyleSheet.create({
     borderRadius: 1000,
   },
   borderLight: {
-    borderColor: '#fff'
+    borderColor: '#fff',
   },
   borderDark: {
-    borderColor: '#2E2E2E'
+    borderColor: '#2E2E2E',
   },
 });

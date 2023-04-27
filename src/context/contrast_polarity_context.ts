@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import {createContext} from 'react';
 
 import {
   color1,
@@ -6,8 +6,8 @@ import {
   color3,
   color3Light,
   backgroundColor,
-  textColor
-} from "../scripts/colors";
+  textColor,
+} from '../scripts/colors';
 
 export const ContrastPolarityContext = createContext({
   startColor: color1,
@@ -15,5 +15,5 @@ export const ContrastPolarityContext = createContext({
   endColor: color3,
   endColorLight: color3Light,
   backgroundColor: backgroundColor,
-  textColor: textColor
+  textColor: textColor,
 });

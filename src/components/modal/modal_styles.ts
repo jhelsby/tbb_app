@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   modalBackground: {
@@ -53,10 +53,7 @@ export const styles = StyleSheet.create({
     padding: '5%',
     justifyContent: 'flex-start',
     alignItems: 'center',
-
   },
-  modalContent: {
-  },
-  modalContentText: {
-  }
+  modalContent: {},
+  modalContentText: {},
 });

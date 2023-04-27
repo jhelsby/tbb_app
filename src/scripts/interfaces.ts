@@ -1,6 +1,4 @@
-import React from "react";
-
-import * as type from './types';
+import React from 'react';
 
 export interface IButtonProps {
   onPress: () => void;
@@ -8,21 +6,21 @@ export interface IButtonProps {
 }
 
 export type IMarkerProps = {
-  latitude: number,
-  longitude: number,
-  isSafe: boolean,
-  date: string,
-  index: number,
-  onActive: (index: number) => void,
-  active: boolean,
-}
+  latitude: number;
+  longitude: number;
+  isSafe: boolean;
+  date: string;
+  index: number;
+  onActive: (index: number) => void;
+  active: boolean;
+};
 
 export type ICardProps = {
-  isIcon: boolean,
-  highLight : boolean | null,
-  title : string,
-  subtitle1 : string,
-  subtitle2 : string,
-  description : string,
-  onPress : () => void,
+  isIcon: boolean;
+  highLight: boolean | null;
+  title: string;
+  subtitle1: string;
+  subtitle2: string;
+  description: string;
+  onPress: () => void;
 };
