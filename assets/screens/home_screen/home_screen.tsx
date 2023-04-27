@@ -9,7 +9,7 @@ import {styles as globalStyles} from '../../../App_styles';
 import {ColorContext} from '../../context/color_context';
 import {hslToString} from '../../scripts/colors';
 
-// import HomeSvg from '../../assets/svgs/home.svg';
+// import HomeSvg from '../../svgs/home.svg';
 import Button from '../../components/button/button';
 import Modal from '../../components/modal/modal';
 

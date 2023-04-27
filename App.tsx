@@ -3,7 +3,7 @@ import {useColorScheme} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import {RootTabParamList} from './src/scripts/screen_params';
+import {RootTabParamList} from './assets/scripts/screen_params';
 
 import {
   faMap,
@@ -14,13 +14,13 @@ import {
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 
-import MapStackNavigator from './src/screens/map_screen/map_stack_navigator';
-import ReadingsStackNavigator from './src/screens/readings_screen/readings_stack_navigator';
-import HomeStackNavigator from './src/screens/home_screen/home_stack_navigator';
-import NewsStackNavigator from './src/screens/news_screen/news_stack_navigator';
-import AccountStackNavigator from './src/screens/account_screen/account_stack_navigator';
+import MapStackNavigator from './assets/screens/map_screen/map_stack_navigator';
+import ReadingsStackNavigator from './assets/screens/readings_screen/readings_stack_navigator';
+import HomeStackNavigator from './assets/screens/home_screen/home_stack_navigator';
+import NewsStackNavigator from './assets/screens/news_screen/news_stack_navigator';
+import AccountStackNavigator from './assets/screens/account_screen/account_stack_navigator';
 
-import TabButton from './src/components/tab_button/tab_button';
+import TabButton from './assets/components/tab_button/tab_button';
 
 import {styles} from './App_styles';
 
@@ -31,12 +31,12 @@ import {
   color3Light,
   backgroundColor,
   textColor,
-} from './src/scripts/colors';
+} from './assets/scripts/colors';
 
-import {ContrastPolarityContext} from './src/context/contrast_polarity_context';
-import {RootNavsContext} from './src/context/root_nav_context';
+import {ContrastPolarityContext} from './assets/context/contrast_polarity_context';
+import {RootNavsContext} from './assets/context/root_nav_context';
 
-import {THSL} from './src/scripts/types';
+import {THSL} from './assets/scripts/types';
 
 interface ITabScreen {
   name: string;

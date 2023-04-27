@@ -73,10 +73,7 @@ export default function MapScreen({navigation}: Props): ReactElement<Props> {
   return (
     <View style={styles.container}>
       <MapView
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
+        style={{width: '100%', height: '100%'}}
         provider={PROVIDER_GOOGLE}
         showsUserLocation
         zoomControlEnabled={false}

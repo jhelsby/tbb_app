@@ -7,7 +7,7 @@ import {styles} from './account_styles';
 import {styles as globalStyles} from '../../../App_styles';
 
 import Button from '../../components/button/button';
-// import AccountSvg from '../../assets/svgs/account.svg';
+// import AccountSvg from '../../svgs/account.svg';
 
 // import {ColorContext} from '../../context/color_context';
 // import {hslToString} from '../../scripts/colors';

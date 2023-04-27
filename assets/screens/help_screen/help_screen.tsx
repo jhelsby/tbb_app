@@ -1,22 +1,22 @@
 import React, {useContext, useCallback, ReactElement} from 'react';
 import {View, Text, ScrollView, useColorScheme} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NewsParamList} from '../../scripts/screen_params';
+import {HomeParamList} from '../../scripts/screen_params';
 
-import {styles} from './view_news_styles';
+import {styles} from './help_styles';
 import {styles as globalStyles} from '../../../App_styles';
 
 // import {ColorContext} from '../../context/color_context';
 // import {hslToString} from '../../scripts/colors';
 
+// import HelpSvg from '../../svgs/help.svg';
 import TopNav from '../../components/top_nav/top_nav';
-// import NewsSvg from '../../assets/svgs/news.svg';
 import tempData from './data.temp.json';
+import {useFocusEffect} from '@react-navigation/native';
 
-type Props = NativeStackScreenProps<NewsParamList, 'ViewNewsScreen'>;
+type Props = NativeStackScreenProps<HomeParamList, 'HelpScreen'>;
 
-export default function ViewNewsScreen({
+export default function HelpScreen({
   navigation,
   route,
 }: any): ReactElement<Props> {
@@ -48,18 +48,9 @@ export default function ViewNewsScreen({
       <ScrollView
         style={styles.body}
         contentContainerStyle={{paddingBottom: 200}}>
-        <Text style={[styles.title, textContrast]}>{tempData.title}</Text>
-        <View
-          style={[
-            globalStyles.tile,
-            styles.subtitleContainer,
-            containerContrast,
-          ]}>
-          <Text style={styles.subtitle}>{tempData.author}</Text>
-          <Text style={styles.subtitle}>{tempData.date}</Text>
-        </View>
+        <Text style={[styles.title, textContrast]}>Help</Text>
         <View style={styles.svgContainer}>
-          {/* <NewsSvg
+          {/* <HelpSvg
             height="100%"
             width="100%"
             color={hslToString(color)}
