@@ -1,11 +1,5 @@
 import React, {PropsWithChildren} from 'react';
-import {
-  View,
-  Text,
-  Pressable,
-  useColorScheme,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, Pressable, useColorScheme} from 'react-native';
 
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faClose} from '@fortawesome/free-solid-svg-icons';
@@ -24,9 +18,7 @@ export default function Modal(
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <TouchableOpacity
-      style={styles.modalBackground}
-      onPress={props.handleClose}>
+    <View style={styles.modalBackground}>
       <View
         style={[
           styles.modalContainer,
@@ -45,6 +37,6 @@ export default function Modal(
         </View>
         <View style={styles.modalContentContainer}>{props.children}</View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }

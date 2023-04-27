@@ -19,7 +19,7 @@ type Props = NativeStackScreenProps<HomeParamList, 'HomeScreen'>;
 export default function HomeScreen({navigation}: Props): ReactElement<Props> {
   const {color, colorLight} = useContext(ColorContext);
 
-  const {requestPermissions} = useBLE();
+  const {requestPermissions, scanForDevices, allDevices} = useBLE();
 
   const [isConnected, _] = React.useState(false);
   const [isModalVisible, setModalVisible] = React.useState(false);
@@ -37,9 +37,11 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
 
   const openModal = () => {
     requestPermissions((result: boolean) => {
-      console.log('The android permission result is: ' + result);
+      if (result) {
+        scanForDevices();
+      }
     });
-    //setModalVisible(true);
+    setModalVisible(true);
   };
 
   const closeModal = () => {
@@ -112,21 +114,15 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
       </View>
       {isModalVisible && (
         <Modal title="Pick Bluetooth Device" handleClose={closeModal}>
-          <View style={styles.modalButtonContainer}>
-            <Button onPress={() => {}}>
-              <Text style={styles.buttonText}>Device 1</Text>
-            </Button>
-          </View>
-          <View style={styles.modalButtonContainer}>
-            <Button onPress={() => {}}>
-              <Text style={styles.buttonText}>Device 2</Text>
-            </Button>
-          </View>
-          <View style={styles.modalButtonContainer}>
-            <Button onPress={() => {}}>
-              <Text style={styles.buttonText}>Device 3</Text>
-            </Button>
-          </View>
+          {allDevices.map((device, index) => {
+            return (
+              <View key={index} style={styles.modalButtonContainer}>
+                <Button onPress={() => {}}>
+                  <Text style={styles.buttonText}>{device.name}</Text>
+                </Button>
+              </View>
+            );
+          })}
         </Modal>
       )}
     </View>
