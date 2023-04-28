@@ -121,6 +121,7 @@ export default function useBLE(): BluetoothLowEnergyApi {
     }
 
     const rawData = characteristic.value;
+    console.log(rawData);
 
     setStreamedData(rawData);
   };
