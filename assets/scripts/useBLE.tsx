@@ -9,6 +9,8 @@ import {
 
 import DeviceInfo from 'react-native-device-info';
 
+import base64 from 'react-native-base64';
+
 type PermissionCallback = (result: boolean) => void;
 
 const bleManager = new BleManager();
@@ -122,6 +124,9 @@ export default function useBLE(): BluetoothLowEnergyApi {
 
     const rawData = characteristic.value;
     console.log(rawData);
+
+    const decodedData = base64.decode(rawData);
+    console.log(decodedData);
 
     setStreamedData(rawData);
   };
