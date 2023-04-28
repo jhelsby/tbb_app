@@ -18,6 +18,17 @@ const bleManager = new BleManager();
 const DEVICE_UUID = '0000FFE0-0000-1000-8000-00805F9B34FB';
 const CHARACTERISTIC_UUID = '0000FFE1-0000-1000-8000-00805F9B34FB';
 
+type deviceData = {
+  isSafe: boolean;
+  date: string;
+  latitude: number;
+  longitude: number;
+  results: {
+    name: string;
+    value: number;
+  }[];
+};
+
 interface BluetoothLowEnergyApi {
   requestPermissions(callback: PermissionCallback): Promise<void>;
   scanForDevices(): void;
@@ -25,15 +36,14 @@ interface BluetoothLowEnergyApi {
   disconnectFromDevice: () => void;
   connectedDevice: Device | null;
   allDevices: Device[];
-  streamedData: string;
-  startDeviceReading: (device: Device) => void;
-  getStreamedData: () => string;
+  dataFromDevice: deviceData | null;
+  startDeviceReading: (device: Device) => Promise<deviceData | null>;
 }
 
 export default function useBLE(): BluetoothLowEnergyApi {
   const [allDevices, setAllDevices] = useState<Device[]>([]);
   const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
-  const [streamedData, setStreamedData] = useState('');
+  const [dataFromDevice, setDataFromDevice] = useState<deviceData | null>(null);
 
   const requestPermissions = async (callback: PermissionCallback) => {
     if (Platform.OS === 'android') {
@@ -107,7 +117,7 @@ export default function useBLE(): BluetoothLowEnergyApi {
     if (connectedDevice) {
       bleManager.cancelDeviceConnection(connectedDevice.id);
       setConnectedDevice(null);
-      setStreamedData('');
+      setDataFromDevice(null);
     }
   };
 
@@ -127,8 +137,45 @@ export default function useBLE(): BluetoothLowEnergyApi {
 
           const rawData = characteristic.value;
           const decodedData = base64.decode(rawData);
+          const values: string[] = decodedData.split(',');
+          const listOfReadings: deviceData = {
+            isSafe: values[8] === '1',
+            date: values[2],
+            latitude: parseFloat(values[4]),
+            longitude: parseFloat(values[5]),
+            results: [
+              {
+                name: 'Chloride',
+                value: parseFloat(values[0]),
+              },
+              {
+                name: 'Conductivity',
+                value: parseFloat(values[1]),
+              },
+              {
+                name: 'Fluoride',
+                value: parseFloat(values[3]),
+              },
+              {
+                name: 'Nitrate',
+                value: parseFloat(values[6]),
+              },
+              {
+                name: 'pH',
+                value: parseFloat(values[7]),
+              },
+              {
+                name: 'Temperature',
+                value: parseFloat(values[9]),
+              },
+              {
+                name: 'Turbidity',
+                value: parseFloat(values[10]),
+              },
+            ],
+          };
           console.log(decodedData);
-          setStreamedData(decodedData);
+          setDataFromDevice(listOfReadings);
         },
       );
     } else {
@@ -150,18 +197,15 @@ export default function useBLE(): BluetoothLowEnergyApi {
     }
   };
 
-  const startDeviceReading = (device: Device) => {
+  const startDeviceReading = async (device: Device) => {
     if (device) {
-      setStreamedData('');
-      startSendingData(device);
-      startReadingData(device);
+      setDataFromDevice(null);
+      await startSendingData(device);
+      await startReadingData(device);
     } else {
       console.log('No Device Connected');
     }
-  };
-
-  const getStreamedData = () => {
-    return streamedData;
+    return dataFromDevice;
   };
 
   return {
@@ -171,8 +215,7 @@ export default function useBLE(): BluetoothLowEnergyApi {
     allDevices,
     connectedDevice,
     disconnectFromDevice,
-    streamedData,
+    dataFromDevice,
     startDeviceReading,
-    getStreamedData,
   };
 }
