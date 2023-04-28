@@ -19,9 +19,15 @@ type Props = NativeStackScreenProps<HomeParamList, 'HomeScreen'>;
 export default function HomeScreen({navigation}: Props): ReactElement<Props> {
   const {color, colorLight} = useContext(ColorContext);
 
-  const {requestPermissions, scanForDevices, allDevices} = useBLE();
+  const {
+    requestPermissions,
+    scanForDevices,
+    allDevices,
+    connectToDevice,
+    disconnectFromDevice,
+    connectedDevice,
+  } = useBLE();
 
-  const [isConnected, _] = React.useState(false);
   const [isModalVisible, setModalVisible] = React.useState(false);
 
   const isDarkMode = useColorScheme() === 'dark';
@@ -68,7 +74,7 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
             style={styles.svg}
           />
         </View>
-        {isConnected ? (
+        {connectedDevice ? (
           <View
             style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
             <View style={styles.buttonContainer}>
@@ -80,7 +86,7 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
               </Button>
             </View>
             <View style={styles.buttonContainer}>
-              <Button onPress={() => {}}>
+              <Button onPress={disconnectFromDevice}>
                 <Text style={styles.buttonText}>Disconnect</Text>
               </Button>
             </View>
@@ -115,7 +121,7 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
       <DeviceModal
         closeModal={closeModal}
         visible={isModalVisible}
-        connectToPeripheral={() => {}}
+        connectToPeripheral={connectToDevice}
         devices={allDevices}
       />
     </View>

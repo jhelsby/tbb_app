@@ -1,6 +1,11 @@
 import {useState} from 'react';
 import {PermissionsAndroid, Platform} from 'react-native';
-import {BleManager, Device} from 'react-native-ble-plx';
+import {
+  BleError,
+  BleManager,
+  Characteristic,
+  Device,
+} from 'react-native-ble-plx';
 
 import DeviceInfo from 'react-native-device-info';
 
@@ -8,14 +13,23 @@ type PermissionCallback = (result: boolean) => void;
 
 const bleManager = new BleManager();
 
+const DEVICE_UUID = '0000FFE0-0000-1000-8000-00805F9B34FB';
+const CHARACTERISTIC_UUID = '0000FFE1-0000-1000-8000-00805F9B34FB';
+
 interface BluetoothLowEnergyApi {
   requestPermissions(callback: PermissionCallback): Promise<void>;
   scanForDevices(): void;
+  connectToDevice: (deviceId: Device) => Promise<void>;
+  disconnectFromDevice: () => void;
+  connectedDevice: Device | null;
   allDevices: Device[];
+  streamedData: any;
 }
 
 export default function useBLE(): BluetoothLowEnergyApi {
   const [allDevices, setAllDevices] = useState<Device[]>([]);
+  const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
+  const [streamedData, setStreamedData] = useState('');
 
   const requestPermissions = async (callback: PermissionCallback) => {
     if (Platform.OS === 'android') {
@@ -74,9 +88,62 @@ export default function useBLE(): BluetoothLowEnergyApi {
     });
   };
 
+  const connectToDevice = async (device: Device) => {
+    try {
+      const deviceConnection = await bleManager.connectToDevice(device.id);
+      setConnectedDevice(deviceConnection);
+      await deviceConnection.discoverAllServicesAndCharacteristics();
+      bleManager.stopDeviceScan();
+      startStreamingData(deviceConnection);
+    } catch (e) {
+      console.log('FAILED TO CONNECT', e);
+    }
+  };
+
+  const disconnectFromDevice = () => {
+    if (connectedDevice) {
+      bleManager.cancelDeviceConnection(connectedDevice.id);
+      setConnectedDevice(null);
+      setStreamedData('');
+    }
+  };
+
+  const onHeartRateUpdate = (
+    error: BleError | null,
+    characteristic: Characteristic | null,
+  ) => {
+    if (error) {
+      console.log(error);
+      return -1;
+    } else if (!characteristic?.value) {
+      console.log('No Data was recieved');
+      return -1;
+    }
+
+    const rawData = characteristic.value;
+
+    setStreamedData(rawData);
+  };
+
+  const startStreamingData = async (device: Device) => {
+    if (device) {
+      device.monitorCharacteristicForService(
+        DEVICE_UUID,
+        CHARACTERISTIC_UUID,
+        (error, characteristic) => onHeartRateUpdate(error, characteristic),
+      );
+    } else {
+      console.log('No Device Connected');
+    }
+  };
+
   return {
-    requestPermissions,
     scanForDevices,
+    requestPermissions,
+    connectToDevice,
     allDevices,
+    connectedDevice,
+    disconnectFromDevice,
+    streamedData,
   };
 }
