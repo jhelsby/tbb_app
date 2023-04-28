@@ -25,7 +25,9 @@ interface BluetoothLowEnergyApi {
   disconnectFromDevice: () => void;
   connectedDevice: Device | null;
   allDevices: Device[];
-  streamedData: any;
+  streamedData: string;
+  startDeviceReading: (device: Device) => void;
+  getStreamedData: () => string;
 }
 
 export default function useBLE(): BluetoothLowEnergyApi {
@@ -96,7 +98,6 @@ export default function useBLE(): BluetoothLowEnergyApi {
       setConnectedDevice(deviceConnection);
       await deviceConnection.discoverAllServicesAndCharacteristics();
       bleManager.stopDeviceScan();
-      startStreamingData(deviceConnection);
     } catch (e) {
       console.log('FAILED TO CONNECT', e);
     }
@@ -110,37 +111,57 @@ export default function useBLE(): BluetoothLowEnergyApi {
     }
   };
 
-  const onHeartRateUpdate = (
-    error: BleError | null,
-    characteristic: Characteristic | null,
-  ) => {
-    if (error) {
-      console.log(error);
-      return -1;
-    } else if (!characteristic?.value) {
-      console.log('No Data was recieved');
-      return -1;
-    }
-
-    const rawData = characteristic.value;
-    console.log(rawData);
-
-    const decodedData = base64.decode(rawData);
-    console.log(decodedData);
-
-    setStreamedData(rawData);
-  };
-
-  const startStreamingData = async (device: Device) => {
+  const startReadingData = async (device: Device) => {
     if (device) {
       device.monitorCharacteristicForService(
         DEVICE_UUID,
         CHARACTERISTIC_UUID,
-        (error, characteristic) => onHeartRateUpdate(error, characteristic),
+        (error: BleError | null, characteristic: Characteristic | null) => {
+          if (error) {
+            console.log(error);
+            return -1;
+          } else if (!characteristic?.value) {
+            console.log('No Data was recieved');
+            return -1;
+          }
+
+          const rawData = characteristic.value;
+          const decodedData = base64.decode(rawData);
+          console.log(decodedData);
+          setStreamedData(decodedData);
+        },
       );
     } else {
       console.log('No Device Connected');
     }
+  };
+
+  const startSendingData = async (device: Device) => {
+    if (device) {
+      const data = 'hello';
+      const encodedData = base64.encode(data);
+      device.writeCharacteristicWithResponseForService(
+        DEVICE_UUID,
+        CHARACTERISTIC_UUID,
+        encodedData,
+      );
+    } else {
+      console.log('No Device Connected');
+    }
+  };
+
+  const startDeviceReading = (device: Device) => {
+    if (device) {
+      setStreamedData('');
+      startSendingData(device);
+      startReadingData(device);
+    } else {
+      console.log('No Device Connected');
+    }
+  };
+
+  const getStreamedData = () => {
+    return streamedData;
   };
 
   return {
@@ -151,5 +172,7 @@ export default function useBLE(): BluetoothLowEnergyApi {
     connectedDevice,
     disconnectFromDevice,
     streamedData,
+    startDeviceReading,
+    getStreamedData,
   };
 }

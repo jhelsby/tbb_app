@@ -1,4 +1,4 @@
-import React, {ReactElement, useContext} from 'react';
+import React, {ReactElement, useContext, useEffect} from 'react';
 import {View, Text, useColorScheme} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeParamList} from '../../scripts/screen_params';
@@ -26,7 +26,14 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
     connectToDevice,
     disconnectFromDevice,
     connectedDevice,
+    startDeviceReading,
+    streamedData,
   } = useBLE();
+
+  useEffect(() => {
+    console.log('CHANGED');
+    navigation.navigate('TakeReadingScreen', {validNavigation: true});
+  }, [navigation, streamedData]);
 
   const [isModalVisible, setModalVisible] = React.useState(false);
 
@@ -79,9 +86,10 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
             style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
             <View style={styles.buttonContainer}>
               <Button
-                onPress={() =>
-                  navigation.navigate('LoadingScreen', {validNavigation: true})
-                }>
+                onPress={() => {
+                  startDeviceReading(connectedDevice);
+                  navigation.navigate('LoadingScreen', {validNavigation: true});
+                }}>
                 <Text style={styles.buttonText}>Take Readings</Text>
               </Button>
             </View>
@@ -95,7 +103,7 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
                 onPress={() =>
                   navigation.navigate('HelpScreen', {validNavigation: true})
                 }>
-                <Text style={styles.buttonText}>Help</Text>
+                <Text style={styles.buttonText}>{streamedData}</Text>
               </Button>
             </View>
           </View>

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, ReactElement, useCallback} from 'react';
-import {View, Animated, BackHandler} from 'react-native';
+import {View, Animated} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeParamList} from '../../scripts/screen_params';
 import {useFocusEffect} from '@react-navigation/native';
@@ -74,22 +74,6 @@ export default function LoadingScreen({
     setTimeout(() => {
       circleAnimation(scaleValue5);
     }, 800);
-
-    const loadingScreenTimer = setTimeout(() => {
-      navigation.navigate('TakeReadingScreen', {validNavigation: true});
-    }, 10000);
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => {
-        clearTimeout(loadingScreenTimer);
-        console.log('Back button pressed');
-        navigation.goBack();
-        return true;
-      },
-    );
-
-    return () => backHandler.remove();
   }, [
     navigation,
     scaleValue1,
