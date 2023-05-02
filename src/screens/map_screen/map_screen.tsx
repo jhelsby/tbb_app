@@ -26,7 +26,7 @@ import {
   fetchAllReadings,
   emptyReadings,
 } from '../../slices/readingsSlice';
-import {TMarkerData} from '../../scripts/types';
+import {TReading} from '../../scripts/types';
 
 type Props = NativeStackScreenProps<MapParamList, 'MapScreen'>;
 
@@ -50,27 +50,6 @@ export default function MapScreen({navigation}: Props): ReactElement<Props> {
     onPress: () =>
       navigation.navigate('ViewReadingScreen', {validNavigation: true}),
   });
-
-  useFocusEffect(
-    useCallback(() => {
-      if (isLoggedIn) {
-        console.log('Getting Markers...');
-        if (!readings.length) {
-          dispatch(fetchAllReadings());
-        }
-      } else {
-        dispatch(emptyReadings());
-      }
-    }, [dispatch, isLoggedIn, readings.length]),
-  );
-
-  useEffect(() => {
-    if (readings) {
-      setActiveMarkers(readings.map(() => false));
-    } else {
-      setActiveMarkers([]);
-    }
-  }, [readings]);
 
   useFocusEffect(
     useCallback(() => {
@@ -150,14 +129,15 @@ export default function MapScreen({navigation}: Props): ReactElement<Props> {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}>
-        {tempData.markers.map((marker: TMarkerData, index: number) => {
+        {readings.map((reading: TReading, index: number) => {
           return (
             <MapIcon
               key={index}
               index={index}
               onActive={handleMarkerPress}
               active={activeMarkers[index]}
-              {...marker}
+              {...reading.location}
+              isSafe={reading.isSafe}
             />
           );
         })}

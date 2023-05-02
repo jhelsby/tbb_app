@@ -94,7 +94,7 @@ export default function ReadingsScreen({
                 isIcon={false}
                 highLight={reading.isSafe}
                 title={'Reading ' + reading.id}
-                subtitle1={`Latitude: ${reading.location.latitude}, Longitude: ${reading.location.longitude}`}
+                subtitle1={`Latitude: ${reading?.location?.latitude}, Longitude: ${reading?.location?.longitude}`}
                 subtitle2={`Date: ${reading.datetime.date}, Time: ${reading.datetime.time}`}
                 description={'Description needs to be changed'}
                 onPress={() =>
