@@ -3,7 +3,7 @@ import { useColorScheme, ColorSchemeName, Keyboard } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { RootTabParamList } from "./src/scripts/screen_params";
+import {RootTabParamList} from './assets/scripts/screen_params';
 
 import TabButton from "./src/components/tab_button/tab_button";
 
@@ -55,7 +55,7 @@ export default function App() {
     AccountStackNavigator
   ];
 
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const focusedScreens: boolean[] = tabScreens.map((screen: ITabScreen) => screen.name === "HomeNav");
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {

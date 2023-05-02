@@ -62,12 +62,16 @@ export default function TabButton(props: any) {
       activeOpacity={1}
       style={styles.buttonContainer}>
       <Animated.View
-        style={[styles.button, { transform: [{ scale: viewScale }, { translateY: viewTranslate }]}]}>
-        <View style={[
-          styles.iconContainer,
-          containerContrast,
-          isDarkMode ? styles.borderDark : styles.borderLight,
+        style={[
+          styles.button,
+          {transform: [{scale: viewScale}, {translateY: viewTranslate}]},
         ]}>
+        <View
+          style={[
+            styles.iconContainer,
+            containerContrast,
+            isDarkMode ? styles.borderDark : styles.borderLight,
+          ]}>
           <Animated.View
             style={[
               styles.circle,
@@ -88,9 +92,8 @@ export default function TabButton(props: any) {
             ]}>
             <FontAwesomeIcon icon={props.icon} size={30} color={inactiveColor} />
           </Animated.View>
-          
         </View>
       </Animated.View>
     </TouchableOpacity>
-  )
+  );
 }

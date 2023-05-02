@@ -14,7 +14,7 @@ import { selectColor, selectLightColor } from "../../slices/colorSlice";
 import { selectNavIndex, setFocusedNav } from "../../slices/rootNavSlice";
 
 const Stack = createNativeStackNavigator<ReadingsParamList>();
-type Props = BottomTabScreenProps<RootTabParamList, "ReadingsStack">;
+type Props = BottomTabScreenProps<RootTabParamList, 'ReadingsStack'>;
 
 export default function ReadingsStackNavigator() : ReactElement<Props> {
   const dispatch = useAppDispatch();

@@ -3,11 +3,11 @@ import { View, Text, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AccountParamList } from '../../scripts/screen_params';
 
-import { styles } from './account_styles';
-import { styles as globalStyles } from "../../../App_styles";
+import {styles} from './account_styles';
+import {styles as globalStyles} from '../../../App_styles';
 
 import Button from '../../components/button/button';
-import AccountSvg from "../../assets/svgs/account.svg";
+import AccountSvg from '../../svgs/account.svg';
 
 import { ColorContext } from '../../context/color_context';
 
@@ -17,8 +17,10 @@ import { logout, selectUser } from '../../slices/accountSlice';
 
 type Props = NativeStackScreenProps<AccountParamList, 'AccountScreen'>;
 
-export default function AccountScreen({ navigation }: Props) : ReactElement<Props> {
-  const { color } = React.useContext(ColorContext);
+export default function AccountScreen({
+  navigation,
+}: Props): ReactElement<Props> {
+  const {color} = React.useContext(ColorContext);
 
   const containerContrast = useAppSelector(selectContainerContrast);
   const pageContrast = useAppSelector(selectPageContrast);
@@ -29,7 +31,11 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
   const dispatch = useAppDispatch();
 
   const handleDeletePress = () => {
-    console.log("Delete Pressed");
+    console.log('Delete Pressed');
+  };
+
+  const handleLogout = async () => {
+    dispatch(logout())
   };
 
   const handleLogout = async () => {
@@ -92,4 +98,4 @@ export default function AccountScreen({ navigation }: Props) : ReactElement<Prop
       </ScrollView>
     </View>
   );
-};
+}

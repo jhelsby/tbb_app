@@ -20,7 +20,7 @@ import { selectNavIndex, setFocusedNav } from "../../slices/rootNavSlice";
 
 
 const Stack = createNativeStackNavigator<AccountParamList>();
-type Props = BottomTabScreenProps<RootTabParamList, "AccountStack">;
+type Props = BottomTabScreenProps<RootTabParamList, 'AccountStack'>;
 
 export default function AccountStackNavigator() : ReactElement<Props> {
   const dispatch = useAppDispatch();

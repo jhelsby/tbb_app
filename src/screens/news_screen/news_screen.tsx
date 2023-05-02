@@ -4,8 +4,8 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NewsParamList } from "../../scripts/screen_params";
 import { useFocusEffect } from "@react-navigation/native";
 
-import { styles } from "./news_styles";
-import { styles as globalStyles } from "../../../App_styles";
+import {styles} from './news_styles';
+import {styles as globalStyles} from '../../../App_styles';
 
 import Card from "../../components/card/card";
 import { TNews } from "../../scripts/types";
@@ -15,7 +15,7 @@ import { selectPageContrast, selectTextContrast, selectContainerContrast } from 
 import { selectIsLoggedIn } from "../../slices/accountSlice";
 import { emptyNews, fetchAllNews, selectNews } from "../../slices/newsSlice";
 
-type Props = NativeStackScreenProps<NewsParamList, "NewsScreen">;
+type Props = NativeStackScreenProps<NewsParamList, 'NewsScreen'>;
 
 export default function NewsScreen({ navigation } : Props) : ReactElement<Props> {
   
@@ -42,7 +42,8 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
 
   return (
     <View style={[styles.container, pageContrast]}>
-      <ScrollView style={styles.scrollView}
+      <ScrollView
+        style={styles.scrollView}
         contentContainerStyle={{
           paddingBottom: 90,
         }}>

@@ -18,7 +18,7 @@ import { selectNavIndex, setFocusedNav } from "../../slices/rootNavSlice";
 
 
 const Stack = createNativeStackNavigator<HomeParamList>();
-type Props = BottomTabScreenProps<RootTabParamList, "HomeStack">;
+type Props = BottomTabScreenProps<RootTabParamList, 'HomeStack'>;
 
 export default function HomeStackNavigator() : ReactElement<Props> {
   const dispatch = useAppDispatch();

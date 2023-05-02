@@ -18,9 +18,9 @@ export type ReadingsParamList = {
 
 export type HomeParamList = {
   HomeScreen: undefined;
-  HelpScreen:  { validNavigation: boolean } | undefined;
-  LoadingScreen: { validNavigation: boolean } | undefined;
-  TakeReadingScreen:  { validNavigation: boolean } | undefined;
+  HelpScreen: {validNavigation: boolean} | undefined;
+  LoadingScreen: {validNavigation: boolean} | undefined;
+  TakeReadingScreen: {validNavigation: boolean} | undefined;
 };
 
 export type NewsParamList = {

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
@@ -11,10 +11,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: '5%',
   },
   pressed: {
-    transform: [
-      { translateY: 5},
-      { scale: 0.95 }
-    ],
+    transform: [{translateY: 5}, {scale: 0.95}],
   },
   highlight: {
     minWidth: 30,
@@ -58,7 +55,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: '#999',
     marginTop: 10,
-    height: 50
+    height: 50,
   },
   chevronContainer: {
     boxSizing: 'border-box',
@@ -66,5 +63,5 @@ export const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });

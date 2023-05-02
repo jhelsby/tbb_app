@@ -4,8 +4,8 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ReadingsParamList } from "../../scripts/screen_params";
 import { useFocusEffect } from "@react-navigation/native";
 
-import { styles } from "./readings_styles";
-import { styles as globalStyles } from "../../../App_styles";
+import {styles} from './readings_styles';
+import {styles as globalStyles} from '../../../App_styles';
 
 import Card from "../../components/card/card";
 import Button from "../../components/button/button";
@@ -15,7 +15,7 @@ import { selectPageContrast, selectTextContrast, selectContainerContrast } from 
 import { selectIsLoggedIn } from "../../slices/accountSlice";
 import { selectReadings, fetchAllReadings, emptyReadings, postAllReadings } from "../../slices/readingsSlice";
 
-type Props = NativeStackScreenProps<ReadingsParamList, "ReadingsScreen">;
+type Props = NativeStackScreenProps<ReadingsParamList, 'ReadingsScreen'>;
 
 export default function ReadingsScreen({ navigation } : Props) : ReactElement<Props> {
   // Get the contrast settings from the redux store
@@ -46,7 +46,8 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
 
   return (
     <View style={[styles.container, pageContrast]}>
-      <ScrollView style={styles.scrollView}
+      <ScrollView
+        style={styles.scrollView}
         contentContainerStyle={{
           paddingBottom: 90,
         }}>

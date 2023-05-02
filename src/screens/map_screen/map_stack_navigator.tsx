@@ -14,7 +14,7 @@ import { selectColor, selectLightColor } from "../../slices/colorSlice";
 import { selectNavIndex, setFocusedNav } from "../../slices/rootNavSlice";
 
 const Stack = createNativeStackNavigator<MapParamList>();
-type Props = BottomTabScreenProps<RootTabParamList, "MapStack">;
+type Props = BottomTabScreenProps<RootTabParamList, 'MapStack'>;
 
 export default function MapStackNavigator() : ReactElement<Props> {
   const dispatch = useAppDispatch();

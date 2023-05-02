@@ -17,7 +17,7 @@ import { selectContainerContrast, selectPageContrast, selectTextContrast } from 
 import { selectNewsById } from "../../slices/newsSlice";
 import { TNews } from "../../scripts/types";
 
-type Props = NativeStackScreenProps<NewsParamList, "ViewNewsScreen">;
+type Props = NativeStackScreenProps<NewsParamList, 'ViewNewsScreen'>;
 
 export default function ViewNewsScreen({ navigation, route } : any) : ReactElement<Props> {
   // Get the contrast settings from the redux store
@@ -28,9 +28,11 @@ export default function ViewNewsScreen({ navigation, route } : any) : ReactEleme
 
   useFocusEffect(
     useCallback(() => {
-      if (!route.params.validNavigation) navigation.popToTop();
+      if (!route.params.validNavigation) {
+        navigation.popToTop();
+      }
       route.params.validNavigation = false;
-    }, [])
+    }, [navigation, route.params]),
   );
 
   const news = useAppSelector(state => selectNewsById(state, { id: route.params.newsId }));

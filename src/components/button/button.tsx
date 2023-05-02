@@ -1,5 +1,5 @@
-import React, { PropsWithChildren } from "react";
-import { Pressable } from "react-native";
+import React, {PropsWithChildren} from 'react';
+import {Pressable} from 'react-native';
 
 import { styles } from "./button_styles";
 import { IButtonProps } from "../../scripts/interfaces";
@@ -20,9 +20,7 @@ export default function Button(props: PropsWithChildren<IButtonProps>) : React.R
       onPress={props.disabled ? () => {} : props.onPress}
       onPressIn={() => setPressed(true && !props.disabled)}
       onPressOut={() => setPressed(false)}>
-      {
-        props.children
-      }
+      {props.children}
     </Pressable>
   );
 }

@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 
-import Button from '../button/button'
+import Button from '../button/button';
 
-import { styles } from './top_nav_styles';
-import { styles as globalStyles } from '../../../App_styles';
+import {styles} from './top_nav_styles';
+import {styles as globalStyles} from '../../../App_styles';
 
 import { TTopNavProps } from '../../scripts/types';
 

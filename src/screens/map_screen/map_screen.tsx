@@ -10,15 +10,15 @@ import { styles as globalStyles } from "../../../App_styles";
 
 import { ICardProps } from "../../scripts/interfaces";
 
-import MapIcon from "../../components/map_icon/map_icon";
-import Card from "../../components/card/card";
+import MapIcon from '../../components/map_icon/map_icon';
+import Card from '../../components/card/card';
 
 import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
 import { selectDarkMode, selectContainerContrast, selectTextContrast } from "../../slices/colorSlice";
 import { selectIsLoggedIn } from "../../slices/accountSlice";
 import { selectReadings, fetchAllReadings, emptyReadings } from "../../slices/readingsSlice";
 
-type Props = NativeStackScreenProps<MapParamList, "MapScreen">;
+type Props = NativeStackScreenProps<MapParamList, 'MapScreen'>;
 
 export default function MapScreen({ navigation } : Props) : ReactElement<Props> {
   const dispatch = useAppDispatch();
@@ -35,11 +35,12 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
   const [cardData, setCardData] = useState<ICardProps>({
     isIcon: false,
     highLight: false,
-    title: "",
-    subtitle1: "",
-    subtitle2: "",
-    description: "",
-    onPress: () => navigation.navigate("ViewReadingScreen", { validNavigation: true })
+    title: '',
+    subtitle1: '',
+    subtitle2: '',
+    description: '',
+    onPress: () =>
+      navigation.navigate('ViewReadingScreen', {validNavigation: true}),
   });
 
 
@@ -63,21 +64,42 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
   }, [readings])
 
 
-  const screenWidth = Dimensions.get("window").width;
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isLoggedIn) {
+        console.log("Getting Markers...")
+        if (!readings.length) dispatch(fetchAllReadings());
+      } else {
+        dispatch(emptyReadings());
+      }
+    }, [isLoggedIn])
+  );
+
+  useEffect(() => {
+    if (readings) {
+      setActiveMarkers(readings.map(() => false));
+    } else {
+      setActiveMarkers([]);
+    }
+  }, [readings])
+
+
+  const screenWidth = Dimensions.get('window').width;
   const cardAnimation = useRef(new Animated.Value(screenWidth)).current;
 
   useEffect(() => {
     Animated.timing(cardAnimation, {
       toValue: activeCard ? 0 : screenWidth,
       duration: 200,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start();
-  }, [activeCard]);
+  }, [activeCard, cardAnimation, screenWidth]);
 
   const handleMarkerPress = (index: number) => {
     const newActiveMarkers = activeMarkers.map((marker, i) => {
       if (i === index) {
-        const cardData: ICardProps = {
+        const tempCardData: ICardProps = {
           isIcon: false,
           highLight: readings[i].isSafe,
           title: `Reading ${readings[i].id}`,
@@ -90,7 +112,7 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
           })
         }
         setActiveCard(!marker);
-        setCardData(cardData);
+        setCardData(tempCardData);
         return !marker;
       } else {
         return false;
@@ -99,20 +121,15 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
     setActiveMarkers(newActiveMarkers);
   };
 
-
-
   return (
     <View style={styles.container}>
       <MapView
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
+        style={{width: '100%', height: '100%'}}
         provider={PROVIDER_GOOGLE}
         showsUserLocation
         zoomControlEnabled={false}
         toolbarEnabled={false}
-        userInterfaceStyle={isDarkMode ? "dark" : "light"}
+        userInterfaceStyle={isDarkMode ? 'dark' : 'light'}
         showsMyLocationButton={false}
         showsBuildings={false}
         showsTraffic={false}
@@ -121,46 +138,32 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
           latitude: 37.78825,
           longitude: -122.4324,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421
+          longitudeDelta: 0.0421,
         }}>
           {
-            readings.map((marker: any, index: number) => {
+            tempData.markers.map((marker: TMarkerData, index: number) => {
               return (
                 <MapIcon
                   key={index}
                   index={index}
                   onActive={handleMarkerPress}
                   active={activeMarkers[index]}
-                  latitude={marker.location.latitude}
-                  longitude={marker.location.longitude}
-                  isSafe={marker.isSafe}
+                  {...marker}
                 />
               );
             })
           }
       </MapView>
-      {
-        isLoggedIn ? (
-          <Animated.View style={[
-            styles.cardContainer,
-            { transform: [
-              { translateX: cardAnimation }
-            ]}
-          ]}>
-            <Card {...cardData} />
-          </Animated.View>
-        ) : (
-          <View
-            style={[
-              globalStyles.tile,
-              styles.infoContainer,
-              containerContrast,
-            ]}
-          >
-            <Text style={[styles.infoText, textContrast]}>Please Login to use the map to find nearby clean water.</Text>
-          </View>
-        )
-      }
+      <Animated.View style={[
+        styles.cardContainer,
+        { transform: [
+          {
+            translateX: cardAnimation
+          }
+        ]}
+      ]}>
+        <Card {...cardData} />
+      </Animated.View>
     </View>
   );
 }

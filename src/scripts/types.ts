@@ -2,10 +2,9 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 export type THSL = { h: number, s: number, l: number };
 
-export type TRGB = { r: number, g: number, b: number };
+export type TRGB = {r: number; g: number; b: number};
 
 export type THex = string;
-
 
 
 
@@ -15,17 +14,17 @@ export type TTopNavProps = {
 };
 
 export type TPieChartData = {
-  name: string,
-  value: number,
-  color: string,
-  legendFontColor: string,
-  legendFontSize: number
+  name: string;
+  value: number;
+  color: string;
+  legendFontColor: string;
+  legendFontSize: number;
 };
 
 export type TTextInputStyle = {
-  borderColor: string,
-  borderWidth: number,
-}
+  borderColor: string;
+  borderWidth: number;
+};
 
 export type TMarkerData = {
   latitude: number,
