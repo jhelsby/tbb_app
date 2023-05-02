@@ -2,7 +2,5 @@
   "compilerOptions": {
     "jsx": "react"
   },
-  "extends": "@tsconfig/react-native/tsconfig.json",
-  "allowSyntheticDefaultImports": true,
-  "esModuleInterop": true
+  "extends": "@tsconfig/react-native/tsconfig.json"
 }

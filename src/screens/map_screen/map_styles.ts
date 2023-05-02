@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
     right: 0,
     bottom: 90,
     overflow: 'hidden',
+  },
   infoContainer: {
     position: 'absolute',
     top: 30,

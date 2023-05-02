@@ -1,24 +1,26 @@
-import React, { ReactElement, useCallback } from "react";
-import { View, Text, ScrollView } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { NewsParamList } from "../../scripts/screen_params";
-import { useFocusEffect } from "@react-navigation/native";
+import React, {ReactElement, useCallback} from 'react';
+import {View, Text, ScrollView} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {NewsParamList} from '../../scripts/screen_params';
+import {useFocusEffect} from '@react-navigation/native';
 
 import {styles} from './news_styles';
 import {styles as globalStyles} from '../../../App_styles';
 
-import Card from "../../components/card/card";
-import { TNews } from "../../scripts/types";
+import Card from '../../components/card/card';
 
-import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
-import { selectPageContrast, selectTextContrast, selectContainerContrast } from "../../slices/colorSlice";
-import { selectIsLoggedIn } from "../../slices/accountSlice";
-import { emptyNews, fetchAllNews, selectNews } from "../../slices/newsSlice";
+import {useAppSelector, useAppDispatch} from '../../scripts/redux_hooks';
+import {
+  selectPageContrast,
+  selectTextContrast,
+  selectContainerContrast,
+} from '../../slices/colorSlice';
+import {selectIsLoggedIn} from '../../slices/accountSlice';
+import {emptyNews, fetchAllNews, selectNews} from '../../slices/newsSlice';
 
 type Props = NativeStackScreenProps<NewsParamList, 'NewsScreen'>;
 
-export default function NewsScreen({ navigation } : Props) : ReactElement<Props> {
-  
+export default function NewsScreen({navigation}: Props): ReactElement<Props> {
   // Get the contrast settings from the redux store
   const pageContrast = useAppSelector(selectPageContrast);
   const textContrast = useAppSelector(selectTextContrast);
@@ -33,11 +35,13 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
-        if (!news.length) dispatch(fetchAllNews())
+        if (!news.length) {
+          dispatch(fetchAllNews());
+        }
       } else {
-        dispatch(emptyNews())
+        dispatch(emptyNews());
       }
-    }, [isLoggedIn])
+    }, [dispatch, isLoggedIn, news.length]),
   );
 
   return (
@@ -48,35 +52,38 @@ export default function NewsScreen({ navigation } : Props) : ReactElement<Props>
           paddingBottom: 90,
         }}>
         <Text style={[styles.title, textContrast]}>News</Text>
-        {
-          isLoggedIn ? news.map((article: any, index: number) => {
+        {isLoggedIn ? (
+          news.map((article: any, index: number) => {
             return (
               <Card
                 key={index}
                 isIcon={true}
-                onPress={() => navigation.navigate("ViewNewsScreen", {
-                  validNavigation: true,
-                  newsId: article.id,
-                })}
+                onPress={() =>
+                  navigation.navigate('ViewNewsScreen', {
+                    validNavigation: true,
+                    newsId: article.id,
+                  })
+                }
                 highLight={null}
                 title={article.title}
                 subtitle1={article.author}
-                subtitle2={article.datetime.date} 
-                description={article.description} 
+                subtitle2={article.datetime.date}
+                description={article.description}
               />
             );
-          }) : (
-            <View
-              style={[
-                globalStyles.tile,
-                styles.infoContainer,
-                containerContrast,
-              ]}
-            >
-              <Text style={[styles.infoText, textContrast]}>Please Login to see news articles.</Text>
-            </View>
-          )
-        }
+          })
+        ) : (
+          <View
+            style={[
+              globalStyles.tile,
+              styles.infoContainer,
+              containerContrast,
+            ]}>
+            <Text style={[styles.infoText, textContrast]}>
+              Please Login to see news articles.
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );

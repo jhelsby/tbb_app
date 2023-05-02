@@ -1,6 +1,6 @@
 package com.tbb_app;
 
-import android.os.Bundle; // here
+import android.os.Bundle;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -18,7 +18,6 @@ public class MainActivity extends ReactActivity {
     return "tbb_app";
   }
 
-  // This is required for React Navigation dependecy react-native-screens to work properly
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(null);

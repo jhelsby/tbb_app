@@ -7,38 +7,44 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
-} from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AccountParamList } from "../../scripts/screen_params";
+} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {AccountParamList} from '../../scripts/screen_params';
 
 import {styles} from './report_styles';
 import {styles as globalStyles} from '../../../App_styles';
 
-import { TTextInputStyle } from "../../scripts/types";
+import {TTextInputStyle} from '../../scripts/types';
 
 import {ColorContext} from '../../context/color_context';
 
-import Button from "../../components/button/button";
-import TopNav from "../../components/top_nav/top_nav";
+import Button from '../../components/button/button';
+import TopNav from '../../components/top_nav/top_nav';
 
-import { useAppSelector } from "../../scripts/redux_hooks";
-import { selectContainerContrast, selectPageContrast, selectTextContrast } from "../../slices/colorSlice";
+import {useAppSelector} from '../../scripts/redux_hooks';
+import {
+  selectContainerContrast,
+  selectPageContrast,
+  selectTextContrast,
+} from '../../slices/colorSlice';
 
 type Props = NativeStackScreenProps<AccountParamList, 'ReportScreen'>;
 
-export default function ReportScreen({ navigation, route } : any) : ReactElement<Props> {
+export default function ReportScreen({
+  navigation,
+  route,
+}: any): ReactElement<Props> {
   // Get the contrast settings from the redux store
   const containerContrast = useAppSelector(selectContainerContrast);
   const pageContrast = useAppSelector(selectPageContrast);
   const textContrast = useAppSelector(selectTextContrast);
 
-  const [titleText, setTitleText] = React.useState<string>("");
-  const [descriptionText, setDescriptionText] = React.useState<string>("");
+  const [titleText, setTitleText] = React.useState<string>('');
+  const [descriptionText, setDescriptionText] = React.useState<string>('');
 
   // Get the color context
-  const { color, lightColor } = useContext(ColorContext);
-
+  const {color, lightColor} = useContext(ColorContext);
 
   useFocusEffect(
     useCallback(() => {

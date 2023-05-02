@@ -1,4 +1,4 @@
-import React, { useCallback, ReactElement, useContext, useEffect } from "react";
+import React, {useCallback, ReactElement, useContext, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,83 +7,90 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
-} from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AccountParamList } from "../../scripts/screen_params";
+} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {AccountParamList} from '../../scripts/screen_params';
 
-import { auth } from "../../scripts/firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
+import {auth} from '../../scripts/firebase';
+import {useAuthState} from 'react-firebase-hooks/auth';
 
-import { styles } from "./signup_styles";
-import { styles as globalStyles } from "../../../App_styles";
+import {styles} from './signup_styles';
+import {styles as globalStyles} from '../../../App_styles';
 
-import { TTextInputStyle } from "../../scripts/types";
+import {TTextInputStyle} from '../../scripts/types';
 
-import { ColorContext } from "../../context/color_context";
+import {ColorContext} from '../../context/color_context';
 
-import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
+import {useAppSelector, useAppDispatch} from '../../scripts/redux_hooks';
 import {
   selectContainerContrast,
   selectPageContrast,
   selectTextContrast,
-} from "../../slices/colorSlice";
-import { registerWithEmailAndPassword } from "../../slices/accountSlice";
+} from '../../slices/colorSlice';
+import {registerWithEmailAndPassword} from '../../slices/accountSlice';
 
-import Button from "../../components/button/button";
-import TopNav from "../../components/top_nav/top_nav";
+import Button from '../../components/button/button';
+import TopNav from '../../components/top_nav/top_nav';
 
-type Props = NativeStackScreenProps<AccountParamList, "SignupScreen">;
+type Props = NativeStackScreenProps<AccountParamList, 'SignupScreen'>;
 
-export default function SignupScreen({ navigation, route } : any) : ReactElement<Props> {
+export default function SignupScreen({
+  navigation,
+  route,
+}: any): ReactElement<Props> {
   const pageContrast = useAppSelector(selectPageContrast);
   const containerContrast = useAppSelector(selectContainerContrast);
   const textContrast = useAppSelector(selectTextContrast);
 
   const dispatch = useAppDispatch();
 
-  const { color, lightColor } = useContext(ColorContext);
-
+  const {color, lightColor} = useContext(ColorContext);
 
   useFocusEffect(
     useCallback(() => {
-      if (!route.params.validNavigation) navigation.popToTop();
+      if (!route.params.validNavigation) {
+        navigation.popToTop();
+      }
       route.params.validNavigation = false;
-    }, [])
+    }, [navigation, route.params]),
   );
 
-  const [name, setName] = React.useState<string>("");
-  const [email, setEmail] = React.useState<string>("");
-  const [password, setPassword] = React.useState<string>("");
-  const [confirmPassword, setConfirmPassword] = React.useState<string>("");
-  const [user, loading, error] = useAuthState(auth);
+  const [name, setName] = React.useState<string>('');
+  const [email, setEmail] = React.useState<string>('');
+  const [password, setPassword] = React.useState<string>('');
+  const [confirmPassword, setConfirmPassword] = React.useState<string>('');
+  const [user, loading, _] = useAuthState(auth);
 
   const register = () => {
     if (password === confirmPassword && name && email && password) {
-      dispatch(registerWithEmailAndPassword({ email, password }));
+      dispatch(registerWithEmailAndPassword({email, password}));
     }
-  }
+  };
 
   useEffect(() => {
-    if (loading) return;
-    if (user) navigation.popToTop();
-  }, [user, loading])
+    if (loading) {
+      return;
+    }
+    if (user) {
+      navigation.popToTop();
+    }
+  }, [user, loading, navigation]);
 
-
-
-  const [isKeyboardVisible, setKeyboardVisible] = React.useState<boolean>(false);
+  const [isKeyboardVisible, setKeyboardVisible] =
+    React.useState<boolean>(false);
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
+      'keyboardDidShow',
       () => {
         setKeyboardVisible(true);
-      }
+      },
     );
     const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
+      'keyboardDidHide',
       () => {
         setKeyboardVisible(false);
-      }
+      },
     );
     return () => {
       keyboardDidShowListener.remove();
@@ -91,21 +98,19 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
     };
   }, []);
 
-
   const focusedStyle = {
     borderColor: color,
     borderWidth: 2,
-  }
+  };
 
   const unfocusedStyle = {
     borderColor: lightColor,
     borderWidth: 1,
-  }
+  };
 
-  const [textInputStyles, setTextInputStyles] = React.useState<TTextInputStyle[]>([
-    unfocusedStyle,
-    unfocusedStyle,
-  ]);
+  const [textInputStyles, setTextInputStyles] = React.useState<
+    TTextInputStyle[]
+  >([unfocusedStyle, unfocusedStyle]);
 
   const handleFocus = (index: number) => {
     const newFocusedStyles = textInputStyles.map((style, i) => {
@@ -118,30 +123,34 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
 
     setTextInputStyles(newFocusedStyles);
     setKeyboardVisible(true);
-  }
+  };
 
   return (
     <View style={[styles.container, pageContrast]}>
       <TopNav handlePress={() => navigation.goBack()} />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.body}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.body}>
           <Text style={[styles.title, textContrast]}>Sign Up</Text>
           <View
             style={[
               globalStyles.tile,
               styles.infoContainer,
               containerContrast,
-              { display: isKeyboardVisible ? "none" : "flex" }
-            ]}
-          >
-            <Text style={[styles.infoText, textContrast]}>Culpa aliquip aliqua deserunt duis mollit.</Text>
+              {display: isKeyboardVisible ? 'none' : 'flex'},
+            ]}>
+            <Text style={[styles.infoText, textContrast]}>
+              Culpa aliquip aliqua deserunt duis mollit.
+            </Text>
           </View>
-          <View style={[
-            globalStyles.tile,
-            styles.form,
-            containerContrast,
-            isKeyboardVisible ? {} : { height: 'auto' }
-          ]}>
+          <View
+            style={[
+              globalStyles.tile,
+              styles.form,
+              containerContrast,
+              isKeyboardVisible ? {} : {height: 'auto'},
+            ]}>
             <View style={styles.textContainer}>
               <Text style={[styles.label, textContrast]}>Name:</Text>
               <TextInput
@@ -149,13 +158,11 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
                   styles.input,
                   textInputStyles[0],
                   containerContrast,
-                  textContrast
+                  textContrast,
                 ]}
                 cursorColor={color}
                 onFocus={() => handleFocus(0)}
-                onChange={
-                  (event) => setName(event.nativeEvent.text)
-                }
+                onChange={event => setName(event.nativeEvent.text)}
               />
             </View>
             <View style={styles.textContainer}>
@@ -165,13 +172,11 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
                   styles.input,
                   textInputStyles[0],
                   containerContrast,
-                  textContrast
+                  textContrast,
                 ]}
                 cursorColor={color}
                 onFocus={() => handleFocus(0)}
-                onChange={
-                  (event) => setEmail(event.nativeEvent.text)
-                }
+                onChange={event => setEmail(event.nativeEvent.text)}
               />
             </View>
             <View style={styles.textContainer}>
@@ -181,31 +186,29 @@ export default function SignupScreen({ navigation, route } : any) : ReactElement
                   styles.input,
                   textInputStyles[0],
                   containerContrast,
-                  textContrast
+                  textContrast,
                 ]}
                 cursorColor={color}
                 onFocus={() => handleFocus(0)}
                 secureTextEntry={true}
-                onChange={
-                  (event) => setPassword(event.nativeEvent.text)
-                }
+                onChange={event => setPassword(event.nativeEvent.text)}
               />
             </View>
             <View style={styles.textContainer}>
-              <Text style={[styles.label, textContrast]}>Confirm Password:</Text>
+              <Text style={[styles.label, textContrast]}>
+                Confirm Password:
+              </Text>
               <TextInput
                 style={[
                   styles.input,
                   textInputStyles[0],
                   containerContrast,
-                  textContrast
+                  textContrast,
                 ]}
                 cursorColor={color}
                 onFocus={() => handleFocus(0)}
                 secureTextEntry={true}
-                onChange={
-                  (event) => setConfirmPassword(event.nativeEvent.text)
-                }
+                onChange={event => setConfirmPassword(event.nativeEvent.text)}
               />
             </View>
             <View style={styles.buttonContainer}>

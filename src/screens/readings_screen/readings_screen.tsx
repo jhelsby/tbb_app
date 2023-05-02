@@ -1,23 +1,34 @@
-import React, { ReactElement, useCallback } from "react";
-import { View, Text, ScrollView } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { ReadingsParamList } from "../../scripts/screen_params";
-import { useFocusEffect } from "@react-navigation/native";
+import React, {ReactElement, useCallback} from 'react';
+import {View, Text, ScrollView} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ReadingsParamList} from '../../scripts/screen_params';
+import {useFocusEffect} from '@react-navigation/native';
 
 import {styles} from './readings_styles';
 import {styles as globalStyles} from '../../../App_styles';
 
-import Card from "../../components/card/card";
-import Button from "../../components/button/button";
+import Card from '../../components/card/card';
+import Button from '../../components/button/button';
 
-import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
-import { selectPageContrast, selectTextContrast, selectContainerContrast } from "../../slices/colorSlice";
-import { selectIsLoggedIn } from "../../slices/accountSlice";
-import { selectReadings, fetchAllReadings, emptyReadings, postAllReadings } from "../../slices/readingsSlice";
+import {useAppSelector, useAppDispatch} from '../../scripts/redux_hooks';
+import {
+  selectPageContrast,
+  selectTextContrast,
+  selectContainerContrast,
+} from '../../slices/colorSlice';
+import {selectIsLoggedIn} from '../../slices/accountSlice';
+import {
+  selectReadings,
+  fetchAllReadings,
+  emptyReadings,
+  postAllReadings,
+} from '../../slices/readingsSlice';
 
 type Props = NativeStackScreenProps<ReadingsParamList, 'ReadingsScreen'>;
 
-export default function ReadingsScreen({ navigation } : Props) : ReactElement<Props> {
+export default function ReadingsScreen({
+  navigation,
+}: Props): ReactElement<Props> {
   // Get the contrast settings from the redux store
   const pageContrast = useAppSelector(selectPageContrast);
   const textContrast = useAppSelector(selectTextContrast);
@@ -31,17 +42,19 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
-        console.log("Fetching Readings...")
-        if (!readings.length) dispatch(fetchAllReadings());
+        console.log('Fetching Readings...');
+        if (!readings.length) {
+          dispatch(fetchAllReadings());
+        }
       } else {
         dispatch(emptyReadings());
       }
-    }, [isLoggedIn])
+    }, [dispatch, isLoggedIn, readings.length]),
   );
 
   const handleSync = () => {
-    console.log("Syncing All...");
-    dispatch(postAllReadings(null))
+    console.log('Syncing All...');
+    dispatch(postAllReadings(null));
   };
 
   return (
@@ -52,47 +65,47 @@ export default function ReadingsScreen({ navigation } : Props) : ReactElement<Pr
           paddingBottom: 90,
         }}>
         <Text style={[styles.title, textContrast]}>Readings</Text>
-        {
-          isLoggedIn ? (
-          <View style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+        {isLoggedIn ? (
+          <View
+            style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
             <View style={styles.buttonContainer}>
-              <Button onPress={handleSync} >
+              <Button onPress={handleSync}>
                 <Text style={[styles.buttonText]}>Sync All</Text>
               </Button>
             </View>
           </View>
-          ) : (
-            <View
-              style={[
-                globalStyles.tile,
-                styles.infoContainer,
-                containerContrast,
-              ]}
-            >
-              <Text style={[styles.infoText, textContrast]}>Please Login to see readings that have been saved to the cloud.</Text>
-            </View>
-          )
-        }
-        {
-          readings.length !== 0 && readings.map((reading: any, index: number) => {
+        ) : (
+          <View
+            style={[
+              globalStyles.tile,
+              styles.infoContainer,
+              containerContrast,
+            ]}>
+            <Text style={[styles.infoText, textContrast]}>
+              Please Login to see readings that have been saved to the cloud.
+            </Text>
+          </View>
+        )}
+        {readings.length !== 0 &&
+          readings.map((reading: any, index: number) => {
             return (
               <Card
                 key={index}
                 isIcon={false}
                 highLight={reading.isSafe}
-                title={"Reading " + reading.id}
+                title={'Reading ' + reading.id}
                 subtitle1={`Latitude: ${reading.location.latitude}, Longitude: ${reading.location.longitude}`}
                 subtitle2={`Date: ${reading.datetime.date}, Time: ${reading.datetime.time}`}
-                description={"Description needs to be changed"}
-                onPress={() => navigation.navigate("ViewReadingScreen",
-                {
-                  validNavigation: true,
-                  readingId: reading.id,
-                })}
+                description={'Description needs to be changed'}
+                onPress={() =>
+                  navigation.navigate('ViewReadingScreen', {
+                    validNavigation: true,
+                    readingId: reading.id,
+                  })
+                }
               />
             );
-          })
-        }
+          })}
       </ScrollView>
     </View>
   );

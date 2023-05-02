@@ -1,7 +1,5 @@
-import React from "react";
-import { GestureResponderEvent } from "react-native";
-
-import * as type from './types';
+import React from 'react';
+import {GestureResponderEvent} from 'react-native';
 
 export interface IButtonProps {
   onPress: ((event: GestureResponderEvent) => void) | null | undefined;
@@ -10,13 +8,13 @@ export interface IButtonProps {
 }
 
 export type IMarkerProps = {
-  latitude: number,
-  longitude: number,
-  isSafe: boolean,
-  index: number,
-  onActive: (index: number) => void,
-  active: boolean,
-}
+  latitude: number;
+  longitude: number;
+  isSafe: boolean;
+  index: number;
+  onActive: (index: number) => void;
+  active: boolean;
+};
 
 export type ICardProps = {
   isIcon: boolean;

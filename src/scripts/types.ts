@@ -1,13 +1,10 @@
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 
-export type THSL = { h: number, s: number, l: number };
+export type THSL = {h: number; s: number; l: number};
 
 export type TRGB = {r: number; g: number; b: number};
 
 export type THex = string;
-
-
-
 
 export type TTopNavProps = {
   handlePress: () => void;
@@ -27,81 +24,81 @@ export type TTextInputStyle = {
 };
 
 export type TMarkerData = {
-  latitude: number,
-  longitude: number,
-  isSafe: boolean,
-  date: string,
-}
+  latitude: number;
+  longitude: number;
+  isSafe: boolean;
+  date: string;
+};
 
 export type TColorSliceState = {
-  pageContrast: any,
-  textContrast: any,
-  containerContrast: any,
-  darkMode: boolean,
-  colors: string[],
-  lightColors: string[], 
-}
+  pageContrast: any;
+  textContrast: any;
+  containerContrast: any;
+  darkMode: boolean;
+  colors: string[];
+  lightColors: string[];
+};
 
 export type TRootNav = {
   name: string;
-  focused: boolean,
+  focused: boolean;
   icon: IconDefinition;
 };
 
 export type TRootNavSliceState = {
-  rootNavs: TRootNav[],
-}
+  rootNavs: TRootNav[];
+};
 
 export type TAccountSliceState = {
   uid: string | null;
   isLoading: boolean;
   hasError: boolean;
-}
+};
 
 export type TReadingSliceState = {
   isLoading: boolean;
   hasError: boolean;
-  readings: TReading[],
-  currentReading: TReading | null,
-}
+  readings: TReading[];
+  currentReading: TReading | null;
+};
 
 export type TNewsSliceState = {
   isLoading: boolean;
   hasError: boolean;
-  news: TNews[],
-}
+  news: TNews[];
+};
 
-export type TMeasurement= {
-  name: string,
-  value: number,
-}
+export type TMeasurement = {
+  name: string;
+  value: number;
+};
 
 export type TReading = {
   location: {
-    latitude: number,
-    longitude: number,
-  },
+    latitude: number;
+    longitude: number;
+  };
   datetime: {
-    date: string,
-    time: string,
-  }
-  id: string,
-  isSafe: boolean,
-  hasSynced: boolean,
-  measurements: TMeasurement[],
-}
+    date: string;
+    time: string;
+  };
+  id: string;
+  isSafe: boolean;
+  hasSynced: boolean;
+  measurements: TMeasurement[];
+};
 
 export type TNews = {
-  id: string,
-  title: string,
-  author: string,
+  id: string;
+  title: string;
+  author: string;
   datetime: {
-    date: string,
-    time: string,
-  },
-  description: string,
-  contents: { 
-    heading: string, 
-    paragraphs: string[] 
-  }[],
-}
+    date: string;
+    time: string;
+  };
+  description: string;
+  contents: {
+    heading: string;
+    paragraphs: string[];
+  }[];
+};

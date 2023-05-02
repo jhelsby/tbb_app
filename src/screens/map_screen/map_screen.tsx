@@ -1,31 +1,39 @@
-import React, { useEffect, useState, useRef, useCallback, ReactElement } from "react";
-import { View, Text, Animated, Dimensions } from "react-native";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { MapParamList } from "../../scripts/screen_params";
-import { useFocusEffect } from "@react-navigation/native";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  ReactElement,
+} from 'react';
+import {View, Animated, Dimensions} from 'react-native';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {MapParamList} from '../../scripts/screen_params';
+import {useFocusEffect} from '@react-navigation/native';
 
-import { styles } from "./map_styles";
-import { styles as globalStyles } from "../../../App_styles";
+import {styles} from './map_styles';
 
-import { ICardProps } from "../../scripts/interfaces";
+import {ICardProps} from '../../scripts/interfaces';
 
 import MapIcon from '../../components/map_icon/map_icon';
 import Card from '../../components/card/card';
 
-import { useAppSelector, useAppDispatch } from "../../scripts/redux_hooks";
-import { selectDarkMode, selectContainerContrast, selectTextContrast } from "../../slices/colorSlice";
-import { selectIsLoggedIn } from "../../slices/accountSlice";
-import { selectReadings, fetchAllReadings, emptyReadings } from "../../slices/readingsSlice";
+import {useAppSelector, useAppDispatch} from '../../scripts/redux_hooks';
+import {selectDarkMode} from '../../slices/colorSlice';
+import {selectIsLoggedIn} from '../../slices/accountSlice';
+import {
+  selectReadings,
+  fetchAllReadings,
+  emptyReadings,
+} from '../../slices/readingsSlice';
+import {TMarkerData} from '../../scripts/types';
 
 type Props = NativeStackScreenProps<MapParamList, 'MapScreen'>;
 
-export default function MapScreen({ navigation } : Props) : ReactElement<Props> {
+export default function MapScreen({navigation}: Props): ReactElement<Props> {
   const dispatch = useAppDispatch();
 
   const isDarkMode = useAppSelector(selectDarkMode);
-  const containerContrast = useAppSelector(selectContainerContrast);
-  const textContrast = useAppSelector(selectTextContrast);
 
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const readings = useAppSelector(selectReadings);
@@ -43,16 +51,17 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
       navigation.navigate('ViewReadingScreen', {validNavigation: true}),
   });
 
-
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
-        console.log("Getting Markers...")
-        if (!readings.length) dispatch(fetchAllReadings());
+        console.log('Getting Markers...');
+        if (!readings.length) {
+          dispatch(fetchAllReadings());
+        }
       } else {
         dispatch(emptyReadings());
       }
-    }, [isLoggedIn])
+    }, [dispatch, isLoggedIn, readings.length]),
   );
 
   useEffect(() => {
@@ -61,19 +70,19 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
     } else {
       setActiveMarkers([]);
     }
-  }, [readings])
-
-
+  }, [readings]);
 
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
-        console.log("Getting Markers...")
-        if (!readings.length) dispatch(fetchAllReadings());
+        console.log('Getting Markers...');
+        if (!readings.length) {
+          dispatch(fetchAllReadings());
+        }
       } else {
         dispatch(emptyReadings());
       }
-    }, [isLoggedIn])
+    }, [dispatch, isLoggedIn, readings.length]),
   );
 
   useEffect(() => {
@@ -82,8 +91,7 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
     } else {
       setActiveMarkers([]);
     }
-  }, [readings])
-
+  }, [readings]);
 
   const screenWidth = Dimensions.get('window').width;
   const cardAnimation = useRef(new Animated.Value(screenWidth)).current;
@@ -105,12 +113,14 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
           title: `Reading ${readings[i].id}`,
           subtitle1: `${readings[i].location.latitude}, ${readings[i].location.longitude}`,
           subtitle2: `Date: ${readings[i].datetime.date}`,
-          description: "Laboris in et ullamco magna excepteur aliquip mollit occaecat aliqua anim exercitation.",
-          onPress: () => navigation.navigate("ViewReadingScreen", {
-            validNavigation: true,
-            readingId: readings[i].id
-          })
-        }
+          description:
+            'Laboris in et ullamco magna excepteur aliquip mollit occaecat aliqua anim exercitation.',
+          onPress: () =>
+            navigation.navigate('ViewReadingScreen', {
+              validNavigation: true,
+              readingId: readings[i].id,
+            }),
+        };
         setActiveCard(!marker);
         setCardData(tempCardData);
         return !marker;
@@ -140,28 +150,29 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}>
-          {
-            tempData.markers.map((marker: TMarkerData, index: number) => {
-              return (
-                <MapIcon
-                  key={index}
-                  index={index}
-                  onActive={handleMarkerPress}
-                  active={activeMarkers[index]}
-                  {...marker}
-                />
-              );
-            })
-          }
+        {tempData.markers.map((marker: TMarkerData, index: number) => {
+          return (
+            <MapIcon
+              key={index}
+              index={index}
+              onActive={handleMarkerPress}
+              active={activeMarkers[index]}
+              {...marker}
+            />
+          );
+        })}
       </MapView>
-      <Animated.View style={[
-        styles.cardContainer,
-        { transform: [
+      <Animated.View
+        style={[
+          styles.cardContainer,
           {
-            translateX: cardAnimation
-          }
-        ]}
-      ]}>
+            transform: [
+              {
+                translateX: cardAnimation,
+              },
+            ],
+          },
+        ]}>
         <Card {...cardData} />
       </Animated.View>
     </View>

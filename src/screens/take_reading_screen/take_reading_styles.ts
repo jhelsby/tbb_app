@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
@@ -26,10 +26,10 @@ export const styles = StyleSheet.create({
     shadowColor: '#000',
   },
   safe: {
-    color: '#6095ff'
+    color: '#6095ff',
   },
   notSafe: {
-    color: '#d95448'
+    color: '#d95448',
   },
   buttonPanel: {
     alignItems: 'center',

@@ -1,17 +1,22 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faChevronRight, faNewspaper } from '@fortawesome/free-solid-svg-icons';
+import {View, Text, Pressable} from 'react-native';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faChevronRight, faNewspaper} from '@fortawesome/free-solid-svg-icons';
 
 import {styles} from './card_styles';
 import {styles as globalStyles} from '../../../App_styles';
 
-import { ICardProps } from '../../scripts/interfaces';
+import {ICardProps} from '../../scripts/interfaces';
 
-import { useAppSelector } from '../../scripts/redux_hooks';
-import { selectContainerContrast, selectTextContrast } from '../../slices/colorSlice';
+import {useAppSelector} from '../../scripts/redux_hooks';
+import {
+  selectContainerContrast,
+  selectTextContrast,
+} from '../../slices/colorSlice';
 
-export default function Card(props : ICardProps) : React.ReactElement<ICardProps> {
+export default function Card(
+  props: ICardProps,
+): React.ReactElement<ICardProps> {
   const textContrast = useAppSelector(selectTextContrast);
   const containerContrast = useAppSelector(selectContainerContrast);
 
@@ -24,7 +29,6 @@ export default function Card(props : ICardProps) : React.ReactElement<ICardProps
         styles.container,
         containerContrast,
         pressed ? styles.pressed : {},
-  
       ]}
       onPress={props.onPress}
       onPressIn={() => setPressed(true)}
