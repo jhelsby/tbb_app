@@ -169,6 +169,7 @@ export const fetchAllReadings = createAsyncThunk(
               measurements: data.measurements,
               id: docSnap.id,
             });
+            // console.log(data.location);
           }
         });
         console.log('Got All Readings');
