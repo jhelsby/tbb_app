@@ -1,4 +1,4 @@
-import React, {ReactElement, useContext} from 'react';
+import React, {ReactElement, useContext, useEffect} from 'react';
 import {View, Text} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeParamList} from '../../scripts/screen_params';
@@ -9,42 +9,62 @@ import {styles as globalStyles} from '../../../App_styles';
 import HomeSvg from '../../svgs/home.svg';
 import Button from '../../components/button/button';
 import DeviceModal from '../../components/modal/modal';
-import useBLE from '../../scripts/useBLE';
 
 import {ColorContext} from '../../context/color_context';
 
-import {useAppSelector} from '../../scripts/redux_hooks';
+import {useAppDispatch, useAppSelector} from '../../scripts/redux_hooks';
 import {
   selectContainerContrast,
   selectPageContrast,
   selectTextContrast,
 } from '../../slices/colorSlice';
+import {
+  disconnectFromDevice,
+  getDataFromDevice,
+  requestPermissions,
+  getBleManager,
+  selectAvailableDevices,
+  addAvailableDevice,
+  resetAvailableDevices,
+  setIsDeviceConnected,
+} from '../../slices/bluetoothSlice';
+import { BleManager, Device } from 'react-native-ble-plx';
 
 type Props = NativeStackScreenProps<HomeParamList, 'HomeScreen'>;
 
 export default function HomeScreen({navigation}: Props): ReactElement<Props> {
-  const {
-    requestPermissions,
-    scanForDevices,
-    allDevices,
-    connectToDevice,
-    disconnectFromDevice,
-    connectedDevice,
-    startDeviceReading,
-  } = useBLE();
-
   const [isModalVisible, setModalVisible] = React.useState(false);
   // Get the contrast settings from the redux store
   const containerContrast = useAppSelector(selectContainerContrast);
   const pageContrast = useAppSelector(selectPageContrast);
   const textContrast = useAppSelector(selectTextContrast);
 
+  const [selectedDeviceId, setSelectedDeviceId] = React.useState<string>('');
+  const [connectedDevice, setConnectedDevice] = React.useState<Device | null>(
+    null,
+  );
+  const availableDevices = useAppSelector(selectAvailableDevices);
+  const dispatch = useAppDispatch();
+
   const {color, lightColor} = useContext(ColorContext);
 
+  const DEVICE_NAME: string = 'DSD TECH';
+
   const openModal = () => {
-    requestPermissions((result: boolean) => {
+    dispatch(resetAvailableDevices());
+    dispatch(requestPermissions()).then((result: boolean) => {
       if (result) {
-        scanForDevices();
+        const bleManager = getBleManager();
+        bleManager.startDeviceScan(null, null, (error, newDevice) => {
+          if (error) {
+            console.error(error);
+          }
+          if (newDevice && newDevice.name?.includes(DEVICE_NAME)) {
+            dispatch(
+              addAvailableDevice({id: newDevice.id, name: newDevice.name}),
+            );
+          }
+        });
       }
     });
     setModalVisible(true);
@@ -53,6 +73,24 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
   const closeModal = () => {
     setModalVisible(false);
   };
+
+  useEffect(() => {
+    const connectToDevice = async (deviceId: string) => {
+      try {
+        const bleManager: BleManager = getBleManager();
+        const deviceConnection = await bleManager.connectToDevice(deviceId);
+        setConnectedDevice(deviceConnection);
+        await deviceConnection.discoverAllServicesAndCharacteristics();
+        dispatch(setIsDeviceConnected(!!deviceConnection));
+      } catch (e) {
+        console.log('FAILED TO CONNECT', e);
+      }
+    };
+
+    if (selectedDeviceId) {
+      connectToDevice(selectedDeviceId);
+    }
+  }, [dispatch, selectedDeviceId]);
 
   return (
     <View style={globalStyles.screen}>
@@ -76,14 +114,14 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
             <View style={styles.buttonContainer}>
               <Button
                 onPress={() => {
-                  startDeviceReading(connectedDevice);
+                  dispatch(getDataFromDevice('takeReading'));
                   navigation.navigate('LoadingScreen', {validNavigation: true});
                 }}>
                 <Text style={styles.buttonText}>Take Readings</Text>
               </Button>
             </View>
             <View style={styles.buttonContainer}>
-              <Button onPress={disconnectFromDevice}>
+              <Button onPress={dispatch(disconnectFromDevice())}>
                 <Text style={styles.buttonText}>Disconnect</Text>
               </Button>
             </View>
@@ -118,8 +156,8 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
       <DeviceModal
         closeModal={closeModal}
         visible={isModalVisible}
-        connectToPeripheral={connectToDevice}
-        devices={allDevices}
+        devices={availableDevices}
+        connectToDevice={setSelectedDeviceId}
       />
     </View>
   );

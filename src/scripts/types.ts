@@ -102,3 +102,17 @@ export type TNews = {
     paragraphs: string[];
   }[];
 };
+
+export type TAbstractDevice = {
+  name: string | null;
+  id: string;
+};
+
+export type TBluetoothSliceState = {
+  availableDevices: TAbstractDevice[];
+  isDeviceConnected: boolean;
+  isLoading: boolean;
+  hasError: boolean;
+  permissionsGranted: boolean;
+  receivedData: any | null;
+};

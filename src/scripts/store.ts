@@ -5,6 +5,7 @@ import rootNavReducer from '../slices/rootNavSlice';
 import accountReducer from '../slices/accountSlice';
 import readingsReducer from '../slices/readingsSlice';
 import newsReducer from '../slices/newsSlice';
+import bluetoothReducer from '../slices/bluetoothSlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     account: accountReducer,
     readings: readingsReducer,
     news: newsReducer,
+    bluetooth: bluetoothReducer,
   },
 });
 

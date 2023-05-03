@@ -8,23 +8,23 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from 'react-native';
-import {Device} from 'react-native-ble-plx';
 import DeviceModalListItem from './modalItem';
 
 import {styles} from './modal_styles';
 import {styles as globalStyles} from '../../../App_styles';
+import {TAbstractDevice} from '../../scripts/types';
 
 type DeviceModalProps = {
-  devices: Device[];
+  devices: TAbstractDevice[];
   visible: boolean;
-  connectToPeripheral: (device: Device) => void;
   closeModal: () => void;
+  connectToDevice: (deviceId: string) => void;
 };
 
 export default function DeviceModal(
   props: DeviceModalProps,
 ): ReactElement<DeviceModalProps> {
-  const {devices, visible, connectToPeripheral, closeModal} = props;
+  const {devices, visible, closeModal, connectToDevice} = props;
 
   const isDarkMode = useColorScheme() === 'dark';
   const textContrast = isDarkMode
@@ -35,16 +35,16 @@ export default function DeviceModal(
     : globalStyles.lightContainer;
 
   const renderDeviceModalListItem = useCallback(
-    (item: ListRenderItemInfo<Device>) => {
+    (item: ListRenderItemInfo<TAbstractDevice>) => {
       return (
         <DeviceModalListItem
           item={item}
-          connectToPeripheral={connectToPeripheral}
           closeModal={closeModal}
+          connectToDevice={connectToDevice}
         />
       );
     },
-    [closeModal, connectToPeripheral],
+    [closeModal, connectToDevice],
   );
 
   return (

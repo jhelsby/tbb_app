@@ -1,25 +1,25 @@
 import {ListRenderItemInfo, Text, View} from 'react-native';
-import {Device} from 'react-native-ble-plx';
 import React, {ReactElement, useCallback} from 'react';
 
 import {styles} from './modal_styles';
 import Button from '../button/button';
+import {TAbstractDevice} from '../../scripts/types';
 
 type DeviceModalListItemProps = {
-  item: ListRenderItemInfo<Device>;
-  connectToPeripheral: (device: Device) => void;
+  item: ListRenderItemInfo<TAbstractDevice>;
   closeModal: () => void;
+  connectToDevice: (deviceId: string) => void;
 };
 
 export default function DeviceModalListItem(
   props: DeviceModalListItemProps,
 ): ReactElement<DeviceModalListItemProps> {
-  const {item, connectToPeripheral, closeModal} = props;
+  const {item, closeModal, connectToDevice} = props;
 
   const connectAndCloseModal = useCallback(() => {
-    connectToPeripheral(item.item);
+    connectToDevice(item.item.id);
     closeModal();
-  }, [closeModal, connectToPeripheral, item.item]);
+  }, [closeModal, connectToDevice, item.item.id]);
 
   return (
     <View style={styles.buttonContainer}>

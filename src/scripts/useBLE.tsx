@@ -107,7 +107,6 @@ export default function useBLE(): BluetoothLowEnergyApi {
       const deviceConnection = await bleManager.connectToDevice(device.id);
       setConnectedDevice(deviceConnection);
       await deviceConnection.discoverAllServicesAndCharacteristics();
-      bleManager.stopDeviceScan();
     } catch (e) {
       console.log('FAILED TO CONNECT', e);
     }
@@ -137,43 +136,6 @@ export default function useBLE(): BluetoothLowEnergyApi {
 
           const rawData = characteristic.value;
           const decodedData = base64.decode(rawData);
-          const values: string[] = decodedData.split(',');
-          const listOfReadings: deviceData = {
-            isSafe: values[8] === '1',
-            date: values[2],
-            latitude: parseFloat(values[4]),
-            longitude: parseFloat(values[5]),
-            results: [
-              {
-                name: 'Chloride',
-                value: parseFloat(values[0]),
-              },
-              {
-                name: 'Conductivity',
-                value: parseFloat(values[1]),
-              },
-              {
-                name: 'Fluoride',
-                value: parseFloat(values[3]),
-              },
-              {
-                name: 'Nitrate',
-                value: parseFloat(values[6]),
-              },
-              {
-                name: 'pH',
-                value: parseFloat(values[7]),
-              },
-              {
-                name: 'Temperature',
-                value: parseFloat(values[9]),
-              },
-              {
-                name: 'Turbidity',
-                value: parseFloat(values[10]),
-              },
-            ],
-          };
           console.log(decodedData);
           setDataFromDevice(listOfReadings);
         },
