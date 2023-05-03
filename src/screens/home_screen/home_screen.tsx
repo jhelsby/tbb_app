@@ -26,9 +26,9 @@ import {
   selectAvailableDevices,
   addAvailableDevice,
   resetAvailableDevices,
-  setIsDeviceConnected,
+  setConnectedDeviceDetails,
 } from '../../slices/bluetoothSlice';
-import { BleManager, Device } from 'react-native-ble-plx';
+import {BleManager, Device} from 'react-native-ble-plx';
 
 type Props = NativeStackScreenProps<HomeParamList, 'HomeScreen'>;
 
@@ -61,7 +61,11 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
           }
           if (newDevice && newDevice.name?.includes(DEVICE_NAME)) {
             dispatch(
-              addAvailableDevice({id: newDevice.id, name: newDevice.name}),
+              addAvailableDevice({
+                id: newDevice.id,
+                name: newDevice.name,
+                serviceUUIDs: newDevice.serviceUUIDs,
+              }),
             );
           }
         });
@@ -81,7 +85,13 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
         const deviceConnection = await bleManager.connectToDevice(deviceId);
         setConnectedDevice(deviceConnection);
         await deviceConnection.discoverAllServicesAndCharacteristics();
-        dispatch(setIsDeviceConnected(!!deviceConnection));
+        dispatch(
+          setConnectedDeviceDetails({
+            id: deviceConnection.id,
+            name: deviceConnection.name,
+            serviceUUIDs: deviceConnection.serviceUUIDs,
+          }),
+        );
       } catch (e) {
         console.log('FAILED TO CONNECT', e);
       }
@@ -121,7 +131,11 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
               </Button>
             </View>
             <View style={styles.buttonContainer}>
-              <Button onPress={dispatch(disconnectFromDevice())}>
+              <Button
+                onPress={() => {
+                  dispatch(disconnectFromDevice());
+                  setConnectedDevice(null);
+                }}>
                 <Text style={styles.buttonText}>Disconnect</Text>
               </Button>
             </View>
