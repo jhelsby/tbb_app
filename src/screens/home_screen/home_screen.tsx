@@ -124,7 +124,12 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
             <View style={styles.buttonContainer}>
               <Button
                 onPress={() => {
-                  dispatch(getDataFromDevice('takeReading'));
+                  dispatch(
+                    getDataFromDevice({
+                      transmitMessage: 'takeReading',
+                      connectedDevice,
+                    }),
+                  );
                   navigation.navigate('LoadingScreen', {validNavigation: true});
                 }}>
                 <Text style={styles.buttonText}>Take Readings</Text>
