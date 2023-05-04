@@ -51,10 +51,10 @@ class BluetoothManager {
     }
 
     const decodedData = base64.decode(characteristic?.value ?? '');
+    //remove special characters
+    const filteredData = decodedData.replace(/(\r\n|\n|\r)/gm, '');
 
-    // FORMAT DATA HERE!!!!
-
-    emitter({payload: decodedData});
+    emitter({payload: filteredData});
   };
 
   sendData = async (data: string) => {

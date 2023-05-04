@@ -1,4 +1,4 @@
-import React, {useCallback, ReactElement} from 'react';
+import React, {useCallback, ReactElement, useEffect} from 'react';
 import {View, Text, ScrollView, Dimensions} from 'react-native';
 import {BarChart, PieChart} from 'react-native-chart-kit';
 import {useFocusEffect} from '@react-navigation/native';
@@ -19,6 +19,14 @@ import {
   selectPageContrast,
   selectTextContrast,
 } from '../../slices/colorSlice';
+import {selectReceivedData} from '../../slices/bluetoothSlice';
+import {THSL, TMeasurement} from '../../scripts/types';
+import {
+  color1,
+  color3,
+  colorInterpolate,
+  hslToString,
+} from '../../scripts/colors';
 
 export default function TakeReadingScreen({
   navigation,
@@ -32,19 +40,12 @@ export default function TakeReadingScreen({
   const textContrast = useAppSelector(selectTextContrast);
   const isDarkMode = useAppSelector(selectDarkMode);
 
-  const [pieChartData] = React.useState<any>([]);
-  const [barChartData] = React.useState<any>({
-    labels: [
-      'Turbidity',
-      'pH',
-      'Chloride',
-      'Nitrate',
-      'Flouride',
-      'Conductivity',
-    ],
+  const [pieChartData, setPieChartData] = React.useState<any>([]);
+  const [barChartData, setBarChartData] = React.useState<any>({
+    labels: [],
     datasets: [
       {
-        data: [0, 0, 0, 0, 0, 0],
+        data: [],
       },
     ],
   });
@@ -52,10 +53,10 @@ export default function TakeReadingScreen({
   const [isLoggedIn, setLoggedIn] = React.useState(false);
   const [docName] = React.useState<string>('');
 
-  const [readingData] = React.useState<any>({
+  const [readingData, setReadingData] = React.useState<any>({
     location: {
-      latitude: Math.round(Math.random() * 90 * 1000000) / 1000000,
-      longitude: Math.round(Math.random() * 180 * 1000000) / 1000000,
+      latitude: 0,
+      longitude: 0,
     },
     datetime: {
       date: '',
@@ -88,6 +89,115 @@ export default function TakeReadingScreen({
       setLoggedIn(false);
     }
   });
+
+  const deviceData = useAppSelector(selectReceivedData);
+
+  useEffect(() => {
+    if (deviceData.length > 0) {
+      console.log('Formating data...');
+      const lastMessage: string = deviceData[deviceData.length - 1];
+      const lastMessageWithoutNewLine: string = lastMessage.replace(
+        /(\r\n|\n|\r)/gm,
+        '',
+      );
+      const lastChar: string =
+        lastMessageWithoutNewLine[lastMessageWithoutNewLine.length - 1];
+      if (lastChar === '$') {
+        console.log('Start of message found');
+        let dataString: string = '';
+        deviceData.forEach((data: any) => {
+          dataString = dataString.concat(data);
+        });
+        const deviceValues: string[] = dataString.split(',');
+        const lastIndex = deviceValues.length - 1;
+        deviceValues[lastIndex] = deviceValues[lastIndex].replace('$', '');
+        const deviceReadings = {
+          isSafe: deviceValues[8] === '1',
+          datetime: {
+            data: deviceValues[2],
+            time: deviceValues[2],
+          },
+          location: {
+            latitude: parseFloat(deviceValues[4]),
+            longitude: parseFloat(deviceValues[5]),
+          },
+          measurements: [
+            {
+              name: 'Chloride',
+              value: parseFloat(deviceValues[0]),
+            },
+            {
+              name: 'Conductivity',
+              value: parseFloat(deviceValues[1]),
+            },
+            {
+              name: 'Fluoride',
+              value: parseFloat(deviceValues[3]),
+            },
+            {
+              name: 'Nitrate',
+              value: parseFloat(deviceValues[6]),
+            },
+            {
+              name: 'pH',
+              value: parseFloat(deviceValues[7]),
+            },
+            {
+              name: 'Temperature',
+              value: parseFloat(deviceValues[9]),
+            },
+            {
+              name: 'Turbidity',
+              value: parseFloat(deviceValues[10]),
+            },
+          ],
+        };
+        console.log(deviceReadings);
+        setReadingData(deviceReadings);
+        const tempPieChartData: any[] = [];
+        const measurements: TMeasurement[] = deviceReadings.measurements;
+
+        measurements.forEach((measurement: TMeasurement, index: number) => {
+          const color: any = colorInterpolate(
+            color3,
+            color1,
+            index / (measurements.length - 1),
+          );
+          tempPieChartData.push({
+            name: measurement.name,
+            value: measurement.value,
+            color: hslToString(color),
+            legendFontColor: '#7F7F7F',
+            legendFontSize: 15,
+          });
+        });
+        setPieChartData(tempPieChartData);
+
+        setBarChartData({
+          labels: measurements.map(
+            (measurement: TMeasurement) => measurement.name,
+          ),
+          datasets: [
+            {
+              data: measurements.map(
+                (measurement: TMeasurement) => measurement.value,
+              ),
+              colors: measurements.map(
+                (measurement: TMeasurement, index: number) => {
+                  const color: THSL = colorInterpolate(
+                    color3,
+                    color1,
+                    index / (measurements.length - 1),
+                  );
+                  return () => hslToString(color);
+                },
+              ),
+            },
+          ],
+        });
+      }
+    }
+  }, [deviceData]);
 
   const handleSync = async () => {
     // if (isLoggedIn) {
@@ -127,7 +237,7 @@ export default function TakeReadingScreen({
           <Text
             style={
               styles.data
-            }>{`Latitude: ${readingData.location.latitude}, Longitude: ${readingData.location.latitude}`}</Text>
+            }>{`Latitude: ${readingData.location.latitude}, Longitude: ${readingData.location.longitude}`}</Text>
         </View>
         {isLoggedIn && (
           <View

@@ -9,7 +9,7 @@ type TBluetoothSliceState = {
   availableDevices: Array<TAbstractDevice>;
   isConnectingToDevice: boolean;
   connectedDevice: string | null;
-  receivedData: string;
+  receivedData: Array<string>;
   isStreamingData: boolean;
   isScanning: boolean;
   isLoading: boolean;
@@ -21,7 +21,7 @@ const initialState: TBluetoothSliceState = {
   availableDevices: [],
   isConnectingToDevice: false,
   connectedDevice: null,
-  receivedData: '',
+  receivedData: [],
   isStreamingData: false,
   isScanning: false,
   isLoading: false,
@@ -85,7 +85,7 @@ const bluetoothReducer = createSlice({
       state.connectedDevice = action.payload;
     },
     updateReceivedData: (state, action) => {
-      state.receivedData = action.payload;
+      state.receivedData = [...state.receivedData, action.payload];
     },
     takeReading: state => {
       state.isStreamingData = true;
