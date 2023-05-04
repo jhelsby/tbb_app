@@ -37,8 +37,12 @@ class BluetoothManager {
     this.bleManager.stopDeviceScan();
   };
 
-  connectToPeripheral = async (deviceId: string) => {
+  connectToDevice = async (deviceId: string) => {
     this.device = await this.bleManager.connectToDevice(deviceId);
+  };
+
+  disconnectFromDevice = async (deviceId: string) => {
+    await this.bleManager.cancelDeviceConnection(deviceId);
   };
 
   onReceivedDataUpdate = (

@@ -20,6 +20,7 @@ import {
 } from '../../slices/colorSlice';
 import {
   initiateConnection,
+  initiateDisconntect,
   requestPermissions,
   scanForDevices,
   selectAvailableDevices,
@@ -43,6 +44,10 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
 
   const connectToDevice = (device: TAbstractDevice) => {
     dispatch(initiateConnection(device.id));
+  };
+
+  const disconnectFromDevice = () => {
+    dispatch(initiateDisconntect(connectedDevice));
   };
 
   const closeModal = () => {
@@ -77,7 +82,7 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
               </Button>
             </View>
             <View style={styles.buttonContainer}>
-              <Button onPress={() => {}}>
+              <Button onPress={disconnectFromDevice}>
                 <Text style={styles.buttonText}>Disconnect</Text>
               </Button>
             </View>

@@ -8,6 +8,7 @@ type TBluetoothSliceState = {
   permissionsGranted: boolean;
   availableDevices: Array<TAbstractDevice>;
   isConnectingToDevice: boolean;
+  isDisconnectingFromDevice: boolean;
   connectedDevice: string | null;
   receivedData: Array<string>;
   isStreamingData: boolean;
@@ -20,6 +21,7 @@ const initialState: TBluetoothSliceState = {
   permissionsGranted: false,
   availableDevices: [],
   isConnectingToDevice: false,
+  isDisconnectingFromDevice: false,
   connectedDevice: null,
   receivedData: [],
   isStreamingData: false,
@@ -80,9 +82,16 @@ const bluetoothReducer = createSlice({
     initiateConnection: (state, _) => {
       state.isConnectingToDevice = true;
     },
+    initiateDisconntect: (state, _) => {
+      state.isDisconnectingFromDevice = true;
+    },
     connectToDevice: (state, action) => {
       state.isConnectingToDevice = false;
       state.connectedDevice = action.payload;
+    },
+    disconnectFromDevice: state => {
+      state.isDisconnectingFromDevice = false;
+      state.connectedDevice = null;
     },
     updateReceivedData: (state, action) => {
       state.receivedData = [...state.receivedData, action.payload];
@@ -129,6 +138,7 @@ export const {
   bluetoothDeviceFound,
   scanForDevices,
   initiateConnection,
+  initiateDisconntect,
   takeReading,
 } = bluetoothReducer.actions;
 
@@ -136,6 +146,8 @@ export const sagaActionConstants = {
   SCAN_FOR_DEVICES: bluetoothReducer.actions.scanForDevices.type,
   ON_DEVICE_DISCOVERED: bluetoothReducer.actions.bluetoothDeviceFound.type,
   INITIATE_CONNECTION: bluetoothReducer.actions.initiateConnection.type,
+  INITIATE_DISCONNECT: bluetoothReducer.actions.initiateDisconntect.type,
+  DISCONNECT_SUCCESS: bluetoothReducer.actions.disconnectFromDevice.type,
   CONNECTION_SUCCESS: bluetoothReducer.actions.connectToDevice.type,
   UPDATE_RECEIVED_DATA: bluetoothReducer.actions.updateReceivedData.type,
   START_STREAMING_DATA: bluetoothReducer.actions.takeReading.type,

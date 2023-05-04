@@ -41,15 +41,28 @@ function* watchForPeripherals(): Generator<AnyAction, void, TakeableDevice> {
   }
 }
 
-function* connectToPeripheral(action: {
+function* connectToDevice(action: {
   type: typeof sagaActionConstants.INITIATE_CONNECTION;
   payload: string;
 }) {
-  const peripheralId = action.payload;
-  yield call(bluetoothManager.connectToPeripheral, peripheralId);
+  const deviceId = action.payload;
+  yield call(bluetoothManager.connectToDevice, deviceId);
   yield put({
     type: sagaActionConstants.CONNECTION_SUCCESS,
-    payload: peripheralId,
+    payload: deviceId,
+  });
+  yield call(bluetoothManager.stopScanningForDevices);
+}
+
+function* disconnectFromDevice(action: {
+  type: typeof sagaActionConstants.INITIATE_DISCONNECT;
+  payload: string;
+}) {
+  const deviceId = action.payload;
+  yield call(bluetoothManager.disconnectFromDevice, deviceId);
+  yield put({
+    type: sagaActionConstants.DISCONNECT_SUCCESS,
+    payload: deviceId,
   });
   yield call(bluetoothManager.stopScanningForDevices);
 }
@@ -85,9 +98,13 @@ function* getReceivedDataUpdates(): Generator<
 
 export function* bluetoothSaga() {
   yield takeEvery(sagaActionConstants.SCAN_FOR_DEVICES, watchForPeripherals);
-  yield takeEvery(sagaActionConstants.INITIATE_CONNECTION, connectToPeripheral);
+  yield takeEvery(sagaActionConstants.INITIATE_CONNECTION, connectToDevice);
   yield takeEvery(
     sagaActionConstants.START_STREAMING_DATA,
     getReceivedDataUpdates,
+  );
+  yield takeEvery(
+    sagaActionConstants.INITIATE_DISCONNECT,
+    disconnectFromDevice,
   );
 }
