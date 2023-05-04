@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {TAbstractDevice} from '../scripts/types';
+import {TAbstractDevice, TReading} from '../scripts/types';
 import {RootState} from '../scripts/store';
 import {PermissionsAndroid, Platform} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -7,10 +7,11 @@ import DeviceInfo from 'react-native-device-info';
 type TBluetoothSliceState = {
   permissionsGranted: boolean;
   availableDevices: Array<TAbstractDevice>;
-  isConnectingToDevice: boolean;
-  isDisconnectingFromDevice: boolean;
   connectedDevice: string | null;
   receivedData: Array<string>;
+  formattedData: TReading | null;
+  isConnectingToDevice: boolean;
+  isDisconnectingFromDevice: boolean;
   isStreamingData: boolean;
   isScanning: boolean;
   isLoading: boolean;
@@ -24,6 +25,7 @@ const initialState: TBluetoothSliceState = {
   isDisconnectingFromDevice: false,
   connectedDevice: null,
   receivedData: [],
+  formattedData: null,
   isStreamingData: false,
   isScanning: false,
   isLoading: false,
@@ -94,9 +96,69 @@ const bluetoothReducer = createSlice({
       state.connectedDevice = null;
     },
     updateReceivedData: (state, action) => {
-      state.receivedData = [...state.receivedData, action.payload];
+      let lastMessage = action.payload;
+      state.receivedData = [...state.receivedData, lastMessage];
+      // Check if transmission is complete by checking for end of message character
+      lastMessage = lastMessage.replace(/(\r\n|\n|\r)/gm, '');
+      const lastChar: string = lastMessage[lastMessage.length - 1];
+
+      if (lastChar === '$') {
+        let dataString: string = '';
+        state.receivedData.forEach((data: any) => {
+          dataString = dataString.concat(data);
+        });
+        const deviceValues: string[] = dataString.split(',');
+        const lastIndex = deviceValues.length - 1;
+        deviceValues[lastIndex] = deviceValues[lastIndex].replace('$', '');
+        const deviceReadings: TReading = {
+          id: `${Date.now()}`,
+          hasSynced: false,
+          isSafe: deviceValues[8] === '1',
+          datetime: {
+            date: deviceValues[2],
+            time: deviceValues[2],
+          },
+          location: {
+            latitude: parseFloat(deviceValues[4]),
+            longitude: parseFloat(deviceValues[5]),
+          },
+          measurements: [
+            {
+              name: 'Chloride',
+              value: parseFloat(deviceValues[0]),
+            },
+            {
+              name: 'Conductivity',
+              value: parseFloat(deviceValues[1]),
+            },
+            {
+              name: 'Fluoride',
+              value: parseFloat(deviceValues[3]),
+            },
+            {
+              name: 'Nitrate',
+              value: parseFloat(deviceValues[6]),
+            },
+            {
+              name: 'pH',
+              value: parseFloat(deviceValues[7]),
+            },
+            {
+              name: 'Temperature',
+              value: parseFloat(deviceValues[9]),
+            },
+            {
+              name: 'Turbidity',
+              value: parseFloat(deviceValues[10]),
+            },
+          ],
+        };
+        state.formattedData = deviceReadings;
+        state.receivedData = [];
+      }
     },
     takeReading: state => {
+      state.formattedData = null;
       state.isStreamingData = true;
     },
     bluetoothDeviceFound: (
@@ -166,7 +228,7 @@ export const selectConnectedDevice = (state: RootState) =>
   state.bluetooth.connectedDevice;
 
 export const selectReceivedData = (state: RootState) =>
-  state.bluetooth.receivedData;
+  state.bluetooth.formattedData;
 
 export const selectIsStreamingData = (state: RootState) =>
   state.bluetooth.isStreamingData;

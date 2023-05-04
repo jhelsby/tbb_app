@@ -12,7 +12,7 @@ import Button from '../../components/button/button';
 import {onAuthStateChanged} from 'firebase/auth';
 import {auth} from '../../scripts/firebase';
 
-import {useAppSelector} from '../../scripts/redux_hooks';
+import {useAppDispatch, useAppSelector} from '../../scripts/redux_hooks';
 import {
   selectContainerContrast,
   selectDarkMode,
@@ -27,6 +27,7 @@ import {
   colorInterpolate,
   hslToString,
 } from '../../scripts/colors';
+import {addReadingToState} from '../../slices/readingsSlice';
 
 export default function TakeReadingScreen({
   navigation,
@@ -53,26 +54,6 @@ export default function TakeReadingScreen({
   const [isLoggedIn, setLoggedIn] = React.useState(false);
   const [docName] = React.useState<string>('');
 
-  const [readingData, setReadingData] = React.useState<any>({
-    location: {
-      latitude: 0,
-      longitude: 0,
-    },
-    datetime: {
-      date: '',
-      time: '',
-    },
-    isSafe: false,
-    measurements: [
-      {name: 'turbidity', value: 0},
-      {name: 'ph', value: 0},
-      {name: 'chloride', value: 0},
-      {name: 'nitrate', value: 0},
-      {name: 'flouride', value: 0},
-      {name: 'conductivity', value: 0},
-    ],
-  });
-
   useFocusEffect(
     useCallback(() => {
       if (!route.params.validNavigation) {
@@ -91,113 +72,54 @@ export default function TakeReadingScreen({
   });
 
   const deviceData = useAppSelector(selectReceivedData);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (deviceData.length > 0) {
-      console.log('Formating data...');
-      const lastMessage: string = deviceData[deviceData.length - 1];
-      const lastMessageWithoutNewLine: string = lastMessage.replace(
-        /(\r\n|\n|\r)/gm,
-        '',
-      );
-      const lastChar: string =
-        lastMessageWithoutNewLine[lastMessageWithoutNewLine.length - 1];
-      if (lastChar === '$') {
-        console.log('Start of message found');
-        let dataString: string = '';
-        deviceData.forEach((data: any) => {
-          dataString = dataString.concat(data);
-        });
-        const deviceValues: string[] = dataString.split(',');
-        const lastIndex = deviceValues.length - 1;
-        deviceValues[lastIndex] = deviceValues[lastIndex].replace('$', '');
-        const deviceReadings = {
-          isSafe: deviceValues[8] === '1',
-          datetime: {
-            data: deviceValues[2],
-            time: deviceValues[2],
-          },
-          location: {
-            latitude: parseFloat(deviceValues[4]),
-            longitude: parseFloat(deviceValues[5]),
-          },
-          measurements: [
-            {
-              name: 'Chloride',
-              value: parseFloat(deviceValues[0]),
-            },
-            {
-              name: 'Conductivity',
-              value: parseFloat(deviceValues[1]),
-            },
-            {
-              name: 'Fluoride',
-              value: parseFloat(deviceValues[3]),
-            },
-            {
-              name: 'Nitrate',
-              value: parseFloat(deviceValues[6]),
-            },
-            {
-              name: 'pH',
-              value: parseFloat(deviceValues[7]),
-            },
-            {
-              name: 'Temperature',
-              value: parseFloat(deviceValues[9]),
-            },
-            {
-              name: 'Turbidity',
-              value: parseFloat(deviceValues[10]),
-            },
-          ],
-        };
-        console.log(deviceReadings);
-        setReadingData(deviceReadings);
-        const tempPieChartData: any[] = [];
-        const measurements: TMeasurement[] = deviceReadings.measurements;
+    if (deviceData) {
+      dispatch(addReadingToState(deviceData));
+      const tempPieChartData: any[] = [];
+      const measurements: TMeasurement[] = deviceData.measurements;
 
-        measurements.forEach((measurement: TMeasurement, index: number) => {
-          const color: any = colorInterpolate(
-            color3,
-            color1,
-            index / (measurements.length - 1),
-          );
-          tempPieChartData.push({
-            name: measurement.name,
-            value: measurement.value,
-            color: hslToString(color),
-            legendFontColor: '#7F7F7F',
-            legendFontSize: 15,
-          });
+      measurements.forEach((measurement: TMeasurement, index: number) => {
+        const color: any = colorInterpolate(
+          color3,
+          color1,
+          index / (measurements.length - 1),
+        );
+        tempPieChartData.push({
+          name: measurement.name,
+          value: measurement.value,
+          color: hslToString(color),
+          legendFontColor: '#7F7F7F',
+          legendFontSize: 15,
         });
-        setPieChartData(tempPieChartData);
+      });
+      setPieChartData(tempPieChartData);
 
-        setBarChartData({
-          labels: measurements.map(
-            (measurement: TMeasurement) => measurement.name,
-          ),
-          datasets: [
-            {
-              data: measurements.map(
-                (measurement: TMeasurement) => measurement.value,
-              ),
-              colors: measurements.map(
-                (measurement: TMeasurement, index: number) => {
-                  const color: THSL = colorInterpolate(
-                    color3,
-                    color1,
-                    index / (measurements.length - 1),
-                  );
-                  return () => hslToString(color);
-                },
-              ),
-            },
-          ],
-        });
-      }
+      setBarChartData({
+        labels: measurements.map(
+          (measurement: TMeasurement) => measurement.name,
+        ),
+        datasets: [
+          {
+            data: measurements.map(
+              (measurement: TMeasurement) => measurement.value,
+            ),
+            colors: measurements.map(
+              (measurement: TMeasurement, index: number) => {
+                const color: THSL = colorInterpolate(
+                  color3,
+                  color1,
+                  index / (measurements.length - 1),
+                );
+                return () => hslToString(color);
+              },
+            ),
+          },
+        ],
+      });
     }
-  }, [deviceData]);
+  }, [deviceData, dispatch]);
 
   const handleSync = async () => {
     // if (isLoggedIn) {
@@ -229,15 +151,15 @@ export default function TakeReadingScreen({
           <Text
             style={[
               styles.dataTitle,
-              readingData.isSafe ? styles.safe : styles.notSafe,
+              deviceData?.isSafe ? styles.safe : styles.notSafe,
             ]}>
-            {readingData.isSafe ? 'SAFE' : 'NOT SAFE'}
+            {deviceData?.isSafe ? 'SAFE' : 'NOT SAFE'}
           </Text>
-          <Text style={styles.data}>{readingData.datetime.date}</Text>
+          <Text style={styles.data}>{deviceData?.datetime.date}</Text>
           <Text
             style={
               styles.data
-            }>{`Latitude: ${readingData.location.latitude}, Longitude: ${readingData.location.longitude}`}</Text>
+            }>{`Latitude: ${deviceData?.location.latitude}, Longitude: ${deviceData?.location.longitude}`}</Text>
         </View>
         {isLoggedIn && (
           <View
