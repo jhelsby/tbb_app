@@ -47,6 +47,8 @@ const initialState: TReadingSliceState = {
   isLoading: false,
   hasError: false,
   readings: [],
+  syncedReadings: [],
+  unsyncedReadings: [],
   currentReading: null,
 };
 
@@ -58,7 +60,8 @@ const addReadingToStateFunc = (
   state: TReadingSliceState,
   action: PayloadAction<TReading>,
 ) => {
-  state.readings.push(action.payload);
+  state.unsyncedReadings.push(action.payload);
+  state.readings = [...state.unsyncedReadings, ...state.syncedReadings];
 };
 
 /**
@@ -263,7 +266,8 @@ export const readingsSlice = createSlice({
           state.isLoading = false;
           state.hasError = false;
           if (action.payload) {
-            state.readings = action.payload;
+            state.syncedReadings = action.payload;
+            state.readings = [...state.unsyncedReadings, ...action.payload];
           }
         },
       )
@@ -279,6 +283,9 @@ export const {emptyReadings, addReadingToState} = readingsSlice.actions;
 const getParams = (_: any, args: any) => args;
 
 export const selectReadings = (state: RootState) => state.readings.readings;
+
+export const selectLastReadingIndex = (state: RootState) =>
+  state.readings.readings.length - 1;
 
 export const selectReadingById = createSelector(
   selectReadings,

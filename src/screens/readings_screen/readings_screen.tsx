@@ -20,7 +20,6 @@ import {selectIsLoggedIn} from '../../slices/accountSlice';
 import {
   selectReadings,
   fetchAllReadings,
-  emptyReadings,
   postAllReadings,
 } from '../../slices/readingsSlice';
 
@@ -46,8 +45,6 @@ export default function ReadingsScreen({
         if (!readings.length) {
           dispatch(fetchAllReadings());
         }
-      } else {
-        dispatch(emptyReadings());
       }
     }, [dispatch, isLoggedIn, readings.length]),
   );

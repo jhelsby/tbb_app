@@ -43,6 +43,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     backgroundColor: '#fff',
     padding: 20,
+    marginBottom: 20,
   },
   infoText: {
     fontSize: 16,

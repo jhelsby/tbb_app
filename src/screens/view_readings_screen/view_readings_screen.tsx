@@ -65,60 +65,48 @@ export default function ViewReadingsScreen({
 
   useFocusEffect(
     useCallback(() => {
-      if (isLoggedIn) {
-        const tempPieChartData: any[] = [];
-        const measurements: TMeasurement[] = reading.measurements;
+      const tempPieChartData: any[] = [];
+      const measurements: TMeasurement[] = reading.measurements;
 
-        measurements.forEach((measurement: TMeasurement, index: number) => {
-          const color: any = colorInterpolate(
-            color3,
-            color1,
-            index / (measurements.length - 1),
-          );
-          tempPieChartData.push({
-            name: measurement.name,
-            value: measurement.value,
-            color: hslToString(color),
-            legendFontColor: '#7F7F7F',
-            legendFontSize: 15,
-          });
+      measurements.forEach((measurement: TMeasurement, index: number) => {
+        const color: any = colorInterpolate(
+          color3,
+          color1,
+          index / (measurements.length - 1),
+        );
+        tempPieChartData.push({
+          name: measurement.name,
+          value: measurement.value,
+          color: hslToString(color),
+          legendFontColor: '#7F7F7F',
+          legendFontSize: 15,
         });
-        setPieChartData(tempPieChartData);
+      });
+      setPieChartData(tempPieChartData);
 
-        setBarChartData({
-          labels: measurements.map(
-            (measurement: TMeasurement) => measurement.name,
-          ),
-          datasets: [
-            {
-              data: measurements.map(
-                (measurement: TMeasurement) => measurement.value,
-              ),
-              colors: measurements.map(
-                (measurement: TMeasurement, index: number) => {
-                  const color: THSL = colorInterpolate(
-                    color3,
-                    color1,
-                    index / (measurements.length - 1),
-                  );
-                  return () => hslToString(color);
-                },
-              ),
-            },
-          ],
-        });
-      } else {
-        setBarChartData({
-          labels: [],
-          datasets: [
-            {
-              data: [],
-            },
-          ],
-        });
-        setPieChartData([]);
-      }
-    }, [isLoggedIn, reading]),
+      setBarChartData({
+        labels: measurements.map(
+          (measurement: TMeasurement) => measurement.name,
+        ),
+        datasets: [
+          {
+            data: measurements.map(
+              (measurement: TMeasurement) => measurement.value,
+            ),
+            colors: measurements.map(
+              (measurement: TMeasurement, index: number) => {
+                const color: THSL = colorInterpolate(
+                  color3,
+                  color1,
+                  index / (measurements.length - 1),
+                );
+                return () => hslToString(color);
+              },
+            ),
+          },
+        ],
+      });
+    }, [reading]),
   );
 
   return (
