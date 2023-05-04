@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     gap: 10,
-    paddingTop: 100,
+    paddingTop: 70,
   },
   title: {
     fontSize: 40,

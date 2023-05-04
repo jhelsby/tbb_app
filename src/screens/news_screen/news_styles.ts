@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#EBF1FF',
-    paddingTop: '10%',
   },
   title: {
     fontSize: 40,

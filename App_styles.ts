@@ -9,7 +9,6 @@ export const styles = StyleSheet.create({
     paddingBottom: 80,
     height: '100%',
     width: '100%',
-    paddingTop: '5%',
   },
   lightPage: {
     backgroundColor: '#EBF1FF',
