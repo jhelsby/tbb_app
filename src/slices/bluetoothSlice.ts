@@ -1,34 +1,34 @@
-import {PayloadAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {TAbstractDevice} from '../scripts/types';
 import {RootState} from '../scripts/store';
-import {
-  BleError,
-  BleManager,
-  Characteristic,
-  Device,
-} from 'react-native-ble-plx';
-import {TAbstractDevice, TBluetoothSliceState} from '../scripts/types';
 import {PermissionsAndroid, Platform} from 'react-native';
-
 import DeviceInfo from 'react-native-device-info';
-import base64 from 'react-native-base64';
 
-const DEVICE_UUID: string = '0000FFE0-0000-1000-8000-00805F9B34FB';
-const CHARACTERISTIC_UUID: string = '0000FFE1-0000-1000-8000-00805F9B34FB';
-
-const bleManager: BleManager = new BleManager();
+type TBluetoothSliceState = {
+  permissionsGranted: boolean;
+  availableDevices: Array<TAbstractDevice>;
+  isConnectingToDevice: boolean;
+  connectedDevice: string | null;
+  receivedData: string;
+  isStreamingData: boolean;
+  isScanning: boolean;
+  isLoading: boolean;
+  hasError: boolean;
+};
 
 const initialState: TBluetoothSliceState = {
+  permissionsGranted: false,
   availableDevices: [],
-  connectedDeviceDetails: null,
-  receivedData: null,
+  isConnectingToDevice: false,
+  connectedDevice: null,
+  receivedData: '',
+  isStreamingData: false,
+  isScanning: false,
   isLoading: false,
   hasError: false,
-  permissionsGranted: false,
 };
 
-export const getBleManager = (): BleManager => {
-  return bleManager;
-};
+const DEVICE_NAME = 'DSD TECH';
 
 export const requestPermissions: any = createAsyncThunk(
   'bluetooth/requestPermissions',
@@ -70,148 +70,39 @@ export const requestPermissions: any = createAsyncThunk(
   },
 );
 
-export const disconnectFromDevice: any = createAsyncThunk(
-  'bluetooth/disconnectFromDevice',
-  async (_, thunkAPI): Promise<boolean> => {
-    const state: RootState = thunkAPI.getState() as RootState;
-    const connectedDeviceId = state.bluetooth.connectedDeviceDetails?.id;
-    let isDisconnected = false;
-    if (connectedDeviceId) {
-      bleManager.cancelDeviceConnection(connectedDeviceId);
-      isDisconnected = true;
-    }
-    return isDisconnected;
-  },
-);
-
-export const getDataFromDevice: any = createAsyncThunk(
-  'bluetooth/getDataFromDevice',
-  async (args: {
-    transmitMessage: string;
-    connectedDevice: Device | null;
-  }): Promise<any | null> => {
-    let receivedData: any | null = null;
-
-    const possibleTransmitMessages: string[] = [
-      'takeReading',
-      'getAllReadings',
-    ];
-    // Checks to see if the transmit message is valid
-    if (
-      !(
-        possibleTransmitMessages.findIndex(
-          message => message === args.transmitMessage,
-        ) > -1
-      )
-    ) {
-      console.error(`Transmit message ${args.transmitMessage} is invalid`);
-      return receivedData;
-    }
-
-    if (args.connectedDevice && args.transmitMessage) {
-      const encodedTransmitMessage = base64.encode(args.transmitMessage);
-      await args.connectedDevice.writeCharacteristicWithResponseForService(
-        DEVICE_UUID,
-        CHARACTERISTIC_UUID,
-        encodedTransmitMessage,
-      );
-      await args.connectedDevice.monitorCharacteristicForService(
-        DEVICE_UUID,
-        CHARACTERISTIC_UUID,
-        (error: BleError | null, characteristic: Characteristic | null) => {
-          if (error) {
-            console.error(error);
-          } else if (!characteristic?.value) {
-            console.log('No Data was received');
-          }
-
-          const rawReceivedData = characteristic?.value;
-          const decodedData = base64.decode(rawReceivedData);
-          console.log(decodedData);
-          const values: string[] = decodedData.split(',');
-          const listOfReadings = {
-            isSafe: values[8] === '1',
-            date: values[2],
-            latitude: parseFloat(values[4]),
-            longitude: parseFloat(values[5]),
-            results: [
-              {
-                name: 'Chloride',
-                value: parseFloat(values[0]),
-              },
-              {
-                name: 'Conductivity',
-                value: parseFloat(values[1]),
-              },
-              {
-                name: 'Fluoride',
-                value: parseFloat(values[3]),
-              },
-              {
-                name: 'Nitrate',
-                value: parseFloat(values[6]),
-              },
-              {
-                name: 'pH',
-                value: parseFloat(values[7]),
-              },
-              {
-                name: 'Temperature',
-                value: parseFloat(values[9]),
-              },
-              {
-                name: 'Turbidity',
-                value: parseFloat(values[10]),
-              },
-            ],
-          };
-          receivedData = listOfReadings;
-        },
-      );
-    } else {
-      console.log('No Device Connected');
-    }
-    return receivedData;
-  },
-);
-
-const setConnectedDeviceDetailsFunc = (
-  state: TBluetoothSliceState,
-  action: PayloadAction<TAbstractDevice | null>,
-): void => {
-  state.connectedDeviceDetails = action.payload;
-};
-
-const addAvailableDeviceFunc = (
-  state: TBluetoothSliceState,
-  action: PayloadAction<TAbstractDevice>,
-): void => {
-  const deviceIndex = state.availableDevices.findIndex(
-    device => device.id === action.payload.id,
-  );
-  if (!(deviceIndex > -1)) {
-    state.availableDevices = [
-      ...state.availableDevices,
-      {
-        name: action.payload.name,
-        id: action.payload.id,
-        serviceUUIDs: action.payload.serviceUUIDs,
-      },
-    ];
-  }
-};
-
-const resetAvailableDevicesFunc = (state: TBluetoothSliceState): void => {
-  state.availableDevices = [];
-};
-
-export const bluetoothSlice = createSlice({
+const bluetoothReducer = createSlice({
   name: 'bluetooth',
-  initialState,
+  initialState: initialState,
   reducers: {
-    setConnectedDeviceDetails: setConnectedDeviceDetailsFunc,
-    addAvailableDevice: addAvailableDeviceFunc,
-    resetAvailableDevices: resetAvailableDevicesFunc,
+    scanForDevices: state => {
+      state.isScanning = true;
+    },
+    initiateConnection: (state, _) => {
+      state.isConnectingToDevice = true;
+    },
+    connectToDevice: (state, action) => {
+      state.isConnectingToDevice = false;
+      state.connectedDevice = action.payload;
+    },
+    updateReceivedData: (state, action) => {
+      state.receivedData = action.payload;
+    },
+    takeReading: state => {
+      state.isStreamingData = true;
+    },
+    bluetoothDeviceFound: (
+      state: TBluetoothSliceState,
+      action: PayloadAction<TAbstractDevice>,
+    ) => {
+      // Ensure no duplicate devices are added
+      const isDuplicate = state.availableDevices.some(
+        device => device.id === action.payload.id,
+      );
+      const isCorrectDevice = action.payload?.name?.includes(DEVICE_NAME);
+      if (!isDuplicate && isCorrectDevice) {
+        state.availableDevices = state.availableDevices.concat(action.payload);
+      }
+    },
   },
   extraReducers: builder => {
     builder
@@ -230,61 +121,42 @@ export const bluetoothSlice = createSlice({
       .addCase(requestPermissions.rejected, state => {
         state.isLoading = false;
         state.hasError = true;
-      })
-      .addCase(disconnectFromDevice.pending, state => {
-        state.isLoading = true;
-        state.hasError = false;
-      })
-      .addCase(
-        disconnectFromDevice.fulfilled,
-        (state, action: PayloadAction<boolean>) => {
-          state.isLoading = false;
-          state.hasError = false;
-          if (action.payload) {
-            state.connectedDeviceDetails = null;
-            state.receivedData = null;
-          }
-        },
-      )
-      .addCase(disconnectFromDevice.rejected, state => {
-        state.isLoading = false;
-        state.hasError = true;
-      })
-      .addCase(getDataFromDevice.pending, state => {
-        state.isLoading = true;
-        state.hasError = false;
-      })
-      .addCase(
-        getDataFromDevice.fulfilled,
-        (state, action: PayloadAction<any | null>) => {
-          state.isLoading = false;
-          state.hasError = false;
-          state.receivedData = action.payload;
-        },
-      )
-      .addCase(getDataFromDevice.rejected, state => {
-        state.isLoading = false;
-        state.hasError = true;
       });
   },
 });
 
 export const {
-  setConnectedDeviceDetails,
-  addAvailableDevice,
-  resetAvailableDevices,
-} = bluetoothSlice.actions;
+  bluetoothDeviceFound,
+  scanForDevices,
+  initiateConnection,
+  takeReading,
+} = bluetoothReducer.actions;
 
-export const selectRecievedData = (state: RootState) =>
-  state.bluetooth.receivedData;
-
-export const selectPermissionsGranted = (state: RootState) =>
-  state.bluetooth.permissionsGranted;
-
-export const selectConnectedDeviceDetails = (state: RootState) =>
-  state.bluetooth.connectedDeviceDetails;
+export const sagaActionConstants = {
+  SCAN_FOR_DEVICES: bluetoothReducer.actions.scanForDevices.type,
+  ON_DEVICE_DISCOVERED: bluetoothReducer.actions.bluetoothDeviceFound.type,
+  INITIATE_CONNECTION: bluetoothReducer.actions.initiateConnection.type,
+  CONNECTION_SUCCESS: bluetoothReducer.actions.connectToDevice.type,
+  UPDATE_RECEIVED_DATA: bluetoothReducer.actions.updateReceivedData.type,
+  START_STREAMING_DATA: bluetoothReducer.actions.takeReading.type,
+};
 
 export const selectAvailableDevices = (state: RootState) =>
   state.bluetooth.availableDevices;
 
-export default bluetoothSlice.reducer;
+export const selectIsScanning = (state: RootState) =>
+  state.bluetooth.isScanning;
+
+export const selectIsConnectingToDevice = (state: RootState) =>
+  state.bluetooth.isConnectingToDevice;
+
+export const selectConnectedDevice = (state: RootState) =>
+  state.bluetooth.connectedDevice;
+
+export const selectReceivedData = (state: RootState) =>
+  state.bluetooth.receivedData;
+
+export const selectIsStreamingData = (state: RootState) =>
+  state.bluetooth.isStreamingData;
+
+export default bluetoothReducer.reducer;

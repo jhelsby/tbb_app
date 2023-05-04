@@ -1,4 +1,4 @@
-import React, {ReactElement, useContext, useEffect} from 'react';
+import React, {ReactElement, useContext} from 'react';
 import {View, Text} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeParamList} from '../../scripts/screen_params';
@@ -19,16 +19,13 @@ import {
   selectTextContrast,
 } from '../../slices/colorSlice';
 import {
-  disconnectFromDevice,
-  getDataFromDevice,
+  initiateConnection,
   requestPermissions,
-  getBleManager,
+  scanForDevices,
   selectAvailableDevices,
-  addAvailableDevice,
-  resetAvailableDevices,
-  setConnectedDeviceDetails,
+  selectConnectedDevice,
 } from '../../slices/bluetoothSlice';
-import {BleManager, Device} from 'react-native-ble-plx';
+import {TAbstractDevice} from '../../scripts/types';
 
 type Props = NativeStackScreenProps<HomeParamList, 'HomeScreen'>;
 
@@ -38,69 +35,19 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
   const containerContrast = useAppSelector(selectContainerContrast);
   const pageContrast = useAppSelector(selectPageContrast);
   const textContrast = useAppSelector(selectTextContrast);
-
-  const [selectedDeviceId, setSelectedDeviceId] = React.useState<string>('');
-  const [connectedDevice, setConnectedDevice] = React.useState<Device | null>(
-    null,
-  );
+  const connectedDevice = useAppSelector(selectConnectedDevice);
   const availableDevices = useAppSelector(selectAvailableDevices);
   const dispatch = useAppDispatch();
 
   const {color, lightColor} = useContext(ColorContext);
 
-  const DEVICE_NAME: string = 'DSD TECH';
-
-  const openModal = () => {
-    dispatch(resetAvailableDevices());
-    dispatch(requestPermissions()).then((result: boolean) => {
-      if (result) {
-        const bleManager = getBleManager();
-        bleManager.startDeviceScan(null, null, (error, newDevice) => {
-          if (error) {
-            console.error(error);
-          }
-          if (newDevice && newDevice.name?.includes(DEVICE_NAME)) {
-            dispatch(
-              addAvailableDevice({
-                id: newDevice.id,
-                name: newDevice.name,
-                serviceUUIDs: newDevice.serviceUUIDs,
-              }),
-            );
-          }
-        });
-      }
-    });
-    setModalVisible(true);
+  const connectToDevice = (device: TAbstractDevice) => {
+    dispatch(initiateConnection(device.id));
   };
 
   const closeModal = () => {
     setModalVisible(false);
   };
-
-  useEffect(() => {
-    const connectToDevice = async (deviceId: string) => {
-      try {
-        const bleManager: BleManager = getBleManager();
-        const deviceConnection = await bleManager.connectToDevice(deviceId);
-        setConnectedDevice(deviceConnection);
-        await deviceConnection.discoverAllServicesAndCharacteristics();
-        dispatch(
-          setConnectedDeviceDetails({
-            id: deviceConnection.id,
-            name: deviceConnection.name,
-            serviceUUIDs: deviceConnection.serviceUUIDs,
-          }),
-        );
-      } catch (e) {
-        console.log('FAILED TO CONNECT', e);
-      }
-    };
-
-    if (selectedDeviceId) {
-      connectToDevice(selectedDeviceId);
-    }
-  }, [dispatch, selectedDeviceId]);
 
   return (
     <View style={globalStyles.screen}>
@@ -124,23 +71,13 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
             <View style={styles.buttonContainer}>
               <Button
                 onPress={() => {
-                  dispatch(
-                    getDataFromDevice({
-                      transmitMessage: 'takeReading',
-                      connectedDevice,
-                    }),
-                  );
                   navigation.navigate('LoadingScreen', {validNavigation: true});
                 }}>
                 <Text style={styles.buttonText}>Take Readings</Text>
               </Button>
             </View>
             <View style={styles.buttonContainer}>
-              <Button
-                onPress={() => {
-                  dispatch(disconnectFromDevice());
-                  setConnectedDevice(null);
-                }}>
+              <Button onPress={() => {}}>
                 <Text style={styles.buttonText}>Disconnect</Text>
               </Button>
             </View>
@@ -157,7 +94,12 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
           <View
             style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
             <View style={styles.buttonContainer}>
-              <Button onPress={openModal}>
+              <Button
+                onPress={() => {
+                  dispatch(requestPermissions);
+                  dispatch(scanForDevices());
+                  setModalVisible(true);
+                }}>
                 <Text style={styles.buttonText}>Connect</Text>
               </Button>
             </View>
@@ -176,7 +118,7 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
         closeModal={closeModal}
         visible={isModalVisible}
         devices={availableDevices}
-        connectToDevice={setSelectedDeviceId}
+        connectToDevice={connectToDevice}
       />
     </View>
   );

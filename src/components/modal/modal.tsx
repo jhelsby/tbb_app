@@ -18,7 +18,7 @@ type DeviceModalProps = {
   devices: TAbstractDevice[];
   visible: boolean;
   closeModal: () => void;
-  connectToDevice: (deviceId: string) => void;
+  connectToDevice: (device: TAbstractDevice) => void;
 };
 
 export default function DeviceModal(

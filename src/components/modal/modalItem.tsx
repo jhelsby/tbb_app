@@ -8,7 +8,7 @@ import {TAbstractDevice} from '../../scripts/types';
 type DeviceModalListItemProps = {
   item: ListRenderItemInfo<TAbstractDevice>;
   closeModal: () => void;
-  connectToDevice: (deviceId: string) => void;
+  connectToDevice: (device: TAbstractDevice) => void;
 };
 
 export default function DeviceModalListItem(
@@ -17,9 +17,9 @@ export default function DeviceModalListItem(
   const {item, closeModal, connectToDevice} = props;
 
   const connectAndCloseModal = useCallback(() => {
-    connectToDevice(item.item.id);
+    connectToDevice(item.item);
     closeModal();
-  }, [closeModal, connectToDevice, item.item.id]);
+  }, [closeModal, connectToDevice, item.item]);
 
   return (
     <View style={styles.buttonContainer}>

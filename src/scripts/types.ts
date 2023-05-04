@@ -1,5 +1,4 @@
 import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
-import {UUID} from 'react-native-ble-plx';
 
 export type THSL = {h: number; s: number; l: number};
 
@@ -105,9 +104,9 @@ export type TNews = {
 };
 
 export type TAbstractDevice = {
-  name: string | null;
+  name: string;
   id: string;
-  serviceUUIDs: Array<UUID> | null;
+  serviceUUIDs: Array<string>;
 };
 
 export type TBluetoothSliceState = {
@@ -116,5 +115,6 @@ export type TBluetoothSliceState = {
   isLoading: boolean;
   hasError: boolean;
   permissionsGranted: boolean;
+  waitingForResponse: boolean;
   receivedData: any | null;
 };
