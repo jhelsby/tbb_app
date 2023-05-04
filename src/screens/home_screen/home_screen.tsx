@@ -86,14 +86,6 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
                 <Text style={styles.buttonText}>Disconnect</Text>
               </Button>
             </View>
-            <View style={styles.buttonContainer}>
-              <Button
-                onPress={() =>
-                  navigation.navigate('HelpScreen', {validNavigation: true})
-                }>
-                <Text style={styles.buttonText}>Help</Text>
-              </Button>
-            </View>
           </View>
         ) : (
           <View
@@ -106,14 +98,6 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
                   setModalVisible(true);
                 }}>
                 <Text style={styles.buttonText}>Connect</Text>
-              </Button>
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button
-                onPress={() =>
-                  navigation.navigate('HelpScreen', {validNavigation: true})
-                }>
-                <Text style={styles.buttonText}>Help</Text>
               </Button>
             </View>
           </View>

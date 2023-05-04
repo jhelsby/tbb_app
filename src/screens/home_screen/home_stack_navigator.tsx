@@ -5,7 +5,6 @@ import {RootTabParamList, HomeParamList} from '../../scripts/screen_params';
 import {useFocusEffect} from '@react-navigation/native';
 
 import HomeScreen from './home_screen';
-import HelpScreen from '../help_screen/help_screen';
 import TakeReadingsScreen from '../take_reading_screen/take_reading_screen';
 import LoadingScreen from '../loading_screen/loading_screen';
 
@@ -38,7 +37,6 @@ export default function HomeStackNavigator(): ReactElement<Props> {
     <ColorContext.Provider value={{color, lightColor}}>
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="HelpScreen" component={HelpScreen} />
         <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
         <Stack.Screen name="TakeReadingScreen" component={TakeReadingsScreen} />
       </Stack.Navigator>

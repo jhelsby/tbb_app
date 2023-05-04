@@ -122,6 +122,14 @@ export default function AccountScreen({
               <Text style={[styles.buttonText]}>Report</Text>
             </Button>
           </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              onPress={() =>
+                navigation.navigate('HelpScreen', {validNavigation: true})
+              }>
+              <Text style={styles.buttonText}>Help</Text>
+            </Button>
+          </View>
         </View>
       </ScrollView>
     </View>

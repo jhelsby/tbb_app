@@ -18,7 +18,6 @@ export type ReadingsParamList = {
 
 export type HomeParamList = {
   HomeScreen: undefined;
-  HelpScreen: {validNavigation: boolean} | undefined;
   LoadingScreen: {validNavigation: boolean} | undefined;
   TakeReadingScreen: {validNavigation: boolean} | undefined;
 };
@@ -31,6 +30,7 @@ export type NewsParamList = {
 export type AccountParamList = {
   AccountScreen: undefined;
   ReportScreen: {validNavigation: boolean} | undefined;
+  HelpScreen: {validNavigation: boolean} | undefined;
   LoginScreen: {validNavigation: boolean} | undefined;
   SignupScreen: {validNavigation: boolean} | undefined;
   ResetPasswordScreen: {validNavigation: boolean} | undefined;
