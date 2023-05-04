@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, ReactElement, useCallback} from 'react';
-import {View, Animated, BackHandler} from 'react-native';
+import {View, Animated} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeParamList} from '../../scripts/screen_params';
 import {useFocusEffect} from '@react-navigation/native';
@@ -16,6 +16,8 @@ import {
 import {THSL} from '../../scripts/types';
 
 import {styles} from './loading_screen_styles';
+import {useAppDispatch, useAppSelector} from '../../scripts/redux_hooks';
+import {selectReceivedData, takeReading} from '../../slices/bluetoothSlice';
 
 type Props = NativeStackScreenProps<HomeParamList, 'LoadingScreen'>;
 
@@ -79,22 +81,6 @@ export default function LoadingScreen({
     setTimeout(() => {
       circleAnimation(scaleValue5);
     }, 800);
-
-    const loadingScreenTimer = setTimeout(() => {
-      navigation.navigate('TakeReadingScreen', {validNavigation: true});
-    }, 2000);
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => {
-        clearTimeout(loadingScreenTimer);
-        console.log('Back button pressed');
-        navigation.goBack();
-        return true;
-      },
-    );
-
-    return () => backHandler.remove();
   }, [
     navigation,
     scaleValue1,
@@ -103,6 +89,19 @@ export default function LoadingScreen({
     scaleValue4,
     scaleValue5,
   ]);
+
+  const receivedData = useAppSelector(selectReceivedData);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(takeReading());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (receivedData !== '') {
+      navigation.navigate('TakeReadingScreen', {validNavigation: true});
+    }
+  }, [receivedData, navigation]);
 
   return (
     <View style={styles.container}>

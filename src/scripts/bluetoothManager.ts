@@ -57,10 +57,19 @@ class BluetoothManager {
     emitter({payload: decodedData});
   };
 
-  startStreamingData = async (
+  sendData = async (data: string) => {
+    await this.device?.writeCharacteristicWithResponseForService(
+      DEVICE_UUID,
+      CHARACTERISTIC_UUID,
+      base64.encode(data),
+    );
+  };
+
+  startReadingData = async (
     emitter: (arg: {payload: string | BleError}) => void,
   ) => {
     await this.device?.discoverAllServicesAndCharacteristics();
+    await this.sendData('takeReading');
     this.device?.monitorCharacteristicForService(
       DEVICE_UUID,
       CHARACTERISTIC_UUID,

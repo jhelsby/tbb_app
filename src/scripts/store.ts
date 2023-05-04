@@ -29,7 +29,7 @@ export const store = configureStore({
     bluetooth: bluetoothReducer,
   },
   middleware: getDefaultMiddleware => {
-    return getDefaultMiddleware().concat(logger).concat(sagaMiddleware);
+    return getDefaultMiddleware().concat(sagaMiddleware);
   },
 });
 

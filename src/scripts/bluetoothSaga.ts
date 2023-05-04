@@ -61,7 +61,7 @@ function* getReceivedDataUpdates(): Generator<
 > {
   const onReceivedDataUpdate = () =>
     eventChannel(emitter => {
-      bluetoothManager.startStreamingData(emitter);
+      bluetoothManager.startReadingData(emitter);
 
       return () => {
         bluetoothManager.stopScanningForDevices();
