@@ -46,14 +46,14 @@ const defaultReading: TReading = {
 const initialState: TReadingSliceState = {
   isLoading: false,
   hasError: false,
-  readings: [],
   syncedReadings: [],
   unsyncedReadings: [],
   currentReading: null,
 };
 
 const emptyReadingsFunc = (state: TReadingSliceState) => {
-  state.readings = [];
+  state.syncedReadings = [];
+  state.unsyncedReadings = [];
 };
 
 const addReadingToStateFunc = (
@@ -61,7 +61,6 @@ const addReadingToStateFunc = (
   action: PayloadAction<TReading>,
 ) => {
   state.unsyncedReadings.push(action.payload);
-  state.readings = [...state.unsyncedReadings, ...state.syncedReadings];
 };
 
 /**
@@ -78,7 +77,8 @@ export const postReading = createAsyncThunk(
     thunkAPI,
   ): Promise<{docName: string; index: number} | null | undefined> => {
     const state: RootState = thunkAPI.getState() as RootState;
-    const reading: TReading = state.readings.readings[index];
+    const reading: TReading = state.readings.unsyncedReadings[index];
+    let docName: string = '';
     // Add a new document to the readings collection.
     await addDoc(collection(db, 'readings'), {
       name: 'getUserName()',
@@ -86,10 +86,7 @@ export const postReading = createAsyncThunk(
       timestamp: serverTimestamp(),
     })
       .then((docRef: DocumentReference<DocumentData>) => {
-        // Log the id of the document
-        console.log('Posted Reading');
-        const docName: string = docRef.id;
-        return {docName, index};
+        docName = docRef.id;
       })
       .catch((error: any) => {
         // Handle Errors here.
@@ -98,9 +95,8 @@ export const postReading = createAsyncThunk(
         console.error(
           `Error Code: ${errorCode} Error Message: ${errorMessage}`,
         );
-        return null;
       });
-    return null;
+    return {docName, index};
   },
 );
 
@@ -114,7 +110,7 @@ export const postAllReadings = createAsyncThunk(
     thunkAPI,
   ): Promise<{docName: string; index: number}[] | null | undefined> => {
     const state: RootState = thunkAPI.getState() as RootState;
-    const readings: TReading[] = state.readings.readings;
+    const readings: TReading[] = state.readings.unsyncedReadings;
     const syncedReadings: {docName: string; index: number}[] = [];
 
     for (let i: number = 0; i < readings.length; i++) {
@@ -126,8 +122,6 @@ export const postAllReadings = createAsyncThunk(
           timestamp: serverTimestamp(),
         })
           .then((docRef: DocumentReference<DocumentData>) => {
-            // Log the id of the document
-            console.log('Posted Reading');
             syncedReadings.push({docName: docRef.id, index: i});
           })
           .catch((error: any) => {
@@ -172,10 +166,8 @@ export const fetchAllReadings = createAsyncThunk(
               measurements: data.measurements,
               id: docSnap.id,
             });
-            // console.log(data.location);
           }
         });
-        console.log('Got All Readings');
       })
       .catch((error: any) => {
         // Handle Errors here.
@@ -214,8 +206,14 @@ export const readingsSlice = createSlice({
           state.isLoading = false;
           state.hasError = false;
           if (action.payload) {
-            state.readings[action.payload.index].hasSynced = true;
-            state.readings[action.payload.index].id = action.payload.docName;
+            const syncedReading: TReading =
+              state.unsyncedReadings[action.payload.index];
+            state.syncedReadings = [...state.syncedReadings, syncedReading];
+            state.unsyncedReadings = state.unsyncedReadings.filter(
+              (reading: TReading, index: number) => {
+                return index !== action.payload?.index;
+              },
+            );
           }
         },
       )
@@ -241,10 +239,15 @@ export const readingsSlice = createSlice({
           if (action.payload) {
             action.payload.forEach(
               (reading: {docName: string; index: number}) => {
-                state.readings[reading.index].hasSynced = true;
-                state.readings[reading.index].id = reading.docName;
+                state.unsyncedReadings[reading.index].hasSynced = true;
+                state.unsyncedReadings[reading.index].id = reading.docName;
               },
             );
+            state.syncedReadings = [
+              ...state.syncedReadings,
+              ...state.unsyncedReadings,
+            ];
+            state.unsyncedReadings = [];
           }
         },
       )
@@ -267,7 +270,6 @@ export const readingsSlice = createSlice({
           state.hasError = false;
           if (action.payload) {
             state.syncedReadings = action.payload;
-            state.readings = [...state.unsyncedReadings, ...action.payload];
           }
         },
       )
@@ -282,10 +284,26 @@ export const {emptyReadings, addReadingToState} = readingsSlice.actions;
 
 const getParams = (_: any, args: any) => args;
 
-export const selectReadings = (state: RootState) => state.readings.readings;
+export const selectSyndedReadings = (state: RootState) =>
+  state.readings.syncedReadings;
 
-export const selectLastReadingIndex = (state: RootState) =>
-  state.readings.readings.length - 1;
+export const selectUnsyncedReadings = (state: RootState) =>
+  state.readings.unsyncedReadings;
+
+export const selectReadings = createSelector(
+  selectSyndedReadings,
+  selectUnsyncedReadings,
+  (syncedReadings: TReading[], unsyncedReadings: TReading[]) => {
+    return [...syncedReadings, ...unsyncedReadings];
+  },
+);
+
+export const selectLastReadingIndex = createSelector(
+  selectReadings,
+  (readings: TReading[]): number => {
+    return readings.length - 1;
+  },
+);
 
 export const selectReadingById = createSelector(
   selectReadings,

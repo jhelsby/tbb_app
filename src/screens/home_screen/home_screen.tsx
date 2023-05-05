@@ -19,6 +19,7 @@ import {
   selectTextContrast,
 } from '../../slices/colorSlice';
 import {
+  clearReceivedData,
   initiateConnection,
   initiateDisconntect,
   requestPermissions,
@@ -76,6 +77,7 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
             <View style={styles.buttonContainer}>
               <Button
                 onPress={() => {
+                  dispatch(clearReceivedData());
                   navigation.navigate('LoadingScreen', {validNavigation: true});
                 }}>
                 <Text style={styles.buttonText}>Take Readings</Text>

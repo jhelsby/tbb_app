@@ -22,6 +22,5 @@ export type ICardProps = {
   title: string;
   subtitle1: string;
   subtitle2: string;
-  description: string;
   onPress: () => void;
 };

@@ -16,7 +16,7 @@ import TopNav from '../../components/top_nav/top_nav';
 
 import {THSL, TMeasurement, TReading} from '../../scripts/types';
 
-import {useAppSelector} from '../../scripts/redux_hooks';
+import {useAppDispatch, useAppSelector} from '../../scripts/redux_hooks';
 import {
   selectContainerContrast,
   selectPageContrast,
@@ -24,7 +24,12 @@ import {
   selectDarkMode,
 } from '../../slices/colorSlice';
 import {selectIsLoggedIn} from '../../slices/accountSlice';
-import {selectReadingById} from '../../slices/readingsSlice';
+import {
+  postReading,
+  selectReadingById,
+  selectUnsyncedReadings,
+} from '../../slices/readingsSlice';
+import Button from '../../components/button/button';
 
 export default function ViewReadingsScreen({
   navigation,
@@ -109,6 +114,24 @@ export default function ViewReadingsScreen({
     }, [reading]),
   );
 
+  const unsyncedReadings = useAppSelector(selectUnsyncedReadings);
+  const dispatch = useAppDispatch();
+
+  const handleSync = async () => {
+    if (isLoggedIn) {
+      if (reading?.hasSynced) {
+        console.log('Already synced');
+      } else {
+        console.log('Syncing');
+        const index = unsyncedReadings.findIndex(
+          (unsyncedReading: TReading) => unsyncedReading.id === reading?.id,
+        );
+
+        dispatch(postReading(index));
+      }
+    }
+  };
+
   return (
     <View style={[styles.container, pageContrast]}>
       <TopNav handlePress={() => navigation.popToTop()} />
@@ -133,6 +156,18 @@ export default function ViewReadingsScreen({
               styles.data
             }>{`Latitude: ${reading.location.latitude}, Longitude: ${reading.location.longitude}`}</Text>
         </View>
+        {isLoggedIn && (
+          <View
+            style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleSync} disabled={reading.hasSynced}>
+                <Text style={[styles.buttonText]}>
+                  {reading.hasSynced ? 'Synced' : 'Sync'}
+                </Text>
+              </Button>
+            </View>
+          </View>
+        )}
         <View
           style={[
             globalStyles.tile,

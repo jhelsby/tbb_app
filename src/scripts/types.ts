@@ -58,7 +58,6 @@ export type TAccountSliceState = {
 export type TReadingSliceState = {
   isLoading: boolean;
   hasError: boolean;
-  readings: TReading[];
   syncedReadings: TReading[];
   unsyncedReadings: TReading[];
   currentReading: TReading | null;

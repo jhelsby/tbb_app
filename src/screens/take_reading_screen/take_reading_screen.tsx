@@ -19,7 +19,10 @@ import {
   selectPageContrast,
   selectTextContrast,
 } from '../../slices/colorSlice';
-import {selectReceivedData} from '../../slices/bluetoothSlice';
+import {
+  clearReceivedData,
+  selectReceivedData,
+} from '../../slices/bluetoothSlice';
 import {THSL, TMeasurement} from '../../scripts/types';
 import {
   color1,
@@ -27,7 +30,11 @@ import {
   colorInterpolate,
   hslToString,
 } from '../../scripts/colors';
-import {addReadingToState} from '../../slices/readingsSlice';
+import {
+  addReadingToState,
+  postReading,
+  selectUnsyncedReadings,
+} from '../../slices/readingsSlice';
 
 export default function TakeReadingScreen({
   navigation,
@@ -72,7 +79,13 @@ export default function TakeReadingScreen({
   });
 
   const deviceData = useAppSelector(selectReceivedData);
+  const unsyncedReadings = useAppSelector(selectUnsyncedReadings);
   const dispatch = useAppDispatch();
+
+  const handleClose = () => {
+    dispatch(clearReceivedData());
+    navigation.popToTop();
+  };
 
   useEffect(() => {
     if (deviceData) {
@@ -122,22 +135,23 @@ export default function TakeReadingScreen({
   }, [deviceData, dispatch]);
 
   const handleSync = async () => {
-    // if (isLoggedIn) {
-    //   if (docName) {
-    //     Alert.alert('This reading has already been synced.');
-    //   } else {
-    //     console.log('Syncing...');
-    //     const newDocName = await postReading(readingData);
-    //     if (docName) {
-    //       setDocName(newDocName);
-    //     }
-    //   }
-    // }
+    if (isLoggedIn) {
+      if (deviceData?.hasSynced) {
+        console.log('Already synced');
+      } else {
+        console.log('Syncing');
+        const index = unsyncedReadings.findIndex(
+          (reading: any) => reading.id === deviceData?.id,
+        );
+
+        dispatch(postReading(index));
+      }
+    }
   };
 
   return (
     <View style={[styles.container, pageContrast]}>
-      <TopNav handlePress={() => navigation.popToTop()} />
+      <TopNav handlePress={handleClose} />
       <ScrollView
         style={styles.body}
         contentContainerStyle={{

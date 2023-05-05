@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropsWithChildren} from 'react';
 import {View, Text, Pressable} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faChevronRight, faNewspaper} from '@fortawesome/free-solid-svg-icons';
@@ -15,8 +15,8 @@ import {
 } from '../../slices/colorSlice';
 
 export default function Card(
-  props: ICardProps,
-): React.ReactElement<ICardProps> {
+  props: PropsWithChildren<ICardProps>,
+): React.ReactElement {
   const textContrast = useAppSelector(selectTextContrast);
   const containerContrast = useAppSelector(selectContainerContrast);
 
@@ -52,7 +52,7 @@ export default function Card(
         <Text style={[styles.title, textContrast]}>{props.title}</Text>
         <Text style={styles.subtitle}>{props.subtitle1}</Text>
         <Text style={styles.subtitle}>{props.subtitle2}</Text>
-        <Text style={styles.description}>{props.description}</Text>
+        {props.children}
       </View>
       <View style={styles.chevronContainer}>
         <FontAwesomeIcon icon={faChevronRight} size={50} color="#999" />

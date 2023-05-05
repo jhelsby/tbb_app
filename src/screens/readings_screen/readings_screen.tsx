@@ -4,6 +4,9 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ReadingsParamList} from '../../scripts/screen_params';
 import {useFocusEffect} from '@react-navigation/native';
 
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faCloudArrowUp, faCloud} from '@fortawesome/free-solid-svg-icons';
+
 import {styles} from './readings_styles';
 import {styles as globalStyles} from '../../../App_styles';
 
@@ -42,11 +45,9 @@ export default function ReadingsScreen({
     useCallback(() => {
       if (isLoggedIn) {
         console.log('Fetching Readings...');
-        if (!readings.length) {
-          dispatch(fetchAllReadings());
-        }
+        dispatch(fetchAllReadings());
       }
-    }, [dispatch, isLoggedIn, readings.length]),
+    }, [dispatch, isLoggedIn]),
   );
 
   const handleSync = () => {
@@ -93,14 +94,20 @@ export default function ReadingsScreen({
                 title={'Reading ' + reading.id}
                 subtitle1={`Latitude: ${reading?.location?.latitude}, Longitude: ${reading?.location?.longitude}`}
                 subtitle2={`Date: ${reading.datetime.date}, Time: ${reading.datetime.time}`}
-                description={'Description needs to be changed'}
                 onPress={() =>
                   navigation.navigate('ViewReadingScreen', {
                     validNavigation: true,
                     readingId: reading.id,
                   })
-                }
-              />
+                }>
+                <View style={styles.syncContainer}>
+                  {reading.hasSynced ? (
+                    <FontAwesomeIcon icon={faCloud} />
+                  ) : (
+                    <FontAwesomeIcon icon={faCloudArrowUp} />
+                  )}
+                </View>
+              </Card>
             );
           })}
       </ScrollView>

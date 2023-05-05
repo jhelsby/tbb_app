@@ -78,6 +78,10 @@ const bluetoothReducer = createSlice({
   name: 'bluetooth',
   initialState: initialState,
   reducers: {
+    clearReceivedData: state => {
+      state.receivedData = [];
+      state.formattedData = null;
+    },
     scanForDevices: state => {
       state.isScanning = true;
     },
@@ -202,6 +206,7 @@ export const {
   initiateConnection,
   initiateDisconntect,
   takeReading,
+  clearReceivedData,
 } = bluetoothReducer.actions;
 
 export const sagaActionConstants = {
