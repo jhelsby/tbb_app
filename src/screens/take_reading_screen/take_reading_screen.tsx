@@ -21,7 +21,7 @@ import {
 } from '../../slices/colorSlice';
 import {
   clearReceivedData,
-  selectReceivedData,
+  selectFormattedData,
 } from '../../slices/bluetoothSlice';
 import {THSL, TMeasurement} from '../../scripts/types';
 import {
@@ -78,7 +78,7 @@ export default function TakeReadingScreen({
     }
   });
 
-  const deviceData = useAppSelector(selectReceivedData);
+  const deviceData = useAppSelector(selectFormattedData);
   const unsyncedReadings = useAppSelector(selectUnsyncedReadings);
   const dispatch = useAppDispatch();
 

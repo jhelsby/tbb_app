@@ -17,7 +17,11 @@ import {THSL} from '../../scripts/types';
 
 import {styles} from './loading_screen_styles';
 import {useAppDispatch, useAppSelector} from '../../scripts/redux_hooks';
-import {selectReceivedData, takeReading} from '../../slices/bluetoothSlice';
+import {
+  selectFormattedData,
+  stopReading,
+  takeReading,
+} from '../../slices/bluetoothSlice';
 
 type Props = NativeStackScreenProps<HomeParamList, 'LoadingScreen'>;
 
@@ -90,7 +94,7 @@ export default function LoadingScreen({
     scaleValue5,
   ]);
 
-  const receivedData = useAppSelector(selectReceivedData);
+  const receivedData = useAppSelector(selectFormattedData);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -100,9 +104,10 @@ export default function LoadingScreen({
   useEffect(() => {
     if (receivedData) {
       console.log('Received data: ', receivedData);
+      dispatch(stopReading());
       navigation.navigate('TakeReadingScreen', {validNavigation: true});
     }
-  }, [receivedData, navigation]);
+  }, [receivedData, navigation, dispatch]);
 
   return (
     <View style={styles.container}>

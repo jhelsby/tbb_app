@@ -96,15 +96,23 @@ function* getReceivedDataUpdates(): Generator<
   }
 }
 
+function* stopReceivingUpdates() {
+  yield call(bluetoothManager.stopReadingData);
+}
+
 export function* bluetoothSaga() {
   yield takeEvery(sagaActionConstants.SCAN_FOR_DEVICES, watchForPeripherals);
   yield takeEvery(sagaActionConstants.INITIATE_CONNECTION, connectToDevice);
+  yield takeEvery(
+    sagaActionConstants.INITIATE_DISCONNECT,
+    disconnectFromDevice,
+  );
   yield takeEvery(
     sagaActionConstants.START_STREAMING_DATA,
     getReceivedDataUpdates,
   );
   yield takeEvery(
-    sagaActionConstants.INITIATE_DISCONNECT,
-    disconnectFromDevice,
+    sagaActionConstants.STOP_STREAMING_DATA,
+    stopReceivingUpdates,
   );
 }

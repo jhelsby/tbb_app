@@ -4,6 +4,7 @@ import {
   BleManager,
   Characteristic,
   Device,
+  Subscription,
 } from 'react-native-ble-plx';
 
 const DEVICE_UUID = '0000FFE0-0000-1000-8000-00805F9B34FB';
@@ -12,10 +13,12 @@ const CHARACTERISTIC_UUID = '0000FFE1-0000-1000-8000-00805F9B34FB';
 class BluetoothManager {
   bleManager: BleManager;
   device: Device | null;
+  subscription: Subscription | undefined;
 
   constructor() {
     this.bleManager = new BleManager();
     this.device = null;
+    this.subscription = undefined;
   }
 
   scanForDevices = (
@@ -74,12 +77,16 @@ class BluetoothManager {
   ) => {
     await this.device?.discoverAllServicesAndCharacteristics();
     await this.sendData('takeReading');
-    this.device?.monitorCharacteristicForService(
+    this.subscription = this.device?.monitorCharacteristicForService(
       DEVICE_UUID,
       CHARACTERISTIC_UUID,
       (error, characteristic) =>
         this.onReceivedDataUpdate(error, characteristic, emitter),
     );
+  };
+
+  stopReadingData = async () => {
+    await this.subscription?.remove();
   };
 }
 

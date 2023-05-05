@@ -165,10 +165,15 @@ const bluetoothReducer = createSlice({
       state.formattedData = null;
       state.isStreamingData = true;
     },
+    stopReading: state => {
+      state.isStreamingData = false;
+      console.log(`Stop reading ${state.isStreamingData}`);
+    },
     bluetoothDeviceFound: (
       state: TBluetoothSliceState,
       action: PayloadAction<TAbstractDevice>,
     ) => {
+      console.log(action.payload);
       // Ensure no duplicate devices are added
       const isDuplicate = state.availableDevices.some(
         device => device.id === action.payload.id,
@@ -207,6 +212,7 @@ export const {
   initiateDisconntect,
   takeReading,
   clearReceivedData,
+  stopReading,
 } = bluetoothReducer.actions;
 
 export const sagaActionConstants = {
@@ -218,6 +224,7 @@ export const sagaActionConstants = {
   CONNECTION_SUCCESS: bluetoothReducer.actions.connectToDevice.type,
   UPDATE_RECEIVED_DATA: bluetoothReducer.actions.updateReceivedData.type,
   START_STREAMING_DATA: bluetoothReducer.actions.takeReading.type,
+  STOP_STREAMING_DATA: bluetoothReducer.actions.stopReading.type,
 };
 
 export const selectAvailableDevices = (state: RootState) =>
@@ -232,7 +239,7 @@ export const selectIsConnectingToDevice = (state: RootState) =>
 export const selectConnectedDevice = (state: RootState) =>
   state.bluetooth.connectedDevice;
 
-export const selectReceivedData = (state: RootState) =>
+export const selectFormattedData = (state: RootState) =>
   state.bluetooth.formattedData;
 
 export const selectIsStreamingData = (state: RootState) =>
