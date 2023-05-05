@@ -1,0 +1,31 @@
+{
+  "isSafe": true,
+  "date": "2019-01-01",
+  "location": "Lorem ipsum",
+  "results": [
+    {
+      "name": "Lorem ipsum",
+      "value": 55
+    },
+    {
+      "name": "Lorem ipsum",
+      "value": 20
+    },
+    {
+      "name": "Lorem ipsum",
+      "value": 25
+    },
+    {
+      "name": "Lorem ipsum",
+      "value": 50
+    },
+    {
+      "name": "Lorem ipsum",
+      "value": 95
+    },
+    {
+      "name": "Lorem ipsum",
+      "value": 75
+    }
+  ]
+}
