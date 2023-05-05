@@ -139,7 +139,6 @@ export default function TakeReadingScreen({
       if (deviceData?.hasSynced) {
         console.log('Already synced');
       } else {
-        console.log('Syncing');
         const index = unsyncedReadings.findIndex(
           (reading: any) => reading.id === deviceData?.id,
         );

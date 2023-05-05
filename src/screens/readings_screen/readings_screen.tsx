@@ -45,7 +45,6 @@ export default function ReadingsScreen({
   useFocusEffect(
     useCallback(() => {
       if (isLoggedIn) {
-        console.log('Fetching Readings...');
         dispatch(fetchAllReadings());
       } else {
         dispatch(emptySyncedReadings());
@@ -54,7 +53,6 @@ export default function ReadingsScreen({
   );
 
   const handleSync = () => {
-    console.log('Syncing All...');
     dispatch(postAllReadings(null));
   };
 
@@ -103,7 +101,7 @@ export default function ReadingsScreen({
                     readingId: reading.id,
                   })
                 }>
-                <View style={styles.syncContainer}>
+                <View>
                   {reading.hasSynced ? (
                     <FontAwesomeIcon icon={faCloud} />
                   ) : (

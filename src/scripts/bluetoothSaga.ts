@@ -37,7 +37,7 @@ function* watchForPeripherals(): Generator<AnyAction, void, TakeableDevice> {
       });
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 }
 
@@ -92,7 +92,7 @@ function* getReceivedDataUpdates(): Generator<
       });
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 }
 

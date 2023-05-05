@@ -167,13 +167,11 @@ const bluetoothReducer = createSlice({
     },
     stopReading: state => {
       state.isStreamingData = false;
-      console.log(`Stop reading ${state.isStreamingData}`);
     },
     bluetoothDeviceFound: (
       state: TBluetoothSliceState,
       action: PayloadAction<TAbstractDevice>,
     ) => {
-      console.log(action.payload);
       // Ensure no duplicate devices are added
       const isDuplicate = state.availableDevices.some(
         device => device.id === action.payload.id,

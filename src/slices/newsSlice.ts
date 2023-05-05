@@ -89,7 +89,6 @@ export const postNews = createAsyncThunk(
     })
       .then(() => {
         // Get the id of the new document
-        console.log('Posted Reading');
       })
       .catch((error: any) => {
         // Handle Errors here.
@@ -132,7 +131,6 @@ export const fetchAllNews = createAsyncThunk(
             });
           }
         });
-        console.log('Got All News');
       })
       .catch((error: any) => {
         // Handle Errors here.

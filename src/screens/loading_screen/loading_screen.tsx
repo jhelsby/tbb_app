@@ -103,7 +103,6 @@ export default function LoadingScreen({
 
   useEffect(() => {
     if (receivedData) {
-      console.log('Received data: ', receivedData);
       dispatch(stopReading());
       navigation.navigate('TakeReadingScreen', {validNavigation: true});
     }

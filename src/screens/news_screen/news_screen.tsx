@@ -67,9 +67,9 @@ export default function NewsScreen({navigation}: Props): ReactElement<Props> {
                 highLight={null}
                 title={article.title}
                 subtitle1={article.author}
-                subtitle2={article.datetime.date}
-                description={article.description}
-              />
+                subtitle2={article.datetime.date}>
+                <Text>{article.description}</Text>
+              </Card>
             );
           })
         ) : (

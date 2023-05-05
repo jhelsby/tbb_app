@@ -122,7 +122,6 @@ export default function ViewReadingsScreen({
       if (reading?.hasSynced) {
         console.log('Already synced');
       } else {
-        console.log('Syncing');
         const index = unsyncedReadings.findIndex(
           (unsyncedReading: TReading) => unsyncedReading.id === reading?.id,
         );

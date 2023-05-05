@@ -35,17 +35,10 @@ export const logInWithEmailAndPassword: any = createAsyncThunk(
   'account/logInWithEmailAndPassword',
   async (args: {email: string; password: string}): Promise<string | null> => {
     let uid: string | null = null;
-    console.log(
-      'Logging in with email: ',
-      args.email,
-      ' and password: ',
-      args.password,
-    );
     await signInWithEmailAndPassword(auth, args.email, args.password)
       .then((userCredential: UserCredential) => {
         // Signed in
         uid = userCredential.user.uid;
-        console.log('Logged in user');
       })
       .catch((error: any) => {
         const errorCode = error.code;
@@ -69,18 +62,11 @@ export const registerWithEmailAndPassword: any = createAsyncThunk(
   'account/registerWithEmailAndPassword',
   async (args: {email: string; password: string}): Promise<string | null> => {
     let uid: string | null = null;
-    console.log(
-      'Registering with email: ',
-      args.email,
-      ' and password: ',
-      args.password,
-    );
     // Create a new user
     createUserWithEmailAndPassword(auth, args.email, args.password)
       .then((userCredential: UserCredential) => {
         // Signed in
         uid = userCredential.user.uid;
-        console.log('User Registered:');
       })
       .catch((error: any) => {
         // Handle Errors here.
@@ -132,7 +118,6 @@ export const logout: any = createAsyncThunk(
     // Sign out
     try {
       signOut(auth);
-      console.log('Logged out');
       success = true;
     } catch (error) {
       console.error(error);
