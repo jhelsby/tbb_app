@@ -1,22 +1,22 @@
-import React from "react";
-import { View } from "react-native";
-import { Marker } from "react-native-maps";
+import React, {useContext} from 'react';
+import {View} from 'react-native';
+import {Marker} from 'react-native-maps';
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faDroplet } from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faDroplet} from '@fortawesome/free-solid-svg-icons';
 
-import { IMarkerProps } from "../../scripts/interfaces";
+import {IMarkerProps} from '../../scripts/interfaces';
 
-import { color1, color1Light } from "../../scripts/colors";
+import {ColorContext} from '../../context/color_context';
 
-import { styles } from "./map_icon_styles";
+import {styles} from './map_icon_styles';
 
-export default function MapIcon(props: IMarkerProps) : React.ReactElement<IMarkerProps> {
+export default function MapIcon(
+  props: IMarkerProps,
+): React.ReactElement<IMarkerProps> {
+  const {color, lightColor} = useContext(ColorContext);
 
-  const color1String = `hsl(${color1.h}, ${color1.s}%, ${color1.l}%)`;
-  const color1LightString = `hsl(${color1Light.h}, ${color1Light.s}%, ${color1Light.l}%)`;
-
-  const handlePress = () : void => {
+  const handlePress = (): void => {
     props.onActive(props.index);
   };
 
@@ -26,13 +26,14 @@ export default function MapIcon(props: IMarkerProps) : React.ReactElement<IMarke
         latitude: props.latitude,
         longitude: props.longitude,
       }}
-      onPress={handlePress}
-    >
-      <View style={[styles.container, { backgroundColor: props.active ? color1String : color1LightString }]} >
+      onPress={handlePress}>
+      <View
+        style={[
+          styles.container,
+          {backgroundColor: props.active ? color : lightColor},
+        ]}>
         <FontAwesomeIcon icon={faDroplet} size={15} color="#fff" />
       </View>
     </Marker>
   );
 }
-
-

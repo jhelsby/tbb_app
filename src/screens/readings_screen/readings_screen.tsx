@@ -1,47 +1,115 @@
-import React, { ReactElement } from "react";
-import { View, Text, ScrollView, useColorScheme } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { ReadingsParamList } from "../../scripts/screen_params";
+import React, {ReactElement, useCallback} from 'react';
+import {View, Text, ScrollView} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ReadingsParamList} from '../../scripts/screen_params';
+import {useFocusEffect} from '@react-navigation/native';
 
-import { styles } from "./readings_styles";
-import { styles as globalStyles } from "../../../App_styles";
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faCloudArrowUp, faCloud} from '@fortawesome/free-solid-svg-icons';
 
-import Card from "../../components/card/card";
+import {styles} from './readings_styles';
+import {styles as globalStyles} from '../../../App_styles';
 
-import readingsData from "./data.temp.json";
+import Card from '../../components/card/card';
+import Button from '../../components/button/button';
 
-type Props = NativeStackScreenProps<ReadingsParamList, "ReadingsScreen">;
+import {useAppSelector, useAppDispatch} from '../../scripts/redux_hooks';
+import {
+  selectPageContrast,
+  selectTextContrast,
+  selectContainerContrast,
+} from '../../slices/colorSlice';
+import {selectIsLoggedIn} from '../../slices/accountSlice';
+import {
+  selectReadings,
+  fetchAllReadings,
+  postAllReadings,
+} from '../../slices/readingsSlice';
 
-export default function ReadingsScreen({ navigation } : Props) : ReactElement<Props> {
-  const cards = readingsData.cards;
+type Props = NativeStackScreenProps<ReadingsParamList, 'ReadingsScreen'>;
 
-  const isDarkMode = useColorScheme() === 'dark';
-  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
-  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
+export default function ReadingsScreen({
+  navigation,
+}: Props): ReactElement<Props> {
+  // Get the contrast settings from the redux store
+  const pageContrast = useAppSelector(selectPageContrast);
+  const textContrast = useAppSelector(selectTextContrast);
+  const containerContrast = useAppSelector(selectContainerContrast);
+
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+
+  const dispatch = useAppDispatch();
+  const readings = useAppSelector(selectReadings);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isLoggedIn) {
+        console.log('Fetching Readings...');
+        dispatch(fetchAllReadings());
+      }
+    }, [dispatch, isLoggedIn]),
+  );
+
+  const handleSync = () => {
+    console.log('Syncing All...');
+    dispatch(postAllReadings(null));
+  };
 
   return (
     <View style={[styles.container, pageContrast]}>
-      <ScrollView style={styles.scrollView}
+      <ScrollView
+        style={styles.scrollView}
         contentContainerStyle={{
           paddingBottom: 90,
         }}>
         <Text style={[styles.title, textContrast]}>Readings</Text>
-        {
-          cards.map((card, index) => {
+        {isLoggedIn ? (
+          <View
+            style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleSync}>
+                <Text style={[styles.buttonText]}>Sync All</Text>
+              </Button>
+            </View>
+          </View>
+        ) : (
+          <View
+            style={[
+              globalStyles.tile,
+              styles.infoContainer,
+              containerContrast,
+            ]}>
+            <Text style={[styles.infoText, textContrast]}>
+              Please Login to see readings that have been saved to the cloud.
+            </Text>
+          </View>
+        )}
+        {readings.length !== 0 &&
+          readings.map((reading: any, index: number) => {
             return (
               <Card
                 key={index}
                 isIcon={false}
-                highLight={card.highlight}
-                title={card.title}
-                subtitle1={card.location}
-                subtitle2={card.date} 
-                description={card.description}
-                onPress={() => navigation.navigate("ViewReadingScreen", { validNavigation: true })}
-              />
+                highLight={reading.isSafe}
+                title={'Reading ' + reading.id}
+                subtitle1={`Latitude: ${reading?.location?.latitude}, Longitude: ${reading?.location?.longitude}`}
+                subtitle2={`Date: ${reading.datetime.date}, Time: ${reading.datetime.time}`}
+                onPress={() =>
+                  navigation.navigate('ViewReadingScreen', {
+                    validNavigation: true,
+                    readingId: reading.id,
+                  })
+                }>
+                <View style={styles.syncContainer}>
+                  {reading.hasSynced ? (
+                    <FontAwesomeIcon icon={faCloud} />
+                  ) : (
+                    <FontAwesomeIcon icon={faCloudArrowUp} />
+                  )}
+                </View>
+              </Card>
             );
-          })
-        }
+          })}
       </ScrollView>
     </View>
   );

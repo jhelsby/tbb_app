@@ -1,11 +1,14 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  screen: {
+    height: '100%',
+    width: '100%',
+  },
   page: {
     paddingBottom: 80,
     height: '100%',
     width: '100%',
-    paddingTop: '5%',
   },
   lightPage: {
     backgroundColor: '#EBF1FF',
@@ -39,7 +42,6 @@ export const styles = StyleSheet.create({
   tabBar: {
     height: 60,
     position: 'absolute',
-    bottom: 16,
     right: 16,
     left: 16,
   },

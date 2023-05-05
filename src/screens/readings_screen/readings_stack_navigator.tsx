@@ -1,37 +1,41 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import React, { useContext, ReactElement } from "react";
-import { RootTabParamList, ReadingsParamList } from "../../scripts/screen_params";
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import React, {useCallback, ReactElement} from 'react';
+import {RootTabParamList, ReadingsParamList} from '../../scripts/screen_params';
+import {useFocusEffect} from '@react-navigation/native';
 
-import ReadingsScreen from "./readings_screen";
-import ViewReadingsScreen from "../view_readings_screen/view_readings_screen";
+import ReadingsScreen from './readings_screen';
+import ViewReadingsScreen from '../view_readings_screen/view_readings_screen';
 
-import { THSL } from "../../scripts/types";
+import {ColorContext} from '../../context/color_context';
 
-import { ColorContext } from "../../context/color_context";
-import { ContrastPolarityContext } from "../../context/contrast_polarity_context";
-import { RootNavsContext } from "../../context/root_nav_context";
-import { colorInterpolate } from "../../scripts/colors";
+import {useAppDispatch, useAppSelector} from '../../scripts/redux_hooks';
+import {selectColor, selectLightColor} from '../../slices/colorSlice';
+import {selectNavIndex, setFocusedNav} from '../../slices/rootNavSlice';
 
 const Stack = createNativeStackNavigator<ReadingsParamList>();
-type Props = BottomTabScreenProps<RootTabParamList, "ReadingsStack">;
+type Props = BottomTabScreenProps<RootTabParamList, 'ReadingsStack'>;
 
-export default function ReadingsStackNavigator() : ReactElement<Props> {
-  const {
-    startColor,
-    startColorLight,
-    endColor,
-    endColorLight
-  } = useContext(ContrastPolarityContext);
+export default function ReadingsStackNavigator(): ReactElement<Props> {
+  const dispatch = useAppDispatch();
 
-  const rootNavs = useContext(RootNavsContext);
+  const index: number = useAppSelector(state =>
+    selectNavIndex(state, {name: 'ReadingsNav'}),
+  );
+  const color: string = useAppSelector(state => selectColor(state, {index}));
+  const lightColor: string = useAppSelector(state =>
+    selectLightColor(state, {index}),
+  );
 
-  const index: number = rootNavs.findIndex((navName) => navName === "ReadingsNav");
-  const color: THSL = colorInterpolate(startColor, endColor, index/(rootNavs.length - 1));
-  const colorLight: THSL = colorInterpolate(startColorLight, endColorLight, index/(rootNavs.length - 1));
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(setFocusedNav(index));
+    }, [dispatch, index]),
+  );
+
   return (
-    <ColorContext.Provider value={{ color, colorLight }}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <ColorContext.Provider value={{color, lightColor}}>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="ReadingsScreen" component={ReadingsScreen} />
         <Stack.Screen name="ViewReadingScreen" component={ViewReadingsScreen} />
       </Stack.Navigator>

@@ -1,80 +1,181 @@
-import React, { useEffect, useCallback, ReactElement } from "react";
-import { View, Text, ScrollView, Dimensions, useColorScheme } from "react-native";
-import { BarChart, PieChart } from "react-native-chart-kit";
-import { useFocusEffect } from "@react-navigation/native";
+import React, {useCallback, ReactElement} from 'react';
+import {View, Text, ScrollView, Dimensions} from 'react-native';
+import {BarChart, PieChart} from 'react-native-chart-kit';
+import {useFocusEffect} from '@react-navigation/native';
 
-import { styles } from "./view_readings_styles";
-import { styles as globalStyles } from "../../../App_styles";
-import { colorInterpolate, color1, color2 } from "../../scripts/colors";
+import {styles} from './view_readings_styles';
+import {styles as globalStyles} from '../../../App_styles';
+import {
+  colorInterpolate,
+  color1,
+  color2,
+  hslToString,
+} from '../../scripts/colors';
 
-import tempData from "./data.temp.json";
+import TopNav from '../../components/top_nav/top_nav';
 
-import TopNav from "../../components/top_nav/top_nav";
+import {THSL, TMeasurement, TReading} from '../../scripts/types';
 
-import { TPieChartData } from "../../scripts/types";
+import {useAppDispatch, useAppSelector} from '../../scripts/redux_hooks';
+import {
+  selectContainerContrast,
+  selectPageContrast,
+  selectTextContrast,
+  selectDarkMode,
+} from '../../slices/colorSlice';
+import {selectIsLoggedIn} from '../../slices/accountSlice';
+import {
+  postReading,
+  selectReadingById,
+  selectUnsyncedReadings,
+} from '../../slices/readingsSlice';
+import Button from '../../components/button/button';
 
-export default function ViewReadingsScreen({ navigation, route } : any) : ReactElement<any> {
-  const screenWidth = Dimensions.get("window").width;
-  const screenHeight = Dimensions.get("window").height;
+export default function ViewReadingsScreen({
+  navigation,
+  route,
+}: any): ReactElement<any> {
+  // Get the contrast settings from the redux store
+  const containerContrast = useAppSelector(selectContainerContrast);
+  const pageContrast = useAppSelector(selectPageContrast);
+  const textContrast = useAppSelector(selectTextContrast);
+  const isDarkMode = useAppSelector(selectDarkMode);
 
-  const isDarkMode = useColorScheme() === "dark";
-  const textContrast = isDarkMode ? globalStyles.darkText : globalStyles.lightText;
-  const containerContrast = isDarkMode ? globalStyles.darkContainer : globalStyles.lightContainer;
-  const pageContrast = isDarkMode ? globalStyles.darkPage : globalStyles.lightPage;
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const reading: TReading = useAppSelector(state =>
+    selectReadingById(state, {id: route.params.readingId}),
+  );
 
-  const [pieChartData, setPieChartData] = React.useState([] as TPieChartData[]);
+  const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
 
-  useEffect(() => {
-    let data : TPieChartData[] = [];
-    tempData.results.forEach((result: any, index: number) => {
-      const color: any = colorInterpolate(color2, color1, index/(tempData.results.length - 1));
-      data.push({
-        name: result.name,
-        value: result.value,
-        color: `hsl(${color.h}, ${color.s}%, ${color.l}%)`,
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15,
-      });
-    });
-    setPieChartData(data);
-  }, []);
+  const [pieChartData, setPieChartData] = React.useState<any>([]);
+  const [barChartData, setBarChartData] = React.useState<any>({
+    labels: [],
+    datasets: [
+      {
+        data: [],
+      },
+    ],
+  });
 
   useFocusEffect(
     useCallback(() => {
-      if (!route.params.validNavigation) navigation.popToTop();
+      if (!route.params.validNavigation) {
+        navigation.popToTop();
+      }
       route.params.validNavigation = false;
-    }, [])
+    }, [navigation, route.params]),
   );
+
+  useFocusEffect(
+    useCallback(() => {
+      const tempPieChartData: any[] = [];
+      const measurements: TMeasurement[] = reading.measurements;
+
+      measurements.forEach((measurement: TMeasurement, index: number) => {
+        const color: any = colorInterpolate(
+          color2,
+          color1,
+          index / (measurements.length - 1),
+        );
+        tempPieChartData.push({
+          name: measurement.name,
+          value: measurement.value,
+          color: hslToString(color),
+          legendFontColor: '#7F7F7F',
+          legendFontSize: 15,
+        });
+      });
+      setPieChartData(tempPieChartData);
+
+      setBarChartData({
+        labels: measurements.map(
+          (measurement: TMeasurement) => measurement.name,
+        ),
+        datasets: [
+          {
+            data: measurements.map(
+              (measurement: TMeasurement) => measurement.value,
+            ),
+            colors: measurements.map(
+              (measurement: TMeasurement, index: number) => {
+                const color: THSL = colorInterpolate(
+                  color2,
+                  color1,
+                  index / (measurements.length - 1),
+                );
+                return () => hslToString(color);
+              },
+            ),
+          },
+        ],
+      });
+    }, [reading]),
+  );
+
+  const unsyncedReadings = useAppSelector(selectUnsyncedReadings);
+  const dispatch = useAppDispatch();
+
+  const handleSync = async () => {
+    if (isLoggedIn) {
+      if (reading?.hasSynced) {
+        console.log('Already synced');
+      } else {
+        console.log('Syncing');
+        const index = unsyncedReadings.findIndex(
+          (unsyncedReading: TReading) => unsyncedReading.id === reading?.id,
+        );
+
+        dispatch(postReading(index));
+      }
+    }
+  };
 
   return (
     <View style={[styles.container, pageContrast]}>
       <TopNav handlePress={() => navigation.popToTop()} />
-      <ScrollView style={styles.body}
-        contentContainerStyle={{
-          paddingBottom: 180,
-        }}>
+      <ScrollView
+        style={styles.body}
+        contentContainerStyle={{paddingBottom: 180}}>
         <View style={styles.titleContainer}>
           <Text style={[styles.title, textContrast]}>View Readings</Text>
         </View>
-        <View style={[globalStyles.tile, styles.dataContainer, containerContrast]}>
-          <Text style={[styles.dataTitle, tempData.isSafe ? styles.safe : styles.notSafe]}>{tempData.isSafe ? "SAFE" : "NOT SAFE"}</Text>
-          <Text style={styles.data}>{tempData.date}</Text>
-          <Text style={styles.data}>{tempData.location}</Text>
+        <View
+          style={[globalStyles.tile, styles.dataContainer, containerContrast]}>
+          <Text
+            style={[
+              styles.dataTitle,
+              reading.isSafe ? styles.safe : styles.notSafe,
+            ]}>
+            {reading.isSafe ? 'SAFE' : 'NOT SAFE'}
+          </Text>
+          <Text style={styles.data}>{reading.datetime.date}</Text>
+          <Text
+            style={
+              styles.data
+            }>{`Latitude: ${reading.location.latitude}, Longitude: ${reading.location.longitude}`}</Text>
         </View>
-        <View style={[globalStyles.tile, styles.barChartContainer, containerContrast]}>
+        {isLoggedIn && (
+          <View
+            style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleSync} disabled={reading.hasSynced}>
+                <Text style={[styles.buttonText]}>
+                  {reading.hasSynced ? 'Synced' : 'Sync'}
+                </Text>
+              </Button>
+            </View>
+          </View>
+        )}
+        <View
+          style={[
+            globalStyles.tile,
+            styles.barChartContainer,
+            containerContrast,
+          ]}>
           <BarChart
-            data={{
-              labels: tempData.results.map((result: any) => result.name),
-              datasets: [
-                {
-                  data: tempData.results.map((result: any) => result.value),
-                  colors: tempData.results.map((result: any, index: number) => {
-                    const color: any = colorInterpolate(color2, color1, index/(tempData.results.length - 1));
-                    return (opacity = 1) => `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
-                  })
-                },
-              ],
-            }}
+            data={barChartData}
             width={screenWidth * 0.8}
             height={350}
             withCustomBarColorFromData={true}
@@ -85,29 +186,34 @@ export default function ViewReadingsScreen({ navigation, route } : any) : ReactE
             withInnerLines={false}
             showValuesOnTopOfBars={true}
             chartConfig={{
-              backgroundColor: "transparent",
-              backgroundGradientFrom: isDarkMode ? "#2E2E2E" : "#fff",
-              backgroundGradientTo: isDarkMode ? "#2E2E2E" : "#fff",
+              backgroundColor: 'transparent',
+              backgroundGradientFrom: isDarkMode ? '#2E2E2E' : '#fff',
+              backgroundGradientTo: isDarkMode ? '#2E2E2E' : '#fff',
               barPercentage: 0.8,
               decimalPlaces: 4,
-              color: (opacity = 1) => `#7F7F7F`,
+              color: () => '#7F7F7F',
               style: {
                 borderRadius: 16,
               },
             }}
           />
         </View>
-        <View style={[globalStyles.tile, styles.pieChartContainer, containerContrast]}>
+        <View
+          style={[
+            globalStyles.tile,
+            styles.pieChartContainer,
+            containerContrast,
+          ]}>
           <PieChart
             data={pieChartData}
             width={screenWidth * 0.9}
             height={screenHeight * 0.25}
             chartConfig={{
-              backgroundColor: "#fff",
-              backgroundGradientFrom: "#fff",
-              backgroundGradientTo: "#fff",
+              backgroundColor: '#fff',
+              backgroundGradientFrom: '#fff',
+              backgroundGradientTo: '#fff',
               decimalPlaces: 2,
-              color: (opacity = 1) => `#d95448`,
+              color: () => '#d95448',
             }}
             accessor="value"
             backgroundColor="transparent"

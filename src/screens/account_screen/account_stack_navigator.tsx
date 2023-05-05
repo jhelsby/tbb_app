@@ -1,40 +1,54 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import React, { useContext, ReactElement } from "react";
-import { RootTabParamList, AccountParamList } from "../../scripts/screen_params";
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import React, {ReactElement, useCallback} from 'react';
+import {RootTabParamList, AccountParamList} from '../../scripts/screen_params';
+import {useFocusEffect} from '@react-navigation/native';
 
-import AccountScreen from "./account_screen";
-import ReportScreen from "../report_screen/report_screen";
+import AccountScreen from './account_screen';
+import ReportScreen from '../report_screen/report_screen';
+import LoginScreen from '../login_screen/login_screen';
+import SignupScreen from '../signup_screen/signup_screen';
+import HelpScreen from '../help_screen/help_screen';
+import ResetPasswordScreen from '../reset_password_screen/reset_password_screen';
 
-import { THSL } from "../../scripts/types";
+import {ColorContext} from '../../context/color_context';
 
-import { ColorContext } from "../../context/color_context";
-import { ContrastPolarityContext } from "../../context/contrast_polarity_context";
-import { RootNavsContext } from "../../context/root_nav_context";
-import { colorInterpolate } from "../../scripts/colors";
+import {useAppSelector, useAppDispatch} from '../../scripts/redux_hooks';
+import {selectColor, selectLightColor} from '../../slices/colorSlice';
+import {selectNavIndex, setFocusedNav} from '../../slices/rootNavSlice';
 
 const Stack = createNativeStackNavigator<AccountParamList>();
-type Props = BottomTabScreenProps<RootTabParamList, "AccountStack">;
+type Props = BottomTabScreenProps<RootTabParamList, 'AccountStack'>;
 
-export default function AccountStackNavigator() : ReactElement<Props> {
-  const {
-    startColor,
-    startColorLight,
-    endColor,
-    endColorLight
-  } = useContext(ContrastPolarityContext);
+export default function AccountStackNavigator(): ReactElement<Props> {
+  const dispatch = useAppDispatch();
 
-  const rootNavs = useContext(RootNavsContext);
+  const index: number = useAppSelector(state =>
+    selectNavIndex(state, {name: 'AccountNav'}),
+  );
+  const color: string = useAppSelector(state => selectColor(state, {index}));
+  const lightColor: string = useAppSelector(state =>
+    selectLightColor(state, {index}),
+  );
 
-  const index: number = rootNavs.findIndex((navName) => navName === "AccountNav");
-  const color: THSL = colorInterpolate(startColor, endColor, index/(rootNavs.length - 1));
-  const colorLight: THSL = colorInterpolate(startColorLight, endColorLight, index/(rootNavs.length - 1));
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(setFocusedNav(index));
+    }, [dispatch, index]),
+  );
 
   return (
-    <ColorContext.Provider value={{ color, colorLight }}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <ColorContext.Provider value={{color, lightColor}}>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="AccountScreen" component={AccountScreen} />
         <Stack.Screen name="ReportScreen" component={ReportScreen} />
+        <Stack.Screen name="HelpScreen" component={HelpScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="SignupScreen" component={SignupScreen} />
+        <Stack.Screen
+          name="ResetPasswordScreen"
+          component={ResetPasswordScreen}
+        />
       </Stack.Navigator>
     </ColorContext.Provider>
   );

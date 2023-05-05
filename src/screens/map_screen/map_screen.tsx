@@ -1,64 +1,104 @@
-import React, { useEffect, useState, useRef, ReactElement } from "react";
-import { View, Animated, Dimensions, useColorScheme } from "react-native";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { MapParamList } from "../../scripts/screen_params";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  ReactElement,
+} from 'react';
+import {View, Animated, Dimensions} from 'react-native';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {MapParamList} from '../../scripts/screen_params';
+import {useFocusEffect} from '@react-navigation/native';
 
-import { styles } from "./map_styles";
+import {styles} from './map_styles';
 
-import { TMarkerData } from "../../scripts/types";
-import { ICardProps } from "../../scripts/interfaces";
+import {ICardProps} from '../../scripts/interfaces';
 
-import MapIcon from "../../components/map_icon/map_icon";
-import Card from "../../components/card/card";
+import MapIcon from '../../components/map_icon/map_icon';
+import Card from '../../components/card/card';
 
-import tempData from "./data.temp.json";
+import {useAppSelector, useAppDispatch} from '../../scripts/redux_hooks';
+import {selectDarkMode} from '../../slices/colorSlice';
+import {selectIsLoggedIn} from '../../slices/accountSlice';
+import {
+  selectReadings,
+  fetchAllReadings,
+  emptyReadings,
+} from '../../slices/readingsSlice';
+import {TReading} from '../../scripts/types';
 
-type Props = NativeStackScreenProps<MapParamList, "MapScreen">;
+type Props = NativeStackScreenProps<MapParamList, 'MapScreen'>;
 
-export default function MapScreen({ navigation } : Props) : ReactElement<Props> {
-  const [activeMarkers, setActiveMarkers] = useState<boolean[]>(
-    tempData.markers.map(() => false)
-  );
+export default function MapScreen({navigation}: Props): ReactElement<Props> {
+  const dispatch = useAppDispatch();
 
-  const isDarkMode = useColorScheme() === "dark";
+  const isDarkMode = useAppSelector(selectDarkMode);
 
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const readings = useAppSelector(selectReadings);
+
+  const [activeMarkers, setActiveMarkers] = useState<boolean[]>([]);
   const [activeCard, setActiveCard] = useState<boolean>(false);
   const [cardData, setCardData] = useState<ICardProps>({
     isIcon: false,
     highLight: false,
-    title: "",
-    subtitle1: "",
-    subtitle2: "",
-    description: "",
-    onPress: () => navigation.navigate("ViewReadingScreen", { validNavigation: true })
+    title: '',
+    subtitle1: '',
+    subtitle2: '',
+    onPress: () =>
+      navigation.navigate('ViewReadingScreen', {validNavigation: true}),
   });
 
-  const screenWidth = Dimensions.get("window").width;
+  useFocusEffect(
+    useCallback(() => {
+      if (isLoggedIn) {
+        console.log('Getting Markers...');
+        if (!readings.length) {
+          dispatch(fetchAllReadings());
+        }
+      } else {
+        dispatch(emptyReadings());
+      }
+    }, [dispatch, isLoggedIn, readings.length]),
+  );
+
+  useEffect(() => {
+    if (readings) {
+      setActiveMarkers(readings.map(() => false));
+    } else {
+      setActiveMarkers([]);
+    }
+  }, [readings]);
+
+  const screenWidth = Dimensions.get('window').width;
   const cardAnimation = useRef(new Animated.Value(screenWidth)).current;
 
   useEffect(() => {
     Animated.timing(cardAnimation, {
       toValue: activeCard ? 0 : screenWidth,
       duration: 200,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start();
-  }, [activeCard]);
+  }, [activeCard, cardAnimation, screenWidth]);
 
   const handleMarkerPress = (index: number) => {
     const newActiveMarkers = activeMarkers.map((marker, i) => {
       if (i === index) {
-        const cardData: ICardProps = {
+        const tempCardData: ICardProps = {
           isIcon: false,
-          highLight: tempData.markers[i].isSafe,
-          title: "Lorem ipsum",
-          subtitle1: `${tempData.markers[i].latitude}, ${tempData.markers[i].longitude}`,
-          subtitle2: `${tempData.markers[i].date}`,
-          description: "Laboris in et ullamco magna excepteur aliquip mollit occaecat aliqua anim exercitation.",
-          onPress: () => navigation.navigate("ViewReadingScreen", { validNavigation: true })
-        }
+          highLight: readings[i].isSafe,
+          title: `Reading ${readings[i].id}`,
+          subtitle1: `${readings[i].location.latitude}, ${readings[i].location.longitude}`,
+          subtitle2: `Date: ${readings[i].datetime.date}`,
+          onPress: () =>
+            navigation.navigate('ViewReadingScreen', {
+              validNavigation: true,
+              readingId: readings[i].id,
+            }),
+        };
         setActiveCard(!marker);
-        setCardData(cardData);
+        setCardData(tempCardData);
         return !marker;
       } else {
         return false;
@@ -67,20 +107,15 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
     setActiveMarkers(newActiveMarkers);
   };
 
-
-
   return (
     <View style={styles.container}>
       <MapView
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
+        style={{width: '100%', height: '100%'}}
         provider={PROVIDER_GOOGLE}
         showsUserLocation
         zoomControlEnabled={false}
         toolbarEnabled={false}
-        userInterfaceStyle={isDarkMode ? "dark" : "light"}
+        userInterfaceStyle={isDarkMode ? 'dark' : 'light'}
         showsMyLocationButton={false}
         showsBuildings={false}
         showsTraffic={false}
@@ -89,30 +124,32 @@ export default function MapScreen({ navigation } : Props) : ReactElement<Props> 
           latitude: 37.78825,
           longitude: -122.4324,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421
+          longitudeDelta: 0.0421,
         }}>
-          {
-            tempData.markers.map((marker: TMarkerData, index: number) => {
-              return (
-                <MapIcon
-                  key={index}
-                  index={index}
-                  onActive={handleMarkerPress}
-                  active={activeMarkers[index]}
-                  {...marker}
-                />
-              );
-            })
-          }
+        {readings.map((reading: TReading, index: number) => {
+          return (
+            <MapIcon
+              key={index}
+              index={index}
+              onActive={handleMarkerPress}
+              active={activeMarkers[index]}
+              {...reading.location}
+              isSafe={reading.isSafe}
+            />
+          );
+        })}
       </MapView>
-      <Animated.View style={[
-        styles.cardContainer,
-        { transform: [
+      <Animated.View
+        style={[
+          styles.cardContainer,
           {
-            translateX: cardAnimation
-          }
-        ]}
-      ]}>
+            transform: [
+              {
+                translateX: cardAnimation,
+              },
+            ],
+          },
+        ]}>
         <Card {...cardData} />
       </Animated.View>
     </View>

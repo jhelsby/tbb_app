@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "920197475483",
+    "project_id": "biodevices-without-borders-app",
+    "storage_bucket": "biodevices-without-borders-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920197475483:android:1c9a2d0ce1feb4d99e2a3e",
+        "android_client_info": {
+          "package_name": "com.tbb_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "920197475483-ooqfjhdg5qvimmpl08h5ml17b4mc8elj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tbb_app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "920197475483-1oaaulqd6df15p3pl3cocmhi0n1p3v75.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6-76yPg94qAmuNy34WzSSRzolywuwKbA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "920197475483-1oaaulqd6df15p3pl3cocmhi0n1p3v75.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,48 +1,44 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import React, { useContext, ReactElement } from "react";
-import { RootTabParamList, HomeParamList } from "../../scripts/screen_params";
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import React, {ReactElement, useCallback} from 'react';
+import {RootTabParamList, HomeParamList} from '../../scripts/screen_params';
+import {useFocusEffect} from '@react-navigation/native';
 
-import HomeScreen from "./home_screen";
-import HelpScreen from "../help_screen/help_screen";
-import ViewReadingsScreen from "../view_readings_screen/view_readings_screen";
-import LoadingScreen from "../loading_screen/loading_screen";
+import HomeScreen from './home_screen';
+import TakeReadingsScreen from '../take_reading_screen/take_reading_screen';
+import LoadingScreen from '../loading_screen/loading_screen';
 
-import { THSL } from "../../scripts/types";
+import {ColorContext} from '../../context/color_context';
 
-import { ColorContext } from "../../context/color_context";
-import { ContrastPolarityContext } from "../../context/contrast_polarity_context";
-import { RootNavsContext } from "../../context/root_nav_context";
-import { colorInterpolate } from "../../scripts/colors";
-
-
+import {useAppDispatch, useAppSelector} from '../../scripts/redux_hooks';
+import {selectColor, selectLightColor} from '../../slices/colorSlice';
+import {selectNavIndex, setFocusedNav} from '../../slices/rootNavSlice';
 
 const Stack = createNativeStackNavigator<HomeParamList>();
-type Props = BottomTabScreenProps<RootTabParamList, "HomeStack">;
+type Props = BottomTabScreenProps<RootTabParamList, 'HomeStack'>;
 
-export default function HomeStackNavigator() : ReactElement<Props> {
-  const {
-    startColor,
-    startColorLight,
-    endColor,
-    endColorLight
-  } = useContext(ContrastPolarityContext);
+export default function HomeStackNavigator(): ReactElement<Props> {
+  const dispatch = useAppDispatch();
+  const index: number = useAppSelector(state =>
+    selectNavIndex(state, {name: 'HomeNav'}),
+  );
+  const color: string = useAppSelector(state => selectColor(state, {index}));
+  const lightColor: string = useAppSelector(state =>
+    selectLightColor(state, {index}),
+  );
 
-  const rootNavs = useContext(RootNavsContext);
-
-
-  const index: number = rootNavs.findIndex((navName) => navName === "HomeNav");
-  const color: THSL = colorInterpolate(startColor, endColor, index/(rootNavs.length - 1));
-  const colorLight: THSL = colorInterpolate(startColorLight, endColorLight, index/(rootNavs.length - 1));
-
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(setFocusedNav(index));
+    }, [dispatch, index]),
+  );
 
   return (
-    <ColorContext.Provider value={{ color, colorLight }}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <ColorContext.Provider value={{color, lightColor}}>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="HelpScreen" component={HelpScreen} />
         <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
-        <Stack.Screen name="TakeReadingScreen" component={ViewReadingsScreen} />
+        <Stack.Screen name="TakeReadingScreen" component={TakeReadingsScreen} />
       </Stack.Navigator>
     </ColorContext.Provider>
   );
