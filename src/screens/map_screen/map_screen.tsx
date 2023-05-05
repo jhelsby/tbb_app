@@ -24,7 +24,7 @@ import {selectIsLoggedIn} from '../../slices/accountSlice';
 import {
   selectReadings,
   fetchAllReadings,
-  emptyReadings,
+  emptySyncedReadings,
 } from '../../slices/readingsSlice';
 import {TReading} from '../../scripts/types';
 
@@ -58,7 +58,7 @@ export default function MapScreen({navigation}: Props): ReactElement<Props> {
           dispatch(fetchAllReadings());
         }
       } else {
-        dispatch(emptyReadings());
+        dispatch(emptySyncedReadings());
       }
     }, [dispatch, isLoggedIn, readings.length]),
   );

@@ -51,9 +51,8 @@ const initialState: TReadingSliceState = {
   currentReading: null,
 };
 
-const emptyReadingsFunc = (state: TReadingSliceState) => {
+const emptySyncedReadingsFunc = (state: TReadingSliceState) => {
   state.syncedReadings = [];
-  state.unsyncedReadings = [];
 };
 
 const addReadingToStateFunc = (
@@ -185,7 +184,7 @@ export const readingsSlice = createSlice({
   name: 'readings',
   initialState,
   reducers: {
-    emptyReadings: emptyReadingsFunc,
+    emptySyncedReadings: emptySyncedReadingsFunc,
     addReadingToState: addReadingToStateFunc,
   },
   extraReducers: builder => {
@@ -280,7 +279,7 @@ export const readingsSlice = createSlice({
   },
 });
 
-export const {emptyReadings, addReadingToState} = readingsSlice.actions;
+export const {emptySyncedReadings, addReadingToState} = readingsSlice.actions;
 
 const getParams = (_: any, args: any) => args;
 

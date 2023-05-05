@@ -24,6 +24,7 @@ import {
   selectReadings,
   fetchAllReadings,
   postAllReadings,
+  emptySyncedReadings,
 } from '../../slices/readingsSlice';
 
 type Props = NativeStackScreenProps<ReadingsParamList, 'ReadingsScreen'>;
@@ -46,6 +47,8 @@ export default function ReadingsScreen({
       if (isLoggedIn) {
         console.log('Fetching Readings...');
         dispatch(fetchAllReadings());
+      } else {
+        dispatch(emptySyncedReadings());
       }
     }, [dispatch, isLoggedIn]),
   );
