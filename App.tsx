@@ -1,6 +1,11 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, {ReactElement, useEffect, useState} from 'react';
-import {useColorScheme, ColorSchemeName, Keyboard} from 'react-native';
+import {
+  useColorScheme,
+  ColorSchemeName,
+  Keyboard,
+  StatusBar,
+} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -15,19 +20,13 @@ import {store} from './src/scripts/store';
 import {setDarkMode, setColors} from './src/slices/colorSlice';
 import {TRootNav} from './src/scripts/types';
 
-import {
-  color1,
-  color1Light,
-  color2,
-  color2Light,
-} from "./src/scripts/colors";
+import {color1, color1Light, color2, color2Light} from './src/scripts/colors';
 
 import MapStackNavigator from './src/screens/map_screen/map_stack_navigator';
 import ReadingsStackNavigator from './src/screens/readings_screen/readings_stack_navigator';
 import HomeStackNavigator from './src/screens/home_screen/home_stack_navigator';
 import NewsStackNavigator from './src/screens/news_screen/news_stack_navigator';
 import AccountStackNavigator from './src/screens/account_screen/account_stack_navigator';
-
 
 const Tab: any = createBottomTabNavigator<RootTabParamList>();
 
@@ -88,6 +87,10 @@ export default function App() {
 
   return (
     <Provider store={store}>
+      <StatusBar
+        backgroundColor={colorScheme === 'dark' ? '#1E1E1E' : '#EBF1FF'}
+        barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
+      />
       <NavigationContainer>
         <Tab.Navigator
           initialRouteName="HomeNav"
