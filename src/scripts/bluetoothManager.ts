@@ -45,7 +45,7 @@ class BluetoothManager {
   };
 
   disconnectFromDevice = async (deviceId: string) => {
-    await this.bleManager.cancelDeviceConnection(deviceId);
+    this.device = await this.bleManager.cancelDeviceConnection(deviceId);
   };
 
   onReceivedDataUpdate = (
