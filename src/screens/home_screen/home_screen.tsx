@@ -95,7 +95,7 @@ export default function HomeScreen({navigation}: Props): ReactElement<Props> {
             <View style={styles.buttonContainer}>
               <Button
                 onPress={() => {
-                  dispatch(requestPermissions);
+                  dispatch(requestPermissions());
                   dispatch(scanForDevices());
                   setModalVisible(true);
                 }}>
