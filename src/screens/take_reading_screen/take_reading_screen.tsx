@@ -1,6 +1,6 @@
-import React, {useCallback, ReactElement, useEffect} from 'react';
+import React, {useCallback, ReactElement} from 'react';
 import {View, Text, ScrollView, Dimensions} from 'react-native';
-import {BarChart, PieChart} from 'react-native-chart-kit';
+import {BarChart, LineChart, PieChart} from 'react-native-chart-kit';
 import {useFocusEffect} from '@react-navigation/native';
 
 import {styles} from './take_reading_styles';
@@ -9,9 +9,6 @@ import {styles as globalStyles} from '../../../App_styles';
 import TopNav from '../../components/top_nav/top_nav';
 import Button from '../../components/button/button';
 
-import {onAuthStateChanged} from 'firebase/auth';
-import {auth} from '../../scripts/firebase';
-
 import {useAppDispatch, useAppSelector} from '../../scripts/redux_hooks';
 import {
   selectContainerContrast,
@@ -19,11 +16,12 @@ import {
   selectPageContrast,
   selectTextContrast,
 } from '../../slices/colorSlice';
+import {selectIsLoggedIn} from '../../slices/accountSlice';
 import {
   clearReceivedData,
   selectFormattedData,
 } from '../../slices/bluetoothSlice';
-import {THSL, TMeasurement} from '../../scripts/types';
+import {THSL, TMeasurement, TPieChartData, TReading} from '../../scripts/types';
 import {
   color1,
   color2,
@@ -40,15 +38,22 @@ export default function TakeReadingScreen({
   navigation,
   route,
 }: any): ReactElement<any> {
-  const screenWidth = Dimensions.get('window').width;
-  const screenHeight = Dimensions.get('window').height;
-
   const pageContrast = useAppSelector(selectPageContrast);
   const containerContrast = useAppSelector(selectContainerContrast);
   const textContrast = useAppSelector(selectTextContrast);
   const isDarkMode = useAppSelector(selectDarkMode);
 
-  const [pieChartData, setPieChartData] = React.useState<any>([]);
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const reading = useAppSelector(selectFormattedData);
+
+  const unsyncedReadings = useAppSelector(selectUnsyncedReadings);
+  const dispatch = useAppDispatch();
+
+  const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
+
+  const [pieChartData, setPieChartData] = React.useState<TPieChartData[]>([]);
+  const [lineChartData, setLineChartData] = React.useState<any>([]);
   const [barChartData, setBarChartData] = React.useState<any>({
     labels: [],
     datasets: [
@@ -57,9 +62,6 @@ export default function TakeReadingScreen({
       },
     ],
   });
-
-  const [isLoggedIn, setLoggedIn] = React.useState(false);
-  const [docName] = React.useState<string>('');
 
   useFocusEffect(
     useCallback(() => {
@@ -70,83 +72,140 @@ export default function TakeReadingScreen({
     }, [navigation, route.params]),
   );
 
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  });
-
-  const deviceData = useAppSelector(selectFormattedData);
-  const unsyncedReadings = useAppSelector(selectUnsyncedReadings);
-  const dispatch = useAppDispatch();
-
-  const handleClose = () => {
-    dispatch(clearReceivedData());
-    navigation.popToTop();
-  };
-
-  useEffect(() => {
-    if (deviceData) {
-      dispatch(addReadingToState(deviceData));
-      const tempPieChartData: any[] = [];
-      const measurements: TMeasurement[] = deviceData.measurements;
-
-      measurements.forEach((measurement: TMeasurement, index: number) => {
-        const color: any = colorInterpolate(
-          color2,
-          color1,
-          index / (measurements.length - 1),
-        );
-        tempPieChartData.push({
-          name: measurement.name,
-          value: measurement.value,
-          color: hslToString(color),
-          legendFontColor: '#7F7F7F',
-          legendFontSize: 15,
-        });
-      });
-      setPieChartData(tempPieChartData);
-
-      setBarChartData({
-        labels: measurements.map(
-          (measurement: TMeasurement) => measurement.name,
-        ),
-        datasets: [
-          {
-            data: measurements.map(
-              (measurement: TMeasurement) => measurement.value,
-            ),
-            colors: measurements.map(
-              (measurement: TMeasurement, index: number) => {
-                const color: THSL = colorInterpolate(
-                  color2,
-                  color1,
-                  index / (measurements.length - 1),
-                );
-                return () => hslToString(color);
-              },
-            ),
-          },
-        ],
-      });
-    }
-  }, [deviceData, dispatch]);
-
   const handleSync = async () => {
     if (isLoggedIn) {
-      if (deviceData?.hasSynced) {
+      if (reading?.hasSynced) {
         console.log('Already synced');
       } else {
         const index = unsyncedReadings.findIndex(
-          (reading: any) => reading.id === deviceData?.id,
+          (unsynedReading: TReading) => unsynedReading.id === reading?.id,
         );
 
         dispatch(postReading(index));
       }
     }
   };
+
+  const handleClose = () => {
+    dispatch(clearReceivedData());
+    navigation.popToTop();
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (reading) {
+        dispatch(addReadingToState(reading));
+        const getBarChartData = (measurements: TMeasurement[]): any => {
+          return {
+            labels: measurements.map(
+              (measurement: TMeasurement) => measurement.name,
+            ),
+            datasets: [
+              {
+                data: measurements.map((measurement: TMeasurement) =>
+                  getAverageReadings(measurement),
+                ),
+                colors: measurements.map(
+                  (measurement: TMeasurement, index: number) => {
+                    const color: THSL = colorInterpolate(
+                      color2,
+                      color1,
+                      index / (measurements.length - 1),
+                    );
+                    return () => hslToString(color);
+                  },
+                ),
+              },
+            ],
+          };
+        };
+
+        const getPieChartData = (
+          measurements: TMeasurement[],
+        ): TPieChartData[] => {
+          const tempPieChartData: TPieChartData[] = [];
+          measurements.forEach((measurement: TMeasurement, index: number) => {
+            const color: any = colorInterpolate(
+              color2,
+              color1,
+              index / (measurements.length - 1),
+            );
+
+            let measurementValue: number = getAverageReadings(measurement);
+            tempPieChartData.push({
+              name: measurement.name,
+              value: measurementValue,
+              color: hslToString(color),
+              legendFontColor: '#7F7F7F',
+              legendFontSize: 15,
+            });
+          });
+          return tempPieChartData;
+        };
+
+        const getLineChartData = (
+          measurements: TMeasurement[],
+          timeIntervals: number[] | undefined,
+        ): any[] => {
+          if (!timeIntervals) {
+            return [];
+          }
+
+          const tempLineChartData: any = [];
+          measurements.forEach((measurement: TMeasurement, index: number) => {
+            if (Array.isArray(measurement.value)) {
+              tempLineChartData.push({
+                name: measurement.name,
+                average: getAverageReadings(measurement),
+                max: Math.max(...measurement.value),
+                min: Math.min(...measurement.value),
+                data: {
+                  labels: timeIntervals,
+                  datasets: [
+                    {
+                      data: measurement.value,
+                      color: () =>
+                        hslToString(
+                          colorInterpolate(
+                            color1,
+                            color2,
+                            index / (measurements.length - 1),
+                          ),
+                        ),
+                    },
+                  ],
+                },
+              });
+            }
+          });
+          return tempLineChartData;
+        };
+
+        const getAverageReadings = (measurement: TMeasurement): number => {
+          let measurementValue: number = 0;
+          if (Array.isArray(measurement.value)) {
+            measurementValue = measurement.value.reduce(
+              (accumulator: number, currentValue: number) =>
+                accumulator + currentValue,
+              0,
+            );
+            measurementValue /= measurement.value.length;
+          } else {
+            measurementValue = measurement.value;
+          }
+          const measurementValueRounded: number =
+            Math.round(measurementValue * 100) / 100;
+          return measurementValueRounded;
+        };
+
+        const measurements: TMeasurement[] = reading.measurements;
+
+        setPieChartData(getPieChartData(measurements));
+        setBarChartData(getBarChartData(measurements));
+        setLineChartData(getLineChartData(measurements, reading.timeIntervals));
+      }
+    }, [dispatch, reading]),
+  );
 
   return (
     <View style={[styles.container, pageContrast]}>
@@ -164,23 +223,23 @@ export default function TakeReadingScreen({
           <Text
             style={[
               styles.dataTitle,
-              deviceData?.isSafe ? styles.safe : styles.notSafe,
+              reading?.isSafe ? styles.safe : styles.notSafe,
             ]}>
-            {deviceData?.isSafe ? 'SAFE' : 'NOT SAFE'}
+            {reading?.isSafe ? 'SAFE' : 'NOT SAFE'}
           </Text>
-          <Text style={styles.data}>{deviceData?.datetime.date}</Text>
+          <Text style={styles.data}>{reading?.datetime.date}</Text>
           <Text
             style={
               styles.data
-            }>{`Latitude: ${deviceData?.location.latitude}, Longitude: ${deviceData?.location.longitude}`}</Text>
+            }>{`Latitude: ${reading?.location.latitude}, Longitude: ${reading?.location.longitude}`}</Text>
         </View>
         {isLoggedIn && (
           <View
             style={[globalStyles.tile, styles.buttonPanel, containerContrast]}>
             <View style={styles.buttonContainer}>
-              <Button onPress={handleSync} disabled={!!docName}>
+              <Button onPress={handleSync} disabled={reading?.hasSynced}>
                 <Text style={[styles.buttonText]}>
-                  {docName ? 'Synced' : 'Sync'}
+                  {reading?.hasSynced ? 'Synced' : 'Sync'}
                 </Text>
               </Button>
             </View>
@@ -239,6 +298,54 @@ export default function TakeReadingScreen({
             absolute
           />
         </View>
+        {lineChartData.map((data: any, index: number) => {
+          return (
+            <View
+              key={index}
+              style={[
+                globalStyles.tile,
+                styles.lineChartContainer,
+                containerContrast,
+              ]}>
+              <View style={styles.lineChartTextContainer}>
+                <Text style={[styles.lineChartTitle, textContrast]}>
+                  {data.name}
+                </Text>
+                <View style={styles.lineChartDescriptionContainer}>
+                  <Text
+                    style={
+                      styles.lineChartDescription
+                    }>{`Mean: ${data.average}`}</Text>
+                  <Text
+                    style={
+                      styles.lineChartDescription
+                    }>{`Max: ${data.max}`}</Text>
+                  <Text
+                    style={
+                      styles.lineChartDescription
+                    }>{`Min: ${data.min}`}</Text>
+                </View>
+              </View>
+              <LineChart
+                data={data.data}
+                width={screenWidth * 0.8}
+                height={screenHeight * 0.25}
+                chartConfig={{
+                  backgroundColor: 'transparent',
+                  backgroundGradientFrom: isDarkMode ? '#2E2E2E' : '#fff',
+                  backgroundGradientTo: isDarkMode ? '#2E2E2E' : '#fff',
+                  decimalPlaces: 2,
+                  color: () => '#7F7F7F',
+                }}
+                withShadow={false}
+                bezier
+              />
+              <View style={styles.lineChartTextContainer}>
+                <Text style={styles.lineChartXLabel}>Time(s)</Text>
+              </View>
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );
