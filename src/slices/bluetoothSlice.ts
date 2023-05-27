@@ -75,6 +75,129 @@ export const requestPermissions: any = createAsyncThunk(
   },
 );
 
+function formatReceivedData(
+  lastMessage: any,
+  state: TBluetoothSliceState,
+): void {
+  lastMessage = lastMessage.replace(/(\r\n|\n|\r)/gm, '');
+  const lastChar: string = lastMessage[lastMessage.length - 1];
+
+  state.receivedData = [...state.receivedData, lastMessage];
+
+  if (lastChar === '!') {
+    let dataString: string = '';
+    state.receivedData.forEach((data: any) => {
+      dataString = dataString.concat(data);
+    });
+
+    dataString = dataString.replace('!', '');
+
+    const dataStringRows: string[] = dataString.split('?');
+
+    let chloride: number[] = [];
+    let conductivity: number[] = [];
+    let fluoride: number[] = [];
+    let nitrate: number[] = [];
+    let ph: number[] = [];
+    let Turbidity: number[] = [];
+    let timeIntervals: number[] = [];
+
+    let latitude: number = 0;
+    let longitude: number = 0;
+    let date: string = '';
+    let time: string = '';
+    let isSafe: boolean = false;
+
+    dataStringRows.forEach((dataStringRow: string, idx: number) => {
+      const values: string[] = dataStringRow.split(',');
+      if (idx < dataStringRows.length - 1) {
+        // Get each reading and cange their data type to number
+        try {
+          timeIntervals.push(parseFloat(values[0]));
+          chloride.push(parseFloat(values[1]));
+          conductivity.push(parseFloat(values[2]));
+          fluoride.push(parseFloat(values[3]));
+          nitrate.push(parseFloat(values[4]));
+          ph.push(parseFloat(values[5]));
+          Turbidity.push(parseFloat(values[6]));
+        } catch (err) {
+          console.error(`Incorrect number of values in data row\n\r ${values}`);
+          console.error(err);
+        }
+      } else {
+        // Get the location, date, time and isSafe
+        latitude = parseFloat(values[0]);
+        longitude = parseFloat(values[1]);
+        date = values[2];
+        time = values[3];
+        isSafe = values[4] === '1';
+
+        // Format the date and time
+        if (date.length === 6) {
+          date =
+            date.slice(0, 2) +
+            '/' +
+            date.slice(2, 4) +
+            '/20' +
+            date.slice(4, 6);
+        } else {
+          console.error('Incorrect date format');
+        }
+
+        if (time.length === 8 || time.length === 6) {
+          time =
+            time.slice(0, 2) + ':' + time.slice(2, 4) + ':' + time.slice(4, 6);
+        } else {
+          console.error('Incorrect time format');
+        }
+      }
+    });
+
+    const deviceReadings: TReading = {
+      id: `${Date.now()}`,
+      hasSynced: false,
+      isSafe: isSafe,
+      datetime: {
+        date: date,
+        time: time,
+      },
+      location: {
+        latitude: latitude,
+        longitude: longitude,
+      },
+      timeIntervals: timeIntervals,
+      measurements: [
+        {
+          name: 'Chloride',
+          value: chloride,
+        },
+        {
+          name: 'Conductivity',
+          value: conductivity,
+        },
+        {
+          name: 'Fluoride',
+          value: fluoride,
+        },
+        {
+          name: 'Nitrate',
+          value: nitrate,
+        },
+        {
+          name: 'pH',
+          value: ph,
+        },
+        {
+          name: 'Turbidity',
+          value: Turbidity,
+        },
+      ],
+    };
+    state.formattedData = deviceReadings;
+    state.receivedData = [];
+  }
+}
+
 const bluetoothReducer = createSlice({
   name: 'bluetooth',
   initialState: initialState,
@@ -104,115 +227,7 @@ const bluetoothReducer = createSlice({
       let lastMessage = action.payload;
       // Check if transmission is complete by checking for end of message character
       if (typeof lastMessage === 'string') {
-        lastMessage = lastMessage.replace(/(\r\n|\n|\r)/gm, '');
-        const lastChar: string = lastMessage[lastMessage.length - 1];
-
-        state.receivedData = [...state.receivedData, lastMessage];
-
-        if (lastChar === '!') {
-          let dataString: string = '';
-          state.receivedData.forEach((data: any) => {
-            dataString = dataString.concat(data);
-          });
-
-          dataString = dataString.replace('!', '');
-
-          const dataStringRows: string[] = dataString.split('?');
-
-          let chloride: number = 0;
-          let conductivity: number = 0;
-          let fluoride: number = 0;
-          let nitrate: number = 0;
-          let ph: number = 0;
-          let Turbidity: number = 0;
-
-          let length: number = 0;
-
-          let latitude: number = 0;
-          let longitude: number = 0;
-          let date: string = '';
-          let time: string = '';
-          let isSafe: boolean = false;
-
-          dataStringRows.forEach((dataStringRow: string, idx: number) => {
-            const values: string[] = dataStringRow.split(',');
-            if (idx < dataStringRows.length - 1) {
-              try {
-                chloride += parseFloat(values[1]);
-                conductivity += parseFloat(values[2]);
-                fluoride += parseFloat(values[3]);
-                nitrate += parseFloat(values[4]);
-                ph += parseFloat(values[5]);
-                Turbidity += parseFloat(values[6]);
-                length += 1;
-              } catch (err) {
-                console.error(
-                  `Incorrect number of values in data row\n\r ${values}`,
-                );
-                console.error(err);
-              }
-            } else {
-              latitude = parseFloat(values[0]);
-              longitude = parseFloat(values[1]);
-              date = values[2];
-              time = values[3];
-              const roundTo = (num: number, places: number) => {
-                const factor = 10 ** places;
-                return Math.round(num * factor) / factor;
-              };
-              const numOfDecimals: number = 3;
-              isSafe = values[4] === '1';
-              chloride = roundTo(chloride / length, numOfDecimals);
-              conductivity = roundTo(conductivity / length, numOfDecimals);
-              fluoride = roundTo(fluoride / length, numOfDecimals);
-              nitrate = roundTo(nitrate / length, numOfDecimals);
-              ph = roundTo(ph / length, numOfDecimals);
-              Turbidity = roundTo(Turbidity / length, numOfDecimals);
-            }
-          });
-
-          const deviceReadings: TReading = {
-            id: `${Date.now()}`,
-            hasSynced: false,
-            isSafe: isSafe,
-            datetime: {
-              date: date,
-              time: time,
-            },
-            location: {
-              latitude: latitude,
-              longitude: longitude,
-            },
-            measurements: [
-              {
-                name: 'Chloride',
-                value: chloride,
-              },
-              {
-                name: 'Conductivity',
-                value: conductivity,
-              },
-              {
-                name: 'Fluoride',
-                value: fluoride,
-              },
-              {
-                name: 'Nitrate',
-                value: nitrate,
-              },
-              {
-                name: 'pH',
-                value: ph,
-              },
-              {
-                name: 'Turbidity',
-                value: Turbidity,
-              },
-            ],
-          };
-          state.formattedData = deviceReadings;
-          state.receivedData = [];
-        }
+        formatReceivedData(lastMessage, state);
       }
     },
     takeReading: state => {
