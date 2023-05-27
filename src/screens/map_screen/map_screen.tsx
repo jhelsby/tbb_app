@@ -127,16 +127,20 @@ export default function MapScreen({navigation}: Props): ReactElement<Props> {
           longitudeDelta: 0.0421,
         }}>
         {readings.map((reading: TReading, index: number) => {
-          return (
-            <MapIcon
-              key={index}
-              index={index}
-              onActive={handleMarkerPress}
-              active={activeMarkers[index]}
-              {...reading.location}
-              isSafe={reading.isSafe}
-            />
-          );
+          if (reading.location) {
+            if (reading.location.latitude && reading.location.longitude) {
+              return (
+                <MapIcon
+                  key={index}
+                  index={index}
+                  onActive={handleMarkerPress}
+                  active={activeMarkers[index]}
+                  {...reading.location}
+                  isSafe={reading.isSafe}
+                />
+              );
+            }
+          }
         })}
       </MapView>
       <Animated.View
