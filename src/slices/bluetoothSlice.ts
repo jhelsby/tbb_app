@@ -32,11 +32,12 @@ const initialState: TBluetoothSliceState = {
   hasError: false,
 };
 
-const DEVICE_NAME = 'DSD TECH';
+const DEVICE_NAME = 'TANTALUS';
 
 export const requestPermissions: any = createAsyncThunk(
   'bluetooth/requestPermissions',
   async (): Promise<boolean> => {
+    console.log('requesting permissions');
     let permissionGranted: boolean = false;
     if (Platform.OS === 'android') {
       const apiLevel = await DeviceInfo.getApiLevel();
@@ -101,67 +102,121 @@ const bluetoothReducer = createSlice({
     },
     updateReceivedData: (state, action) => {
       let lastMessage = action.payload;
-      state.receivedData = [...state.receivedData, lastMessage];
       // Check if transmission is complete by checking for end of message character
-      lastMessage = lastMessage.replace(/(\r\n|\n|\r)/gm, '');
-      const lastChar: string = lastMessage[lastMessage.length - 1];
+      if (typeof lastMessage === 'string') {
+        lastMessage = lastMessage.replace(/(\r\n|\n|\r)/gm, '');
+        const lastChar: string = lastMessage[lastMessage.length - 1];
 
-      if (lastChar === '$') {
-        let dataString: string = '';
-        state.receivedData.forEach((data: any) => {
-          dataString = dataString.concat(data);
-        });
-        const deviceValues: string[] = dataString.split(',');
-        const lastIndex = deviceValues.length - 1;
-        deviceValues[lastIndex] = deviceValues[lastIndex].replace('$', '');
-        const deviceReadings: TReading = {
-          id: `${Date.now()}`,
-          hasSynced: false,
-          isSafe: deviceValues[8] === '1',
-          datetime: {
-            date: deviceValues[2],
-            time: deviceValues[2],
-          },
-          location: {
-            latitude: parseFloat(deviceValues[4]),
-            longitude: parseFloat(deviceValues[5]),
-          },
-          measurements: [
-            {
-              name: 'Chloride',
-              value: parseFloat(deviceValues[0]),
+        state.receivedData = [...state.receivedData, lastMessage];
+
+        if (lastChar === '!') {
+          let dataString: string = '';
+          state.receivedData.forEach((data: any) => {
+            dataString = dataString.concat(data);
+          });
+
+          dataString = dataString.replace('!', '');
+
+          const dataStringRows: string[] = dataString.split('?');
+
+          let chloride: number = 0;
+          let conductivity: number = 0;
+          let fluoride: number = 0;
+          let nitrate: number = 0;
+          let ph: number = 0;
+          let Turbidity: number = 0;
+
+          let length: number = 0;
+
+          let latitude: number = 0;
+          let longitude: number = 0;
+          let date: string = '';
+          let time: string = '';
+          let isSafe: boolean = false;
+
+          dataStringRows.forEach((dataStringRow: string, idx: number) => {
+            const values: string[] = dataStringRow.split(',');
+            if (idx < dataStringRows.length - 1) {
+              try {
+                chloride += parseFloat(values[1]);
+                conductivity += parseFloat(values[2]);
+                fluoride += parseFloat(values[3]);
+                nitrate += parseFloat(values[4]);
+                ph += parseFloat(values[5]);
+                Turbidity += parseFloat(values[6]);
+                length += 1;
+              } catch (err) {
+                console.error(
+                  `Incorrect number of values in data row\n\r ${values}`,
+                );
+                console.error(err);
+              }
+            } else {
+              latitude = parseFloat(values[0]);
+              longitude = parseFloat(values[1]);
+              date = values[2];
+              time = values[3];
+              const roundTo = (num: number, places: number) => {
+                const factor = 10 ** places;
+                return Math.round(num * factor) / factor;
+              };
+              const numOfDecimals: number = 3;
+              isSafe = values[4] === '1';
+              chloride = roundTo(chloride / length, numOfDecimals);
+              conductivity = roundTo(conductivity / length, numOfDecimals);
+              fluoride = roundTo(fluoride / length, numOfDecimals);
+              nitrate = roundTo(nitrate / length, numOfDecimals);
+              ph = roundTo(ph / length, numOfDecimals);
+              Turbidity = roundTo(Turbidity / length, numOfDecimals);
+            }
+          });
+
+          const deviceReadings: TReading = {
+            id: `${Date.now()}`,
+            hasSynced: false,
+            isSafe: isSafe,
+            datetime: {
+              date: date,
+              time: time,
             },
-            {
-              name: 'Conductivity',
-              value: parseFloat(deviceValues[1]),
+            location: {
+              latitude: latitude,
+              longitude: longitude,
             },
-            {
-              name: 'Fluoride',
-              value: parseFloat(deviceValues[3]),
-            },
-            {
-              name: 'Nitrate',
-              value: parseFloat(deviceValues[6]),
-            },
-            {
-              name: 'pH',
-              value: parseFloat(deviceValues[7]),
-            },
-            {
-              name: 'Temperature',
-              value: parseFloat(deviceValues[9]),
-            },
-            {
-              name: 'Turbidity',
-              value: parseFloat(deviceValues[10]),
-            },
-          ],
-        };
-        state.formattedData = deviceReadings;
-        state.receivedData = [];
+            measurements: [
+              {
+                name: 'Chloride',
+                value: chloride,
+              },
+              {
+                name: 'Conductivity',
+                value: conductivity,
+              },
+              {
+                name: 'Fluoride',
+                value: fluoride,
+              },
+              {
+                name: 'Nitrate',
+                value: nitrate,
+              },
+              {
+                name: 'pH',
+                value: ph,
+              },
+              {
+                name: 'Turbidity',
+                value: Turbidity,
+              },
+            ],
+          };
+          state.formattedData = deviceReadings;
+          state.receivedData = [];
+        }
       }
     },
     takeReading: state => {
+      console.log(`Permissions: ${state.permissionsGranted}`);
       state.formattedData = null;
       state.isStreamingData = true;
     },
@@ -242,5 +297,8 @@ export const selectFormattedData = (state: RootState) =>
 
 export const selectIsStreamingData = (state: RootState) =>
   state.bluetooth.isStreamingData;
+
+export const selectPermissionsGranted = (state: RootState) =>
+  state.bluetooth.permissionsGranted;
 
 export default bluetoothReducer.reducer;
