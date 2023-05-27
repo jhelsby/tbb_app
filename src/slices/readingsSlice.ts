@@ -73,17 +73,28 @@ export const postReading = createAsyncThunk(
   'readings/postReading',
   async (
     index: number,
-    thunkAPI,
+    {rejectWithValue, getState},
   ): Promise<{docName: string; index: number} | null | undefined> => {
-    const state: RootState = thunkAPI.getState() as RootState;
+    const state: RootState = getState() as RootState;
     const reading: TReading = state.readings.unsyncedReadings[index];
+    const uid: string | null = state.account.uid;
     let docName: string = '';
+
+    if (!uid) {
+      console.error('User is not logged in');
+      rejectWithValue('User is not logged in');
+    }
     // Add a new document to the readings collection.
     reading.hasSynced = true;
     await addDoc(collection(db, 'readings'), {
-      name: 'getUserName()',
-      ...reading,
+      datetime: reading.datetime,
+      hasSynced: true,
+      isSafe: reading.isSafe,
+      location: reading.location,
+      measurements: reading.measurements,
+      timeIntervals: reading.timeIntervals,
       timestamp: serverTimestamp(),
+      uid: uid,
     })
       .then((docRef: DocumentReference<DocumentData>) => {
         docName = docRef.id;
@@ -108,20 +119,31 @@ export const postAllReadings = createAsyncThunk(
   'readings/postAllReadings',
   async (
     arg: any,
-    thunkAPI,
+    {rejectWithValue, getState},
   ): Promise<{docName: string; index: number}[] | null | undefined> => {
-    const state: RootState = thunkAPI.getState() as RootState;
+    const state: RootState = getState() as RootState;
     const readings: TReading[] = state.readings.unsyncedReadings;
+    const uid: string | null = state.account.uid;
     const syncedReadings: {docName: string; index: number}[] = [];
+
+    if (!uid) {
+      console.error('User is not logged in');
+      rejectWithValue('User is not logged in');
+    }
 
     for (let i: number = 0; i < readings.length; i++) {
       if (!readings[i].hasSynced) {
         // Add a new document to the readings collection.
         readings[i].hasSynced = true;
         await addDoc(collection(db, 'readings'), {
-          name: 'getUserName()',
-          ...readings[i],
+          datetime: readings[i].datetime,
+          hasSynced: true,
+          isSafe: readings[i].isSafe,
+          location: readings[i].location,
+          measurements: readings[i].measurements,
+          timeIntervals: readings[i].timeIntervals,
           timestamp: serverTimestamp(),
+          uid: uid,
         })
           .then((docRef: DocumentReference<DocumentData>) => {
             syncedReadings.push({docName: docRef.id, index: i});
@@ -148,8 +170,18 @@ export const postAllReadings = createAsyncThunk(
  */
 export const fetchAllReadings = createAsyncThunk(
   'readings/getAllReadings',
-  async (): Promise<TReading[] | null | undefined> => {
+  async (
+    _,
+    {rejectWithValue, getState},
+  ): Promise<TReading[] | null | undefined> => {
     const readings: TReading[] = [];
+    const state: RootState = getState() as RootState;
+    const uid: string | null = state.account.uid;
+
+    if (!uid) {
+      console.error('User is not logged in');
+      rejectWithValue('User is not logged in');
+    }
     // Get all news
     const readingsQuery = query(
       collection(db, 'readings'),
@@ -161,7 +193,15 @@ export const fetchAllReadings = createAsyncThunk(
           // Add the data from the document to the news array
           const data: DocumentData | undefined = docSnap.data();
           if (data) {
-            readings.push(data as TReading);
+            readings.push({
+              datetime: data.datetime,
+              hasSynced: true,
+              id: docSnap.id,
+              isSafe: data.isSafe,
+              location: data.location,
+              measurements: data.measurements,
+              timeIntervals: data.timeIntervals,
+            });
           }
         });
       })
