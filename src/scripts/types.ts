@@ -71,7 +71,7 @@ export type TNewsSliceState = {
 
 export type TMeasurement = {
   name: string;
-  value: number;
+  value: number | number[];
 };
 
 export type TReading = {
@@ -87,6 +87,7 @@ export type TReading = {
   isSafe: boolean;
   hasSynced: boolean;
   measurements: TMeasurement[];
+  timeIntervals?: number[];
 };
 
 export type TNews = {
