@@ -79,6 +79,7 @@ export const postReading = createAsyncThunk(
     const reading: TReading = state.readings.unsyncedReadings[index];
     let docName: string = '';
     // Add a new document to the readings collection.
+    reading.hasSynced = true;
     await addDoc(collection(db, 'readings'), {
       name: 'getUserName()',
       ...reading,
@@ -89,6 +90,7 @@ export const postReading = createAsyncThunk(
       })
       .catch((error: any) => {
         // Handle Errors here.
+        reading.hasSynced = false;
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error(
@@ -115,6 +117,7 @@ export const postAllReadings = createAsyncThunk(
     for (let i: number = 0; i < readings.length; i++) {
       if (!readings[i].hasSynced) {
         // Add a new document to the readings collection.
+        readings[i].hasSynced = true;
         await addDoc(collection(db, 'readings'), {
           name: 'getUserName()',
           ...readings[i],
@@ -125,6 +128,7 @@ export const postAllReadings = createAsyncThunk(
           })
           .catch((error: any) => {
             // Handle Errors here.
+            readings[i].hasSynced = false;
             const errorCode = error.code;
             const errorMessage = error.message;
             console.error(
@@ -157,14 +161,7 @@ export const fetchAllReadings = createAsyncThunk(
           // Add the data from the document to the news array
           const data: DocumentData | undefined = docSnap.data();
           if (data) {
-            readings.push({
-              location: data.location,
-              datetime: data.datetime,
-              isSafe: data.isSafe,
-              hasSynced: true,
-              measurements: data.measurements,
-              id: docSnap.id,
-            });
+            readings.push(data as TReading);
           }
         });
       })
