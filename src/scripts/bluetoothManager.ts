@@ -54,9 +54,12 @@ class BluetoothManager {
     emitter: (arg: {payload: string | BleError}) => void,
   ) => {
     if (error) {
-      emitter({payload: error});
+      if (error.errorCode !== 2) {
+        console.error(error);
+        emitter({payload: error});
+      }
     }
-
+    
     const decodedData = base64.decode(characteristic?.value ?? '');
     //remove special characters
     const filteredData = decodedData.replace(/(\r\n|\n|\r)/gm, '');
@@ -65,6 +68,7 @@ class BluetoothManager {
   };
 
   sendData = async (data: string) => {
+    console.log('sending data');
     await this.device?.writeCharacteristicWithResponseForService(
       DEVICE_UUID,
       CHARACTERISTIC_UUID,
@@ -75,6 +79,7 @@ class BluetoothManager {
   startReadingData = async (
     emitter: (arg: {payload: string | BleError}) => void,
   ) => {
+    console.log('started reading');
     await this.device?.discoverAllServicesAndCharacteristics();
     await this.sendData('takeReading');
     this.subscription = this.device?.monitorCharacteristicForService(
