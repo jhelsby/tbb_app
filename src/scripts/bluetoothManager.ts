@@ -48,6 +48,19 @@ class BluetoothManager {
     this.device = await this.bleManager.cancelDeviceConnection(deviceId);
   };
 
+  monitorDisconnection = (
+    deviceId: string,
+    onDeviceDisconnect: (arg: {type: string; payload: boolean}) => void,
+  ) => {
+    const unsubscriber = this.bleManager.onDeviceDisconnected(deviceId, () => {
+      onDeviceDisconnect({type: 'SAMPLE', payload: true});
+      return;
+    });
+    return () => {
+      unsubscriber.remove();
+    };
+  };
+
   onReceivedDataUpdate = (
     error: BleError | null,
     characteristic: Characteristic | null,
@@ -59,16 +72,21 @@ class BluetoothManager {
         emitter({payload: error});
       }
     }
-    
-    const decodedData = base64.decode(characteristic?.value ?? '');
+
+    const decodedData: string = base64.decode(characteristic?.value ?? '');
     //remove special characters
-    const filteredData = decodedData.replace(/(\r\n|\n|\r)/gm, '');
+    const filteredData: string = decodedData.replace(/(\r\n|\n|\r)/gm, '');
+    const lastIndex = filteredData.length - 1;
+    if (filteredData[lastIndex] === '?') {
+      this.sendData('next');
+    }
+    console.log(filteredData);
 
     emitter({payload: filteredData});
   };
 
   sendData = async (data: string) => {
-    console.log('sending data');
+    console.log(`sending ${data}`);
     await this.device?.writeCharacteristicWithResponseForService(
       DEVICE_UUID,
       CHARACTERISTIC_UUID,

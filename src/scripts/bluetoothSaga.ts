@@ -44,14 +44,36 @@ function* watchForPeripherals(): Generator<AnyAction, void, TakeableDevice> {
 function* connectToDevice(action: {
   type: typeof sagaActionConstants.INITIATE_CONNECTION;
   payload: string;
-}) {
+}): Generator<AnyAction, void, TakeableDevice> {
   const deviceId = action.payload;
   yield call(bluetoothManager.connectToDevice, deviceId);
   yield put({
     type: sagaActionConstants.CONNECTION_SUCCESS,
     payload: deviceId,
   });
+
   yield call(bluetoothManager.stopScanningForDevices);
+
+  const onDeviceDisconnect = () =>
+    eventChannel(emitter => {
+      return bluetoothManager.monitorDisconnection(deviceId, emitter);
+    });
+
+  const channel: TakeableChannel<boolean> = yield call(onDeviceDisconnect);
+
+  try {
+    while (true) {
+      const response = yield take(channel);
+      if (response.payload) {
+        yield put({
+          type: sagaActionConstants.DISCONNECT_SUCCESS,
+          payload: deviceId,
+        });
+      }
+    }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 function* disconnectFromDevice(action: {
