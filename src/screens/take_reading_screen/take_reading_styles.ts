@@ -63,6 +63,7 @@ export const styles = StyleSheet.create({
   },
   pieChartContainer: {
     width: '90%',
+    marginBottom: 20,
     marginHorizontal: '5%',
     paddingHorizontal: 10,
     alignItems: 'center',
